@@ -53,6 +53,12 @@ export interface LongVideo {
   /** 유튜브 영상 ID (watch?v= 뒤의 11자리) */
   youtubeId: string;
   channel: string;
+  /**
+   * 큐레이션 시점의 유튜브 조회수. 홈 목록을 "조회수 순"으로 정렬하고
+   * 카드에 노출하는 데 쓴다. 큐레이터가 `sources.json` 에 직접 넣는다.
+   * 없으면 정렬에서 뒤로 밀리고 카드에도 표시하지 않는다.
+   */
+  views?: number;
   steps: RecipeStep[];
 }
 

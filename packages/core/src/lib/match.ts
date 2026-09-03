@@ -28,6 +28,50 @@ export interface MatchOptions {
 }
 
 /**
+ * 한 채널이 목록 상단을 독식하지 않도록 재배열한다.
+ * 이미 점수순으로 정렬된 배열을 받아, 같은 채널이 연달아 나올 때마다
+ * 커지는 감점을 매겨 다시 고른다. 점수 차가 크면 그대로 두고, 비슷한
+ * 후보들 사이에서만 채널을 번갈아 준다. (그리디, 후보 수가 적어 O(n²) OK)
+ *
+ * @param baseScore  0~1 스케일 권장. 채널 감점(0.12/회)과 비교 가능해야 한다.
+ */
+function spreadByChannel<T>(
+  ranked: T[],
+  channelOf: (item: T) => string,
+  baseScore: (item: T) => number,
+  penaltyPerRepeat = 0.12,
+): T[] {
+  const pool = ranked.map((item, i) => ({ item, i }));
+  const out: T[] = [];
+  const seen = new Map<string, number>();
+
+  while (pool.length > 0) {
+    let bestIdx = 0;
+    let bestValue = -Infinity;
+    for (let k = 0; k < pool.length; k++) {
+      const { item } = pool[k];
+      const repeats = seen.get(channelOf(item)) ?? 0;
+      const value = baseScore(item) - repeats * penaltyPerRepeat;
+      // 동점이면 원래 순위(pool 은 순위순)를 유지한다.
+      if (value > bestValue) {
+        bestValue = value;
+        bestIdx = k;
+      }
+    }
+    const [chosen] = pool.splice(bestIdx, 1);
+    out.push(chosen.item);
+    const ch = channelOf(chosen.item);
+    seen.set(ch, (seen.get(ch) ?? 0) + 1);
+  }
+  return out;
+}
+
+const viewsOf = (m: RecipeMatch) => m.recipe.long.views ?? 0;
+/** 조회수를 0~1 로 눌러 정렬 보조 신호로 쓴다. (100만회 ≈ 1.0) */
+const viewSignal = (m: RecipeMatch) =>
+  Math.min(1, Math.log10(viewsOf(m) + 1) / 6);
+
+/**
  * 사용자 재료로 만들 수 있는 레시피를 점수순으로 반환한다.
  *
  * - 재료 점수 = (가진 핵심 재료 수) / (전체 핵심 재료 수). 팬트리 양념 제외.
@@ -65,16 +109,26 @@ export function matchRecipes(
     };
   });
 
-  const rank = (m: RecipeMatch) => m.score + m.matchedVibes.length * 0.15;
+  // 재료 충족도가 1순위, 기분 가산점이 2순위, 조회수는 동점을 가르는 보조 신호.
+  const rank = (m: RecipeMatch) =>
+    m.score + m.matchedVibes.length * 0.15 + viewSignal(m) * 0.1;
 
-  return matches
+  const ranked = matches
     .filter((m) => m.have.length > 0 && m.score >= minScore)
     .sort(
       (a, b) =>
         rank(b) - rank(a) ||
         a.missing.length - b.missing.length ||
+        viewsOf(b) - viewsOf(a) ||
         a.recipe.cookMinutes - b.recipe.cookMinutes,
     );
+
+  // 같은 채널(예: 백종원)이 상단을 독식하지 않도록 번갈아 배치한다.
+  return spreadByChannel(
+    ranked,
+    (m) => m.recipe.long.channel,
+    (m) => rank(m),
+  );
 }
 
 export function getRecipe(id: string): Recipe | undefined {
@@ -91,7 +145,8 @@ export function allRecipes(): Recipe[] {
  */
 export function browseRecipes(vibes: Vibe[] = []): RecipeMatch[] {
   const wanted = new Set(vibes);
-  return database.recipes
+  // 재료 점수가 없으므로 기분 일치 → 조회수 순으로 정렬한 뒤 채널을 흩뿌린다.
+  const ranked = database.recipes
     .map((recipe): RecipeMatch => {
       const matchedVibes = (recipe.vibes ?? []).filter((v) => wanted.has(v));
       return { recipe, have: [], missing: [], score: 0, matchedVibes };
@@ -99,8 +154,16 @@ export function browseRecipes(vibes: Vibe[] = []): RecipeMatch[] {
     .sort(
       (a, b) =>
         b.matchedVibes.length - a.matchedVibes.length ||
+        viewsOf(b) - viewsOf(a) ||
         a.recipe.cookMinutes - b.recipe.cookMinutes,
     );
+
+  return spreadByChannel(
+    ranked,
+    (m) => m.recipe.long.channel,
+    (m) => m.matchedVibes.length * 0.5 + viewSignal(m),
+    0.35,
+  );
 }
 
 /** 상세 화면의 "추천 영상" — 현재 레시피와 vibe·재료가 겹치는 순으로 */

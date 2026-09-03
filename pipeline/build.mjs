@@ -84,6 +84,7 @@ for (const source of targets) {
     // 큐레이터가 sources.json 에 직접 고른 필드는 모델 출력보다 우선한다.
     if (source.short) recipe.short = source.short;
     if (source.blogs) recipe.blogs = source.blogs;
+    if (typeof source.views === "number") recipe.long.views = source.views;
     const errors = validateRecipe(recipe, recipes.length);
     if (errors.length) {
       failed++;

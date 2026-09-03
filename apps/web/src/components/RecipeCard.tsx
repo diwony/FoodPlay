@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import {
+  compactViews,
   formatCookTime,
   formatDifficulty,
   vibeLabel,
@@ -49,6 +50,9 @@ function RecipeCardBase({ match, rank, browse = false }: Props) {
         <p className="mt-0.5 text-[12px] text-faint">
           {recipe.long.channel} · {formatCookTime(recipe.cookMinutes)} ·{" "}
           {formatDifficulty(recipe.difficulty)}
+          {recipe.long.views != null && (
+            <> · ▶ {compactViews(recipe.long.views)}</>
+          )}
         </p>
 
         {browse ? (

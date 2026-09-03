@@ -17,6 +17,24 @@ export function formatCookTime(minutes: number): string {
   return m ? `${h}시간 ${m}분` : `${h}시간`;
 }
 
+/**
+ * 조회수 → 한국어 축약. 예: 1234 → "조회수 1,234회",
+ * 32000 → "조회수 3.2만회", 1_200_000 → "조회수 120만회".
+ */
+export function formatViews(views: number): string {
+  const n = compactViews(views);
+  return n ? `조회수 ${n}회` : "";
+}
+
+/** 조회수 숫자만 축약. 예: 32000 → "3.2만", 1_200_000 → "120만". */
+export function compactViews(views: number): string {
+  if (!Number.isFinite(views) || views < 0) return "";
+  if (views < 10_000) return views.toLocaleString("ko-KR");
+  const man = views / 10_000;
+  const rounded = man >= 100 ? Math.round(man) : Math.round(man * 10) / 10;
+  return `${rounded.toLocaleString("ko-KR")}만`;
+}
+
 const DIFFICULTY_LABEL: Record<Difficulty, string> = {
   easy: "쉬움",
   medium: "보통",

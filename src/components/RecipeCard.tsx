@@ -1,6 +1,12 @@
 import { Link } from "expo-router";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { formatCookTime, formatDifficulty, vibeLabel, type RecipeMatch } from "@foodplay/core";
+import {
+  compactViews,
+  formatCookTime,
+  formatDifficulty,
+  vibeLabel,
+  type RecipeMatch,
+} from "@foodplay/core";
 import { colors, font, radius, spacing } from "../theme/theme";
 import Chip from "./Chip";
 
@@ -40,6 +46,9 @@ export default function RecipeCard({ match }: Props) {
           <Text style={styles.sub}>
             {recipe.long.channel} · {formatCookTime(recipe.cookMinutes)} ·{" "}
             {formatDifficulty(recipe.difficulty)}
+            {recipe.long.views != null
+              ? ` · ▶ ${compactViews(recipe.long.views)}`
+              : ""}
           </Text>
 
           <View style={styles.chips}>

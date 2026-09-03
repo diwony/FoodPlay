@@ -1,4 +1,10 @@
-import { useCallback, useDeferredValue, useMemo, useState } from "react";
+import {
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   browseRecipes,
   matchRecipes,
@@ -60,6 +66,16 @@ export default function Home() {
   }, []);
 
   const active = ingredients.length > 0 || vibes.length > 0;
+  const list = active ? matches : browse;
+
+  // "더보기" — 처음엔 조금만, 누를 때마다 늘린다.
+  const PAGE = 6;
+  const [shown, setShown] = useState(PAGE);
+  useEffect(() => {
+    setShown(PAGE);
+  }, [active, ingredients, vibes]);
+  const visible = list.slice(0, shown);
+  const more = list.length - visible.length;
 
   return (
     <main className="mx-auto max-w-5xl px-5">
@@ -123,16 +139,27 @@ export default function Home() {
             </p>
           </div>
         ) : (
-          <div className="grid gap-3 sm:grid-cols-2">
-            {(active ? matches : browse).map((m, i) => (
-              <RecipeCard
-                key={m.recipe.id}
-                match={m}
-                rank={i + 1}
-                browse={!active}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {visible.map((m, i) => (
+                <RecipeCard
+                  key={m.recipe.id}
+                  match={m}
+                  rank={i + 1}
+                  browse={!active}
+                />
+              ))}
+            </div>
+            {more > 0 && (
+              <button
+                onClick={() => setShown((n) => n + PAGE)}
+                className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-[var(--radius-card)] border border-line bg-surface py-3.5 text-[14px] font-semibold text-muted transition-colors hover:border-accent/40 hover:text-ink"
+              >
+                <span className="text-[16px] leading-none text-accent">＋</span>
+                더보기 {more}개
+              </button>
+            )}
+          </>
         )}
       </section>
     </main>

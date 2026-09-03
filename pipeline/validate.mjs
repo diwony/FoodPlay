@@ -33,6 +33,11 @@ export function validateRecipe(r, index = 0) {
     e.push(`${at}.long.youtubeId: 유튜브 ID 11자리여야 함 (받은 값: ${r.long?.youtubeId})`);
   if (!r.long || typeof r.long.channel !== "string" || !r.long.channel.trim())
     e.push(`${at}.long.channel: 비어있지 않은 문자열이어야 함`);
+  if (
+    r.long?.views !== undefined &&
+    (!Number.isInteger(r.long.views) || r.long.views < 0)
+  )
+    e.push(`${at}.long.views: 0 이상 정수여야 함 (받은 값: ${r.long?.views})`);
   if (r.short !== undefined) {
     const provider = r.short?.provider ?? "youtube";
     if (provider !== "youtube" && provider !== "naver")

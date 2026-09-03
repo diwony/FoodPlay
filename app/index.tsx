@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   FlatList,
   Keyboard,
@@ -54,6 +54,15 @@ export default function HomeScreen() {
     [ingredients, vibes],
   );
 
+  // "더보기" — 처음엔 조금만, 누를 때마다 늘린다.
+  const PAGE = 6;
+  const [shown, setShown] = useState(PAGE);
+  useEffect(() => {
+    setShown(PAGE);
+  }, [raw, vibes]);
+  const visible = useMemo(() => matches.slice(0, shown), [matches, shown]);
+  const more = matches.length - visible.length;
+
   const toggleQuick = (item: string) => {
     const has = ingredients.includes(item);
     setRaw(
@@ -86,7 +95,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.screen}>
       <FlatList
-        data={matches}
+        data={visible}
         keyExtractor={(m) => m.recipe.id}
         renderItem={({ item }) => <RecipeCard match={item} />}
         contentContainerStyle={[
@@ -94,6 +103,18 @@ export default function HomeScreen() {
           { paddingBottom: insets.bottom + spacing(6) },
         ]}
         keyboardShouldPersistTaps="handled"
+        ListFooterComponent={
+          more > 0 ? (
+            <Pressable
+              onPress={() => setShown((n) => n + PAGE)}
+              style={({ pressed }) => [styles.more, pressed && styles.pressed]}
+              accessibilityRole="button"
+              accessibilityLabel={`더보기 ${more}개`}
+            >
+              <Text style={styles.moreText}>＋ 더보기 {more}개</Text>
+            </Pressable>
+          ) : null
+        }
         ListHeaderComponent={
           <View style={styles.header}>
             <Text style={styles.h1}>냉장고에 뭐 있어요?</Text>
@@ -334,6 +355,17 @@ const styles = StyleSheet.create({
   vibeText: { fontSize: font.small, color: colors.text, fontWeight: "600" },
   vibeTextActive: { color: "#FFFFFF" },
   count: { fontSize: font.small, color: colors.textMuted, fontWeight: "600" },
+  more: {
+    marginTop: spacing(3),
+    paddingVertical: spacing(3.5),
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    alignItems: "center",
+  },
+  pressed: { opacity: 0.7 },
+  moreText: { fontSize: font.small, color: colors.textMuted, fontWeight: "700" },
   empty: { alignItems: "center", gap: spacing(3), paddingVertical: spacing(12) },
   emptyEmoji: { fontSize: 44 },
   emptyText: {
