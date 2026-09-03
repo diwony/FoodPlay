@@ -41,7 +41,14 @@ export interface Reception {
 
 export type VideoFormat = "long" | "short";
 
-/** 상세 영상 — 스텝별 타임스탬프가 붙는다. */
+/**
+ * 영상 출처. 기본 베이스는 유튜브이고, 네이버TV는 비중을 적게 두어
+ * 숏폼(쇼츠) 슬롯에서만 쓴다. 롱폼은 스텝별 타임스탬프 seek 계약
+ * (YouTube IFrame Player API) 때문에 유튜브로 고정한다.
+ */
+export type VideoProvider = "youtube" | "naver";
+
+/** 상세 영상 — 스텝별 타임스탬프가 붙는다. 유튜브 전용. */
 export interface LongVideo {
   /** 유튜브 영상 ID (watch?v= 뒤의 11자리) */
   youtubeId: string;
@@ -49,10 +56,34 @@ export interface LongVideo {
   steps: RecipeStep[];
 }
 
-/** 유튜브 쇼츠(세로 9:16) — 타임스탬프 없이 빠르게 훑는 용도. */
+/**
+ * 숏폼(유튜브 쇼츠 세로 9:16 또는 네이버TV 짧은 클립) — 타임스탬프 없이
+ * 빠르게 훑는 용도. `provider` 를 생략하면 유튜브로 본다.
+ */
 export interface ShortVideo {
-  youtubeId: string;
+  /** 생략 시 "youtube" */
+  provider?: VideoProvider;
+  /** provider 가 "youtube"(또는 생략)일 때: 영상 ID 11자리 */
+  youtubeId?: string;
+  /** provider 가 "naver"일 때: tv.naver.com/v/{id} 의 숫자 clip ID */
+  naverClipId?: string;
   channel?: string;
+}
+
+/**
+ * 블로그·웹 레시피 글 추천. 영상과 별개로 상세 화면에 독립된 칸으로 노출한다.
+ * 유튜브 외 소스(네이버 블로그, 티스토리, 만개의레시피, 우리의식탁 등)를
+ * 글 형태로 곁들이는 용도.
+ */
+export interface BlogLink {
+  /** 글 제목 */
+  title: string;
+  /** 글쓴이 또는 매체 이름 */
+  author: string;
+  /** 출처 태그: "naver" | "tistory" | "brunch" | "10000recipe" | "wtable" | "etc" */
+  source: string;
+  /** 글 URL (http/https) */
+  url: string;
 }
 
 export interface Recipe {
@@ -76,6 +107,8 @@ export interface Recipe {
   long: LongVideo;
   /** 숏폼(요약) 영상. 없을 수도 있다. */
   short?: ShortVideo;
+  /** 블로그·웹 레시피 글 추천. 없을 수도 있다. */
+  blogs?: BlogLink[];
 }
 
 export interface RecipeDatabase {

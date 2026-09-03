@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-09-03",
-  "_note": "시드 데이터. long=상세 영상(스텝 타임스탬프), short=1분 내외 요약 영상. 타임스탬프는 파이프라인 검수 전 예시값. pipeline/README.md 참고.",
+  "_note": "시드 데이터. long=상세 영상(스텝 타임스탬프, 유튜브 고정), short=숏폼(유튜브 쇼츠 기본, provider:\"naver\" 로 네이버TV clip 도 가능 — 비중은 적게). blogs=글 레시피 추천(따로 칸). 타임스탬프는 파이프라인 검수 전 예시값. pipeline/README.md 참고.",
   "recipes": [
     {
       "id": "kimchi-fried-rice",
@@ -76,7 +76,15 @@
       },
       "short": {
         "youtubeId": "5SXlwFUXZUQ"
-      }
+      },
+      "blogs": [
+        {
+          "title": "백전백승! 실패없는 김치볶음밥",
+          "author": "만개의레시피",
+          "source": "10000recipe",
+          "url": "https://www.10000recipe.com/recipe/6852249"
+        }
+      ]
     },
     {
       "id": "gyeran-mari",
@@ -149,7 +157,15 @@
       },
       "short": {
         "youtubeId": "RSUdAwhHATY"
-      }
+      },
+      "blogs": [
+        {
+          "title": "달걀로 할 수 있는 basic한 기본 요리 9가지!",
+          "author": "만개의레시피",
+          "source": "10000recipe",
+          "url": "https://www.10000recipe.com/recipe/6844440"
+        }
+      ]
     },
     {
       "id": "doenjang-jjigae-beef",
@@ -226,7 +242,21 @@
       },
       "short": {
         "youtubeId": "_qkKO9m_QXk"
-      }
+      },
+      "blogs": [
+        {
+          "title": "된장찌개 — 기본에 충실한 멸치육수 된장찌개",
+          "author": "우리의식탁",
+          "source": "wtable",
+          "url": "https://wtable.co.kr/recipes/G96HSCsrmWzAmbynq9EdZAH3"
+        },
+        {
+          "title": "소고기된장찌개 레시피 저녁메뉴",
+          "author": "만개의레시피",
+          "source": "10000recipe",
+          "url": "https://www.10000recipe.com/recipe/7003645"
+        }
+      ]
     },
     {
       "id": "jeyuk-bokkeum",
@@ -294,7 +324,15 @@
       },
       "short": {
         "youtubeId": "rLEyOHvGb1Y"
-      }
+      },
+      "blogs": [
+        {
+          "title": "절대 실패없는 제육볶음 황금레시피",
+          "author": "만개의레시피",
+          "source": "10000recipe",
+          "url": "https://www.10000recipe.com/recipe/6905743"
+        }
+      ]
     },
     {
       "id": "gamja-chae-bokkeum",
@@ -666,7 +704,21 @@
       },
       "short": {
         "youtubeId": "zwfVWiEMIjI"
-      }
+      },
+      "blogs": [
+        {
+          "title": "백종원 김치찌개 맛있게 만드는 방법",
+          "author": "브런치 @ssuujin",
+          "source": "brunch",
+          "url": "https://brunch.co.kr/@ssuujin/33"
+        },
+        {
+          "title": "만개가 공개한 찌개 레시피! 그 중 BEST만 모았다",
+          "author": "만개의레시피",
+          "source": "10000recipe",
+          "url": "https://www.10000recipe.com/recipe/6930196"
+        }
+      ]
     },
     {
       "id": "aehobak-bokkeum",

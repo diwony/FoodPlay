@@ -40,6 +40,7 @@ export function useYouTube(
   const pendingSeek = useRef<number | null>(null);
 
   useEffect(() => {
+    if (!videoId) return; // 네이버TV 등 비유튜브 소스일 땐 붙이지 않는다
     let cancelled = false;
     loadApi().then(() => {
       if (cancelled || !hostRef.current) return;

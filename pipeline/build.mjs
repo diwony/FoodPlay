@@ -81,6 +81,9 @@ for (const source of targets) {
 
   try {
     const recipe = await callClaude(source, transcript);
+    // 큐레이터가 sources.json 에 직접 고른 필드는 모델 출력보다 우선한다.
+    if (source.short) recipe.short = source.short;
+    if (source.blogs) recipe.blogs = source.blogs;
     const errors = validateRecipe(recipe, recipes.length);
     if (errors.length) {
       failed++;

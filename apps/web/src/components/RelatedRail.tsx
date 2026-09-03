@@ -19,7 +19,10 @@ export default function RelatedRail({ recipes, format = "long" }: Props) {
       <div className="no-scrollbar -mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-1">
         {recipes.map((r) => {
           const asShort = short && !!r.short;
-          const vid = asShort ? r.short!.youtubeId : r.long.youtubeId;
+          const isNaver = asShort && r.short!.provider === "naver";
+          // 네이버 숏폼은 유튜브 썸네일이 없으니 롱폼 썸네일로 대체
+          const vid =
+            (asShort && !isNaver && r.short!.youtubeId) || r.long.youtubeId;
           return (
             <Link
               key={r.id}
@@ -41,7 +44,11 @@ export default function RelatedRail({ recipes, format = "long" }: Props) {
                 {r.title}
               </p>
               <p className="text-[11px] text-faint">
-                {asShort ? "쇼츠" : `${r.long.channel} · ${formatCookTime(r.cookMinutes)}`}
+                {asShort
+                  ? isNaver
+                    ? "네이버TV"
+                    : "쇼츠"
+                  : `${r.long.channel} · ${formatCookTime(r.cookMinutes)}`}
               </p>
             </Link>
           );

@@ -13,6 +13,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Chip from "../../src/components/Chip";
 import MetaRow from "../../src/components/MetaRow";
+import BlogLinks from "../../src/components/BlogLinks";
 import Reception from "../../src/components/Reception";
 import RelatedVideos from "../../src/components/RelatedVideos";
 import YouTubePlayer, {
@@ -85,17 +86,28 @@ export default function RecipeScreen() {
     );
   }
 
-  const useShort = fmt === "short" && !!recipe.short;
-  const activeVideoId = useShort ? recipe.short!.youtubeId : recipe.long.youtubeId;
-  const activeChannel = useShort ? recipe.short!.channel : recipe.long.channel;
+  const short = recipe.short;
+  const useShort = fmt === "short" && !!short;
+  // 네이버TV 등 비유튜브 숏폼은 앱에서 임베드하지 않고 외부 링크로 연다
+  const isNaver = useShort && short!.provider === "naver";
+  const activeVideoId = useShort ? short!.youtubeId ?? "" : recipe.long.youtubeId;
+  const activeChannel = useShort ? short!.channel : recipe.long.channel;
+
+  const watchUrl = isNaver
+    ? `https://tv.naver.com/v/${short!.naverClipId}`
+    : `https://www.youtube.com/watch?v=${
+        useShort ? short!.youtubeId : recipe.long.youtubeId
+      }`;
+  const watchLabel = isNaver
+    ? "네이버TV에서 영상 보기 ↗"
+    : `유튜브에서 ${useShort ? "쇼츠" : "전체 영상"} 보기 ↗`;
 
   const jumpTo = (seconds: number) => {
     playerRef.current?.seekTo(seconds);
     if (mini) scrollToTop();
   };
 
-  const openInYouTube = () =>
-    Linking.openURL(`https://www.youtube.com/watch?v=${activeVideoId}`);
+  const openInYouTube = () => Linking.openURL(watchUrl);
 
   const showPlayer = !(mini && dismissed);
 
@@ -140,8 +152,8 @@ export default function RecipeScreen() {
 
           <Text style={styles.title}>{recipe.title}</Text>
           <Text style={styles.channel}>
-            {activeChannel}
-            {useShort ? " · 숏폼" : ""}
+            {activeChannel ?? (isNaver ? "네이버TV" : "YouTube")}
+            {useShort ? (isNaver ? " · 네이버TV" : " · 숏폼") : ""}
           </Text>
 
           <MetaRow recipe={recipe} />
@@ -194,10 +206,14 @@ export default function RecipeScreen() {
 
           {recipe.reception && <Reception reception={recipe.reception} />}
 
+          {recipe.blogs && recipe.blogs.length > 0 && (
+            <BlogLinks blogs={recipe.blogs} />
+          )}
+
           <RelatedVideos recipes={related} />
 
           <Pressable onPress={openInYouTube} style={styles.ytLink}>
-            <Text style={styles.ytLinkText}>유튜브에서 전체 영상 보기 ↗</Text>
+            <Text style={styles.ytLinkText}>{watchLabel}</Text>
           </Pressable>
         </Animated.ScrollView>
 
@@ -225,11 +241,17 @@ export default function RecipeScreen() {
                 transform: [{ scale: aScale }],
               }}
             >
-              <YouTubePlayer
-                ref={playerRef}
-                youtubeId={activeVideoId}
-                width={dockedW}
-              />
+              {isNaver ? (
+                <Pressable style={styles.naverCard} onPress={openInYouTube}>
+                  <Text style={styles.naverCardText}>네이버TV에서 영상 보기 ↗</Text>
+                </Pressable>
+              ) : (
+                <YouTubePlayer
+                  ref={playerRef}
+                  youtubeId={activeVideoId}
+                  width={dockedW}
+                />
+              )}
             </Animated.View>
 
             {/* 미니 모드일 때만: 탭하면 펼치기, ✕ 로 닫기 */}
@@ -351,6 +373,13 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   ytLinkText: { fontSize: font.body, fontWeight: "700", color: colors.accent },
+  naverCard: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#03C75A",
+  },
+  naverCardText: { fontSize: font.body, fontWeight: "800", color: "#fff" },
   missing: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: colors.bg },
   missingText: { fontSize: font.body, color: colors.textMuted },
 });

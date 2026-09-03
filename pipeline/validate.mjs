@@ -34,10 +34,32 @@ export function validateRecipe(r, index = 0) {
   if (!r.long || typeof r.long.channel !== "string" || !r.long.channel.trim())
     e.push(`${at}.long.channel: 비어있지 않은 문자열이어야 함`);
   if (r.short !== undefined) {
-    if (!ytId(r.short?.youtubeId))
+    const provider = r.short?.provider ?? "youtube";
+    if (provider !== "youtube" && provider !== "naver")
+      e.push(`${at}.short.provider: "youtube" | "naver" 중 하나여야 함 (받은 값: ${provider})`);
+    else if (provider === "naver") {
+      if (!/^\d{4,}$/.test(String(r.short?.naverClipId ?? "")))
+        e.push(`${at}.short.naverClipId: 네이버TV clip 번호(숫자)여야 함 (받은 값: ${r.short?.naverClipId})`);
+    } else if (!ytId(r.short?.youtubeId)) {
       e.push(`${at}.short.youtubeId: 유튜브 ID 11자리여야 함 (받은 값: ${r.short?.youtubeId})`);
+    }
     if (r.short?.channel !== undefined && typeof r.short.channel !== "string")
       e.push(`${at}.short.channel: 문자열이어야 함`);
+  }
+
+  if (r.blogs !== undefined) {
+    if (!Array.isArray(r.blogs)) {
+      e.push(`${at}.blogs: 배열이어야 함`);
+    } else {
+      r.blogs.forEach((b, i) => {
+        const bat = `${at}.blogs[${i}]`;
+        for (const k of ["title", "author", "source"])
+          if (typeof b?.[k] !== "string" || !b[k].trim())
+            e.push(`${bat}.${k}: 비어있지 않은 문자열이어야 함`);
+        if (typeof b?.url !== "string" || !/^https?:\/\//.test(b.url))
+          e.push(`${bat}.url: http(s) URL 이어야 함 (받은 값: ${b?.url})`);
+      });
+    }
   }
   if (!Number.isInteger(r.cookMinutes) || r.cookMinutes <= 0)
     e.push(`${at}.cookMinutes: 양의 정수여야 함`);

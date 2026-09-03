@@ -5,7 +5,11 @@
 
 - 영상은 화면 위, 조리 스텝 텍스트는 그 아래 — 스크롤하면 영상이 **우상단 미니
   플레이어(PiP)** 로 축소·고정되어 계속 보임
-- 레시피마다 **롱폼(자세히·타임스탬프) / 숏폼(1분컷)** 을 토글로 선택
+- 레시피마다 **롱폼(자세히·타임스탬프) / 숏폼(빠르게)** 을 토글로 선택.
+  롱폼은 유튜브 고정(타임스탬프 seek), 숏폼은 유튜브 쇼츠가 기본이고
+  **네이버TV** 도 비중 적게 섞음
+- 영상과 별개로 **블로그 레시피**(만개의레시피·우리의식탁·브런치 등)를
+  상세 화면 별도 칸에 추천
 - 각 레시피의 **추가로 필요한 재료 · 조리 시간 · 난이도**, **유튜브 댓글 반응
   요약**, **추천 영상 가로 캐러셀** 표시
 - 냉장고 재료(1개만 골라도 매칭) + **오늘 기분·상황**(칩 선택 + 자유 입력: "비 와서
@@ -33,7 +37,7 @@
 | 공유 로직 | `@foodplay/core` — 재료 정규화 · 매칭/랭킹 · vibe · 포맷 · `recipes.json` (순수 TS, 의존성 0) |
 | 웹 | **Vite + React 19 + React Router + Tailwind v4** (`apps/web`) |
 | 모바일 앱 | **Expo + React Native 0.86 + Expo Router** (루트) |
-| 영상 | 웹: YouTube IFrame Player API / 앱: `react-native-youtube-iframe` (동일한 `seekTo`·`pause` 계약) |
+| 영상 | 웹: YouTube IFrame Player API + 네이버TV `tv.naver.com/embed` iframe / 앱: `react-native-youtube-iframe`, 네이버TV 는 외부 링크 (동일한 `seekTo`·`pause` 계약) |
 | 데이터 | `packages/core/src/data/recipes.json` + `pipeline/` (빌드 타임 Claude 큐레이션) |
 
 ## 구조

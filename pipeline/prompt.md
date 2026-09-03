@@ -24,6 +24,10 @@
 - `reception` 은 제공된 댓글이 있을 때만. `summary` 는 한 줄 총평,
   `quotes` 는 대표 댓글 2~3개(원문 그대로, 길면 …로 줄임, `likes` 포함).
   칭찬/불만/팁을 균형 있게 고른다.
+- `short` 와 `blogs` 는 **출력하지 않는다.** 큐레이터가 `sources.json` 에
+  직접 고른 값을 `build.mjs` 가 나중에 덮어쓴다. (`short` 는 유튜브 쇼츠가
+  기본이고 `{"provider":"naver","naverClipId":"…"}` 로 네이버TV 도 가능. `blogs`
+  는 영상과 별개의 글 레시피 추천이며 비중은 적게 둔다.)
 
 ## User (조립됨)
 
@@ -55,7 +59,7 @@ youtubeId: {{youtubeId}}
     "youtubeId": "{{youtubeId}}",
     "channel": "…",
     "steps": [{ "order": 1, "text": "…", "start": 35 }]
-  },
-  "short": { "youtubeId": "…", "channel": "…" }  // 1분 내외 요약 영상 (없으면 생략)
+  }
+  // short · blogs 는 출력하지 않는다 (build.mjs 가 sources.json 값으로 채움)
 }
 ```

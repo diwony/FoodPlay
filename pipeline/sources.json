@@ -1,16 +1,53 @@
 {
-  "$comment": "큐레이션 파이프라인 입력. 각 항목은 사람이 고른 '좋은 영상' 하나다. build.mjs 가 이 목록을 읽어 recipes.json 을 생성한다. 채널을 백종원에 한정하지 않고 유튜브 전체에서 고른다.",
+  "$comment": "큐레이션 파이프라인 입력. 각 항목은 사람이 고른 '좋은 영상' 하나다. build.mjs 가 이 목록을 읽어 recipes.json 을 생성한다. 채널을 백종원에 한정하지 않고 유튜브 전체에서 고른다. 선택 필드: short(숏폼 override — {\"youtubeId\":\"…\"} 또는 {\"provider\":\"naver\",\"naverClipId\":\"…\"}), blogs([{title,author,source,url}] — 영상과 별개로 상세 화면 '블로그 레시피' 칸에 노출). 유튜브가 기본 베이스이고 네이버 등 다른 소스는 비중을 적게 둔다.",
   "sources": [
-    { "id": "kimchi-fried-rice", "dish": "김치볶음밥", "youtubeId": "aDQIZDk1hAM" },
-    { "id": "gyeran-mari", "dish": "달걀말이", "youtubeId": "1arrUjCHgm8" },
-    { "id": "doenjang-jjigae-beef", "dish": "소고기 된장찌개", "youtubeId": "3-xgRrEX-sQ" },
-    { "id": "jeyuk-bokkeum", "dish": "제육볶음", "youtubeId": "4ioPBiTWm3M" },
+    {
+      "id": "kimchi-fried-rice",
+      "dish": "김치볶음밥",
+      "youtubeId": "aDQIZDk1hAM",
+      "blogs": [
+        { "title": "백전백승! 실패없는 김치볶음밥", "author": "만개의레시피", "source": "10000recipe", "url": "https://www.10000recipe.com/recipe/6852249" }
+      ]
+    },
+    {
+      "id": "gyeran-mari",
+      "dish": "달걀말이",
+      "youtubeId": "1arrUjCHgm8",
+      "blogs": [
+        { "title": "달걀로 할 수 있는 basic한 기본 요리 9가지!", "author": "만개의레시피", "source": "10000recipe", "url": "https://www.10000recipe.com/recipe/6844440" }
+      ]
+    },
+    {
+      "id": "doenjang-jjigae-beef",
+      "dish": "소고기 된장찌개",
+      "youtubeId": "3-xgRrEX-sQ",
+      "blogs": [
+        { "title": "된장찌개 — 기본에 충실한 멸치육수 된장찌개", "author": "우리의식탁", "source": "wtable", "url": "https://wtable.co.kr/recipes/G96HSCsrmWzAmbynq9EdZAH3" },
+        { "title": "소고기된장찌개 레시피 저녁메뉴", "author": "만개의레시피", "source": "10000recipe", "url": "https://www.10000recipe.com/recipe/7003645" }
+      ]
+    },
+    {
+      "id": "jeyuk-bokkeum",
+      "dish": "제육볶음",
+      "youtubeId": "4ioPBiTWm3M",
+      "blogs": [
+        { "title": "절대 실패없는 제육볶음 황금레시피", "author": "만개의레시피", "source": "10000recipe", "url": "https://www.10000recipe.com/recipe/6905743" }
+      ]
+    },
     { "id": "gamja-chae-bokkeum", "dish": "감자채볶음", "youtubeId": "LTcCF262210" },
     { "id": "eomuk-bokkeum", "dish": "간장 어묵볶음", "youtubeId": "LqgHlHsdFtw" },
     { "id": "kongnamul-muchim", "dish": "콩나물무침", "youtubeId": "pUeyA967Tho" },
     { "id": "eomuk-bokkeum-spicy", "dish": "매콤 어묵볶음", "youtubeId": "GdTe272fmbA" },
     { "id": "ganjang-gyeranbap", "dish": "간장계란밥", "youtubeId": "UekEolhleeU" },
-    { "id": "chamchi-kimchi-jjigae", "dish": "참치김치찌개", "youtubeId": "z3IQaaor0PY" },
+    {
+      "id": "chamchi-kimchi-jjigae",
+      "dish": "참치김치찌개",
+      "youtubeId": "z3IQaaor0PY",
+      "blogs": [
+        { "title": "백종원 김치찌개 맛있게 만드는 방법", "author": "브런치 @ssuujin", "source": "brunch", "url": "https://brunch.co.kr/@ssuujin/33" },
+        { "title": "만개가 공개한 찌개 레시피! 그 중 BEST만 모았다", "author": "만개의레시피", "source": "10000recipe", "url": "https://www.10000recipe.com/recipe/6930196" }
+      ]
+    },
     { "id": "aehobak-bokkeum", "dish": "애호박볶음", "youtubeId": "pEwk5Z5S-4g" },
     { "id": "sogogi-miyeokguk", "dish": "소고기 미역국", "youtubeId": "OYj15IxqKJM" },
     { "id": "so-bulgogi", "dish": "소불고기", "youtubeId": "0tFQaJ3XeVw" },

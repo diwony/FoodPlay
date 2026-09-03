@@ -6,12 +6,15 @@ import {
   formatTimestamp,
   getRecipe,
   relatedRecipes,
+  shortEmbedUrl,
+  shortWatchUrl,
   type VideoFormat,
 } from "@foodplay/core";
 import { useMiniPlayer } from "../lib/useMiniPlayer";
 import { useYouTube } from "../lib/useYouTube";
 import RelatedRail from "../components/RelatedRail";
 import ReceptionBlock from "../components/ReceptionBlock";
+import BlogRail from "../components/BlogRail";
 
 export default function Recipe() {
   const { id = "" } = useParams();
@@ -23,11 +26,18 @@ export default function Recipe() {
     searchParams.get("v") === "short" ? "short" : "long",
   );
   const useShort = fmt === "short" && !!recipe?.short;
-  const video = useShort ? recipe!.short! : recipe?.long;
+  const short = recipe?.short;
+  // 네이버TV 등 비유튜브 숏폼은 iframe 임베드로, 유튜브는 IFrame Player API로 붙인다
+  const naverEmbed = useShort && short ? shortEmbedUrl(short) : null;
+  const ytVideoId = naverEmbed
+    ? ""
+    : useShort
+      ? short?.youtubeId ?? ""
+      : recipe?.long.youtubeId ?? "";
 
-  // 쇼츠(세로 영상)일 땐 미니 플레이어 비활성
+  // 쇼츠(세로 영상)·네이버 임베드일 땐 미니 플레이어 비활성
   const { slotRef, mini, expand } = useMiniPlayer(!useShort);
-  const player = useYouTube(hostRef, video?.youtubeId ?? "");
+  const player = useYouTube(hostRef, ytVideoId);
 
   if (!recipe) {
     return (
@@ -42,6 +52,15 @@ export default function Recipe() {
 
   const related = relatedRecipes(recipe.id);
   const activeChannel = useShort ? recipe.short!.channel : recipe.long.channel;
+  const isNaver = useShort && recipe.short!.provider === "naver";
+  const watchUrl = useShort
+    ? shortWatchUrl(recipe.short!)
+    : `https://www.youtube.com/watch?v=${recipe.long.youtubeId}`;
+  const watchLabel = !useShort
+    ? "유튜브에서 전체 영상 보기"
+    : isNaver
+      ? "네이버TV에서 보기"
+      : "유튜브에서 쇼츠 보기";
 
   const jump = (s: number) => {
     player.seekTo(s);
@@ -57,7 +76,16 @@ export default function Recipe() {
       >
         <div className={"player" + (mini ? " is-mini" : "")}>
           <div className="yt-frame">
-            <div ref={hostRef} />
+            {naverEmbed ? (
+              <iframe
+                src={naverEmbed}
+                title={recipe.title}
+                allow="autoplay; fullscreen"
+                allowFullScreen
+              />
+            ) : (
+              <div ref={hostRef} />
+            )}
           </div>
           {mini && (
             <>
@@ -78,7 +106,7 @@ export default function Recipe() {
         </div>
       </div>
 
-      {/* 롱폼 / 쇼츠 선택 */}
+      {/* 롱폼 / 숏폼 선택 */}
       {recipe.short && (
         <div className="mt-4 inline-flex rounded-full border border-line bg-surface p-0.5 text-[13px] font-semibold">
           {(["long", "short"] as VideoFormat[]).map((f) => (
@@ -91,7 +119,11 @@ export default function Recipe() {
                 (fmt === f ? "bg-ink text-bg" : "text-muted hover:text-ink")
               }
             >
-              {f === "long" ? "롱폼 · 자세히" : "쇼츠 · 빠르게"}
+              {f === "long"
+                ? "롱폼 · 자세히"
+                : isNaver
+                  ? "네이버TV · 빠르게"
+                  : "쇼츠 · 빠르게"}
             </button>
           ))}
         </div>
@@ -101,8 +133,8 @@ export default function Recipe() {
         {recipe.title}
       </h1>
       <p className="mt-1 text-[13px] text-faint">
-        {activeChannel ?? (useShort ? "YouTube Shorts" : "")}
-        {useShort && activeChannel ? " · 쇼츠" : ""}
+        {activeChannel ?? (isNaver ? "네이버TV" : useShort ? "YouTube Shorts" : "")}
+        {useShort && activeChannel ? (isNaver ? " · 네이버TV" : " · 쇼츠") : ""}
       </p>
 
       <div className="mt-3 flex flex-wrap gap-1.5">
@@ -172,15 +204,17 @@ export default function Recipe() {
 
       {recipe.reception && <ReceptionBlock reception={recipe.reception} />}
 
+      {recipe.blogs && recipe.blogs.length > 0 && <BlogRail blogs={recipe.blogs} />}
+
       <RelatedRail recipes={related} format={fmt} />
 
       <a
-        href={`https://www.youtube.com/watch?v=${video!.youtubeId}`}
+        href={watchUrl}
         target="_blank"
         rel="noreferrer"
         className="mt-8 flex items-center justify-center rounded-xl border border-line py-3 text-[14px] font-semibold text-good transition-colors hover:border-good/40"
       >
-        유튜브에서 {useShort ? "쇼츠" : "전체 영상"} 보기 ↗
+        {watchLabel} ↗
       </a>
     </main>
   );
