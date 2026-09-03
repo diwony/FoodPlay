@@ -10,11 +10,13 @@ import {
   matchRecipes,
   parseIngredients,
   parseVibes,
+  vibeLabel,
   type Vibe,
 } from "@foodplay/core";
 import IngredientField from "../components/IngredientField";
 import VibeField from "../components/VibeField";
 import RecipeCard from "../components/RecipeCard";
+import YouTubeRail from "../components/YouTubeRail";
 import { useMyIngredients } from "../lib/useMyIngredients";
 
 export default function Home() {
@@ -77,6 +79,13 @@ export default function Home() {
   const visible = list.slice(0, shown);
   const more = list.length - visible.length;
 
+  // "유튜브에서 더 찾기" 검색어 — 재료가 있으면 재료로, 없으면 고른 기분으로.
+  const youtubeQuery = useMemo(() => {
+    if (ingredients.length > 0) return `${ingredients.join(" ")} 레시피`;
+    if (vibes.length > 0) return `${vibes.map(vibeLabel).join(" ")} 요리 레시피`;
+    return "요즘 인기 집밥 레시피";
+  }, [ingredients, vibes]);
+
   return (
     <main className="mx-auto max-w-5xl px-5">
       {/* Hero */}
@@ -133,9 +142,10 @@ export default function Home() {
         </div>
 
         {active && matches.length === 0 ? (
-          <div className="rounded-[var(--radius-card)] border border-dashed border-line bg-surface/60 px-6 py-16 text-center">
+          <div className="rounded-[var(--radius-card)] border border-dashed border-line bg-surface/60 px-6 py-12 text-center">
             <p className="text-[15px] text-muted">
-              매칭되는 레시피가 없어요. 재료를 더 추가하거나 빼 보세요.
+              큐레이션 레시피 중엔 딱 맞는 게 없어요. 재료를 조절하거나, 아래에서
+              유튜브 관련 영상을 바로 볼 수 있어요.
             </p>
           </div>
         ) : (
@@ -161,6 +171,8 @@ export default function Home() {
             )}
           </>
         )}
+
+        <YouTubeRail query={youtubeQuery} />
       </section>
     </main>
   );

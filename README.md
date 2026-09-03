@@ -18,7 +18,9 @@
   성시경 · 김대석 셰프 · 딸을 위한 레시피 · 정호영 · 하루한끼 …)
 - **웹**은 별도 React(Vite) 앱, **모바일 앱**은 Expo(React Native). 매칭·데이터
   로직은 `@foodplay/core` 패키지로 100% 공유
-- 데이터는 **큐레이션 JSON + Claude 파이프라인** — 앱은 런타임에 외부 API 를 안 부른다
+- 데이터는 **큐레이션 JSON + Claude 파이프라인**이 본체. 그 아래 **"유튜브에서
+  더 찾기"** 칸이 큐레이션 밖의 관련 영상을 유튜브 전체에서 끌어옴 (웹, 선택적
+  YouTube Data API 키 — 없으면 유튜브 검색 링크로 대체)
 
 `prjsingle` 포트폴리오의 개인 프로젝트(PERSONAL PROJECT 카드, 슬롯 04·05 통합).
 
@@ -49,9 +51,9 @@ packages/core/           웹·앱 공유. UI·플랫폼 의존성 없음
   src/lib/               ingredients · match (재료+vibe 랭킹, relatedRecipes) · vibes (parseVibes) · format
 
 apps/web/                Vite React 웹 (주력 화면)
-  src/pages/             Home · Recipe · NotFound
-  src/components/        RecipeCard · IngredientField · VibeField · RelatedRail · ReceptionBlock
-  src/lib/               useYouTube (IFrame API) · useMiniPlayer (스크롤 시 PiP)
+  src/pages/             Home · Recipe · Watch(/yt/:id 유튜브 검색 결과 재생) · NotFound
+  src/components/        RecipeCard · IngredientField · VibeField · RelatedRail · ReceptionBlock · YouTubeRail
+  src/lib/               useYouTube (IFrame API) · useMiniPlayer (스크롤 시 PiP) · youtube / useYouTubeSearch
 
 app/  src/  (루트)       Expo Router 모바일 앱 (+ RN-web 프리뷰)
   app/index.tsx          재료·기분 입력 + 결과
@@ -76,6 +78,20 @@ npm start                                # QR → Expo Go
 
 > iOS 시뮬레이터는 macOS 필요. Windows 에서는 Android 에뮬레이터 + 웹 +
 > Expo Go(실기기) 로 전체 기능 확인 가능.
+
+## 유튜브에서 더 찾기 (선택)
+
+큐레이션 레시피(스텝 타임스탬프)가 본체다. 홈 결과 아래 **"유튜브에서 더 찾기"**
+칸은 큐레이션에 없는 채널까지 유튜브 전체에서 관련 영상을 끌어온다.
+
+- **키 없이 배포된 상태**: 유튜브 검색 결과 페이지로 보내는 링크로 동작한다.
+- **`VITE_YT_API_KEY` 를 넣으면**: 앱 안에서 바로 결과 그리드를 띄우고,
+  누르면 `/yt/:id` 에서 재생한다. 검색 1회 = 쿼터 100units 라 자동 호출은
+  안 하고 버튼을 눌러야 돈다(세션 캐시).
+
+설정: `apps/web/.env.example` 참고 → `apps/web/.env.local` 에 키 저장
+(git 제외). 정적 사이트라 키는 번들에 노출되므로 Google Cloud Console 에서
+HTTP 리퍼러를 `https://diwony.github.io/*` 로 잠근다.
 
 ## 데이터 파이프라인
 

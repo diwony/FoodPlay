@@ -21,6 +21,7 @@ export const VIBE_CHIPS: VibeChip[] = [
   { vibe: "homey", label: "엄마밥 생각", emoji: "🏠" },
   { vibe: "light", label: "가볍게", emoji: "🥗" },
   { vibe: "convenience", label: "편의점·간단 한끼", emoji: "🏪" },
+  { vibe: "side", label: "밀키트·배달 곁들임", emoji: "🧊" },
 ];
 
 const LABEL: Record<Vibe, string> = Object.fromEntries(
@@ -46,6 +47,10 @@ const VIBE_KEYWORDS: Record<Vibe, string[]> = {
   convenience: [
     "편의점", "편스토랑", "정찬", "혼밥", "1인분", "일인분", "야식", "간편식",
     "대충", "한끼", "냉털", "편세권",
+  ],
+  side: [
+    "밀키트", "밀키드", "곁들", "반찬", "배달", "사이드", "한접시", "한 접시",
+    "부족", "허전", "곁들임",
   ],
 };
 

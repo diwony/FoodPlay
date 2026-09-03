@@ -5,6 +5,7 @@ import "./index.css";
 import Layout from "./Layout";
 import Home from "./pages/Home";
 import Recipe from "./pages/Recipe";
+import Watch from "./pages/Watch";
 import NotFound from "./pages/NotFound";
 
 const router = createBrowserRouter(
@@ -14,6 +15,7 @@ const router = createBrowserRouter(
       children: [
         { path: "/", element: <Home /> },
         { path: "/recipe/:id", element: <Recipe /> },
+        { path: "/yt/:id", element: <Watch /> },
         { path: "*", element: <NotFound /> },
       ],
     },

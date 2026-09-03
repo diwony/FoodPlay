@@ -107,7 +107,8 @@
         "quick",
         "homey",
         "guests",
-        "convenience"
+        "convenience",
+        "side"
       ],
       "reception": {
         "summary": "처음 해봤는데도 성공했다는 후기가 많음. 계란 간 맞추기가 포인트라는 의견.",
@@ -357,7 +358,8 @@
       ],
       "vibes": [
         "quick",
-        "homey"
+        "homey",
+        "side"
       ],
       "reception": {
         "summary": "쉽다는 반응과 함께, 데치기 대신 물을 자박하게 넣고 볶는 등 각자 방식을 공유하는 댓글이 많음.",
@@ -424,7 +426,8 @@
       "vibes": [
         "quick",
         "homey",
-        "convenience"
+        "convenience",
+        "side"
       ],
       "long": {
         "youtubeId": "LqgHlHsdFtw",
@@ -481,7 +484,8 @@
       "vibes": [
         "quick",
         "homey",
-        "light"
+        "light",
+        "side"
       ],
       "long": {
         "youtubeId": "pUeyA967Tho",
@@ -534,7 +538,8 @@
       ],
       "vibes": [
         "spicy",
-        "quick"
+        "quick",
+        "side"
       ],
       "reception": {
         "summary": "청양고추가 어묵의 느끼함을 잡아준다는 반응. 고춧가루 대신 청양고추를 써보겠다는 댓글.",
@@ -757,7 +762,8 @@
       "vibes": [
         "quick",
         "homey",
-        "light"
+        "light",
+        "side"
       ],
       "reception": {
         "summary": "마늘·새우젓을 먼저 볶다가 미림 넣고 호박을 넣는 순서가 포인트. 차분하고 간단해서 좋다는 반응.",
@@ -1041,7 +1047,8 @@
       "vibes": [
         "warm",
         "guests",
-        "quick"
+        "quick",
+        "side"
       ],
       "reception": {
         "summary": "오징어·새우 없이 재료가 간소해서 좋다는 반응. 장마철·막걸리 안주로 언급이 많음.",
@@ -1187,7 +1194,8 @@
       "vibes": [
         "quick",
         "light",
-        "homey"
+        "homey",
+        "side"
       ],
       "reception": {
         "summary": "설명만 봐도 맛있어 보인다는 반응. '양배추 요리의 완결판'이라는 댓글.",
@@ -1260,7 +1268,8 @@
       "vibes": [
         "guests",
         "spicy",
-        "hearty"
+        "hearty",
+        "side"
       ],
       "reception": {
         "summary": "고기 없이 김치와 두부만으로 술안주가 된다는 반응. 재료가 적고 깔끔하다는 평.",
