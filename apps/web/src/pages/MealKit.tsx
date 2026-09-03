@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { browseRecipes } from "@foodplay/core";
 import ResultList from "../components/ResultList";
+import { CURATED_YT_IDS } from "../lib/curated";
 
 /** 밀키트 종류 — 큐레이션 매칭보다는 맥락(유튜브 검색어·곁들임 제안)에 쓴다. */
 const KITS = [
@@ -105,6 +106,8 @@ export default function MealKit() {
           </p>
         }
         youtubeQuery={youtubeQuery}
+        youtubeVibes={["side"]}
+        youtubeExclude={CURATED_YT_IDS}
       />
     </main>
   );

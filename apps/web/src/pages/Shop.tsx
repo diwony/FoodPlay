@@ -18,6 +18,7 @@ import {
   type Weather,
 } from "@foodplay/core";
 import ResultList from "../components/ResultList";
+import { CURATED_YT_IDS } from "../lib/curated";
 
 const BUDGETS: Budget[] = ["low", "mid", "high"];
 
@@ -60,6 +61,14 @@ export default function Shop() {
       ? `${bits.join(" ")} 집밥 레시피`
       : "장보기 저녁 메뉴 추천";
   }, [weather, cravings]);
+
+  const youtubeVibes = useMemo(
+    () =>
+      Array.from(
+        new Set([...(weather ? weatherVibes(weather) : []), ...cravings]),
+      ),
+    [weather, cravings],
+  );
 
   return (
     <main className="mx-auto max-w-5xl px-5">
@@ -116,6 +125,8 @@ export default function Shop() {
         meta={picked > 0 ? `조건 ${picked}` : undefined}
         emptyText="조건이 너무 좁아요. 예산이나 맛을 줄여 보세요."
         youtubeQuery={youtubeQuery}
+        youtubeVibes={youtubeVibes}
+        youtubeExclude={CURATED_YT_IDS}
       />
     </main>
   );

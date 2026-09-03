@@ -30,6 +30,9 @@ yarn-error.*
 .DS_Store
 *.pem
 
+# 개발 노트 (작성자용, 비공개)
+DEV.md
+
 # local env files / secrets
 .env
 .env.*

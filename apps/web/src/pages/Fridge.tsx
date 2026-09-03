@@ -11,6 +11,7 @@ import IngredientField from "../components/IngredientField";
 import VibeField from "../components/VibeField";
 import ResultList from "../components/ResultList";
 import { useMyIngredients } from "../lib/useMyIngredients";
+import { CURATED_YT_IDS } from "../lib/curated";
 
 export default function Fridge() {
   const [raw, setRaw] = useState("");
@@ -118,6 +119,9 @@ export default function Fridge() {
         }
         emptyText="매칭되는 레시피가 없어요. 재료를 더하거나 빼고, 아래에서 유튜브도 볼 수 있어요."
         youtubeQuery={youtubeQuery}
+        youtubeIngredients={ingredients}
+        youtubeVibes={vibes}
+        youtubeExclude={CURATED_YT_IDS}
       />
     </main>
   );

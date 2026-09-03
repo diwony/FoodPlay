@@ -41,7 +41,8 @@
     "app:start": "expo start",
     "app:tunnel": "expo start --tunnel",
     "app:update": "eas update --branch preview --message \"preview update\"",
-    "app:build:android": "eas build --platform android --profile preview"
+    "app:build:android": "eas build --platform android --profile preview",
+    "pipeline:youtube": "node pipeline/collect-youtube.mjs"
   },
   "private": true
 }

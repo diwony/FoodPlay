@@ -10,8 +10,11 @@ interface Props {
   meta?: ReactNode;
   /** 카드 스타일: 매칭(재료) / 둘러보기 / 장보기 */
   variant?: "match" | "browse" | "shopping";
-  /** 유튜브 "더 찾기" 검색어. 비우면 칸을 숨긴다. */
+  /** 유튜브 "더 찾기" — 검색어(링크아웃용) + 태그 필터. query 없으면 칸 숨김. */
   youtubeQuery?: string;
+  youtubeIngredients?: string[];
+  youtubeVibes?: string[];
+  youtubeExclude?: string[];
   /** 결과가 0개일 때 문구 */
   emptyText?: string;
   /** 결과 위에 붙일 안내 (선택) */
@@ -27,6 +30,9 @@ export default function ResultList({
   meta,
   variant = "browse",
   youtubeQuery,
+  youtubeIngredients,
+  youtubeVibes,
+  youtubeExclude,
   emptyText = "조건에 맞는 레시피가 없어요. 조건을 바꿔 보세요.",
   note,
 }: Props) {
@@ -74,7 +80,14 @@ export default function ResultList({
         </>
       )}
 
-      {youtubeQuery && <YouTubeRail query={youtubeQuery} />}
+      {youtubeQuery && (
+        <YouTubeRail
+          query={youtubeQuery}
+          ingredients={youtubeIngredients}
+          vibes={youtubeVibes}
+          exclude={youtubeExclude}
+        />
+      )}
     </section>
   );
 }

@@ -8,12 +8,11 @@ ROOT="$(git rev-parse --show-toplevel)"
 
 cd "$ROOT/apps/web"
 
-# 유튜브 실시간 검색 키: apps/web/.env.local 의 VITE_YT_API_KEY 가 있으면
-# 빌드에 박혀 배포본 방문자 전체가 인앱 검색을 쓰게 된다. 없으면 링크아웃 대체.
-if [ -f .env.local ] && grep -q '^VITE_YT_API_KEY=.\+' .env.local; then
-  echo "· YouTube API 키 감지됨 → 방문자 전체가 인앱 검색 사용"
+# "유튜브에서 더 찾기" 풀 확인 (pipeline/collect-youtube.mjs 산출물)
+if [ -f public/youtube-pool.json ]; then
+  echo "· youtube-pool.json $(node -e "process.stdout.write(String(require('./public/youtube-pool.json').videos.length))")개 영상 포함"
 else
-  echo "· YouTube API 키 없음 → '유튜브에서 더 찾기' 는 링크아웃으로 동작"
+  echo "· youtube-pool.json 없음 → node pipeline/collect-youtube.mjs 먼저 실행 권장"
 fi
 
 npm install --no-audit --no-fund
