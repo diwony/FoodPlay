@@ -4,10 +4,12 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 
 const coreRoot = fileURLToPath(new URL("../../packages/core", import.meta.url));
+const repoRoot = fileURLToPath(new URL("../..", import.meta.url));
 
-export default defineConfig({
+// GitHub Pages project site → https://diwony.github.io/FoodPlay/
+export default defineConfig(({ command }) => ({
   plugins: [react(), tailwindcss()],
-  base: process.env.FOODPLAY_BASE ?? "/",
+  base: command === "build" ? "/FoodPlay/" : "/",
   resolve: {
     alias: {
       "@foodplay/core": `${coreRoot}/index.ts`,
@@ -16,6 +18,6 @@ export default defineConfig({
   },
   server: {
     port: 5173,
-    fs: { allow: [fileURLToPath(new URL("../..", import.meta.url))] },
+    fs: { allow: [repoRoot] },
   },
-});
+}));
