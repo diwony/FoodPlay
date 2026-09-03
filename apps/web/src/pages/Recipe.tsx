@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import {
   formatCookTime,
   formatDifficulty,
@@ -15,14 +15,18 @@ import ReceptionBlock from "../components/ReceptionBlock";
 
 export default function Recipe() {
   const { id = "" } = useParams();
+  const [searchParams] = useSearchParams();
   const recipe = getRecipe(id);
   const hostRef = useRef<HTMLDivElement>(null);
-  const { slotRef, mini, expand } = useMiniPlayer();
 
-  const [fmt, setFmt] = useState<VideoFormat>("long");
+  const [fmt, setFmt] = useState<VideoFormat>(
+    searchParams.get("v") === "short" ? "short" : "long",
+  );
   const useShort = fmt === "short" && !!recipe?.short;
   const video = useShort ? recipe!.short! : recipe?.long;
 
+  // 쇼츠(세로 영상)일 땐 미니 플레이어 비활성
+  const { slotRef, mini, expand } = useMiniPlayer(!useShort);
   const player = useYouTube(hostRef, video?.youtubeId ?? "");
 
   if (!recipe) {
@@ -46,8 +50,11 @@ export default function Recipe() {
 
   return (
     <main className="mx-auto max-w-2xl px-5 pb-20">
-      {/* 단일 플레이어 — 스크롤 시 우상단 미니로 (iframe 은 DOM 이동 없음) */}
-      <div ref={slotRef} className="player-slot mt-5">
+      {/* 단일 플레이어 — 롱폼은 스크롤 시 우상단 미니로, 쇼츠는 세로 프레임 */}
+      <div
+        ref={slotRef}
+        className={"player-slot mt-5" + (useShort ? " is-portrait" : "")}
+      >
         <div className={"player" + (mini ? " is-mini" : "")}>
           <div className="yt-frame">
             <div ref={hostRef} />
@@ -71,7 +78,7 @@ export default function Recipe() {
         </div>
       </div>
 
-      {/* 숏폼 / 롱폼 선택 */}
+      {/* 롱폼 / 쇼츠 선택 */}
       {recipe.short && (
         <div className="mt-4 inline-flex rounded-full border border-line bg-surface p-0.5 text-[13px] font-semibold">
           {(["long", "short"] as VideoFormat[]).map((f) => (
@@ -84,7 +91,7 @@ export default function Recipe() {
                 (fmt === f ? "bg-ink text-bg" : "text-muted hover:text-ink")
               }
             >
-              {f === "long" ? "롱폼 · 자세히" : "숏폼 · 1분컷"}
+              {f === "long" ? "롱폼 · 자세히" : "쇼츠 · 빠르게"}
             </button>
           ))}
         </div>
@@ -94,8 +101,8 @@ export default function Recipe() {
         {recipe.title}
       </h1>
       <p className="mt-1 text-[13px] text-faint">
-        {activeChannel}
-        {useShort && " · 숏폼"}
+        {activeChannel ?? (useShort ? "YouTube Shorts" : "")}
+        {useShort && activeChannel ? " · 쇼츠" : ""}
       </p>
 
       <div className="mt-3 flex flex-wrap gap-1.5">
@@ -131,7 +138,7 @@ export default function Recipe() {
         <h2 className="text-[17px] font-bold tracking-tight">조리 순서</h2>
         <p className="mb-3 mt-0.5 text-[13px] text-faint">
           {useShort
-            ? "숏폼은 타임스탬프 없이 한 번에 훑어요. 자세한 구간 이동은 롱폼에서."
+            ? "쇼츠는 타임스탬프 없이 한 번에 훑어요. 구간 이동은 롱폼에서."
             : "시간을 누르면 영상의 그 장면으로 이동해요."}
         </p>
         <ol className="grid gap-2">
@@ -165,7 +172,7 @@ export default function Recipe() {
 
       {recipe.reception && <ReceptionBlock reception={recipe.reception} />}
 
-      <RelatedRail recipes={related} />
+      <RelatedRail recipes={related} format={fmt} />
 
       <a
         href={`https://www.youtube.com/watch?v=${video!.youtubeId}`}
@@ -173,7 +180,7 @@ export default function Recipe() {
         rel="noreferrer"
         className="mt-8 flex items-center justify-center rounded-xl border border-line py-3 text-[14px] font-semibold text-good transition-colors hover:border-good/40"
       >
-        유튜브에서 전체 영상 보기 ↗
+        유튜브에서 {useShort ? "쇼츠" : "전체 영상"} 보기 ↗
       </a>
     </main>
   );

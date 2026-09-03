@@ -8,11 +8,13 @@ import {
 import IngredientField from "../components/IngredientField";
 import VibeField from "../components/VibeField";
 import RecipeCard from "../components/RecipeCard";
+import { useMyIngredients } from "../lib/useMyIngredients";
 
 export default function Home() {
   const [raw, setRaw] = useState("");
   const [vibeText, setVibeText] = useState("");
   const [manualVibes, setManualVibes] = useState<Vibe[]>([]);
+  const myIngredients = useMyIngredients();
 
   // 입력 중 매칭이 매 키 입력마다 돌지 않도록 지연값 사용
   const deferredRaw = useDeferredValue(raw);
@@ -82,6 +84,9 @@ export default function Home() {
           onChange={setRaw}
           selected={selectedSet}
           onToggle={toggleIngredient}
+          myItems={myIngredients.items}
+          onAddMine={myIngredients.add}
+          onRemoveMine={myIngredients.remove}
         />
         <div className="h-px bg-line" />
         <VibeField

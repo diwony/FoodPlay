@@ -49,10 +49,10 @@ export interface LongVideo {
   steps: RecipeStep[];
 }
 
-/** 1분 내외 요약 영상 — 타임스탬프 없이 빠르게 훑는 용도. */
+/** 유튜브 쇼츠(세로 9:16) — 타임스탬프 없이 빠르게 훑는 용도. */
 export interface ShortVideo {
   youtubeId: string;
-  channel: string;
+  channel?: string;
 }
 
 export interface Recipe {

@@ -85,8 +85,26 @@ export function allRecipes(): Recipe[] {
   return database.recipes;
 }
 
+/**
+ * 재료 입력이 없을 때 홈에서 보여줄 "둘러보기" 목록.
+ * 고른 기분(vibe)이 있으면 그에 맞는 순으로, 없으면 전체를 조리시간 순으로.
+ */
+export function browseRecipes(vibes: Vibe[] = []): RecipeMatch[] {
+  const wanted = new Set(vibes);
+  return database.recipes
+    .map((recipe): RecipeMatch => {
+      const matchedVibes = (recipe.vibes ?? []).filter((v) => wanted.has(v));
+      return { recipe, have: [], missing: [], score: 0, matchedVibes };
+    })
+    .sort(
+      (a, b) =>
+        b.matchedVibes.length - a.matchedVibes.length ||
+        a.recipe.cookMinutes - b.recipe.cookMinutes,
+    );
+}
+
 /** 상세 화면의 "추천 영상" — 현재 레시피와 vibe·재료가 겹치는 순으로 */
-export function relatedRecipes(id: string, limit = 6): Recipe[] {
+export function relatedRecipes(id: string, limit = 10): Recipe[] {
   const current = getRecipe(id);
   if (!current) return database.recipes.slice(0, limit);
 

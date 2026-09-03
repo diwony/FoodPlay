@@ -54,6 +54,16 @@
   width: 100%;
   aspect-ratio: 16 / 9;
 }
+/* 쇼츠(세로 9:16) — 화면을 다 먹지 않게 폭을 좁히고 높이를 캡 */
+.player-slot.is-portrait {
+  aspect-ratio: 9 / 16;
+  max-width: min(62vw, 300px);
+  max-height: 68vh;
+  margin-inline: auto;
+}
+.player-slot.is-portrait .player {
+  border-radius: 16px;
+}
 .player {
   position: absolute;
   inset: 0;

@@ -36,8 +36,8 @@ export function validateRecipe(r, index = 0) {
   if (r.short !== undefined) {
     if (!ytId(r.short?.youtubeId))
       e.push(`${at}.short.youtubeId: 유튜브 ID 11자리여야 함 (받은 값: ${r.short?.youtubeId})`);
-    if (typeof r.short?.channel !== "string" || !r.short.channel.trim())
-      e.push(`${at}.short.channel: 비어있지 않은 문자열이어야 함`);
+    if (r.short?.channel !== undefined && typeof r.short.channel !== "string")
+      e.push(`${at}.short.channel: 문자열이어야 함`);
   }
   if (!Number.isInteger(r.cookMinutes) || r.cookMinutes <= 0)
     e.push(`${at}.cookMinutes: 양의 정수여야 함`);

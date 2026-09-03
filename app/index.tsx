@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import RecipeCard from "../src/components/RecipeCard";
 import { matchRecipes, parseIngredients, VIBE_CHIPS, type Vibe } from "@foodplay/core";
 import { CONTENT_MAX_WIDTH, colors, font, radius, spacing } from "../src/theme/theme";
+import { useMyIngredients } from "../src/lib/myIngredients";
 
 const QUICK_ADD = [
   "계란",
@@ -38,10 +39,14 @@ const QUICK_ADD = [
   "밥",
 ];
 
+const QUICK_ADD_SET = new Set(QUICK_ADD);
+
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const [raw, setRaw] = useState("");
   const [vibes, setVibes] = useState<Vibe[]>([]);
+  const [draft, setDraft] = useState("");
+  const myIngredients = useMyIngredients();
 
   const ingredients = useMemo(() => parseIngredients(raw), [raw]);
   const matches = useMemo(
@@ -58,6 +63,19 @@ export default function HomeScreen() {
     );
     Keyboard.dismiss();
   };
+
+  const submitDraft = () => {
+    const name = draft.trim();
+    if (!name) return;
+    myIngredients.add(name);
+    if (!ingredients.includes(name)) {
+      setRaw([...ingredients, name].join(", "));
+    }
+    setDraft("");
+    Keyboard.dismiss();
+  };
+
+  const myChips = myIngredients.items.filter((i) => !QUICK_ADD_SET.has(i));
 
   const toggleVibe = (v: Vibe) => {
     setVibes((prev) =>
@@ -114,6 +132,72 @@ export default function HomeScreen() {
                   </Pressable>
                 );
               })}
+            </View>
+
+            <View style={styles.mineBlock}>
+              <Text style={styles.vibeTitle}>내가 자주 쓰는 재료</Text>
+              <View style={styles.quickWrap}>
+                {myChips.map((item) => {
+                  const active = ingredients.includes(item);
+                  return (
+                    <View
+                      key={item}
+                      style={[styles.mineChip, active && styles.mineChipActive]}
+                    >
+                      <Pressable
+                        onPress={() => toggleQuick(item)}
+                        accessibilityRole="button"
+                        accessibilityState={{ selected: active }}
+                      >
+                        <Text
+                          style={[
+                            styles.quickText,
+                            active && styles.quickTextActive,
+                          ]}
+                        >
+                          {active ? "✓ " : "+ "}
+                          {item}
+                        </Text>
+                      </Pressable>
+                      <Pressable
+                        onPress={() => myIngredients.remove(item)}
+                        accessibilityRole="button"
+                        accessibilityLabel={`${item} 삭제`}
+                        hitSlop={8}
+                      >
+                        <Text
+                          style={[
+                            styles.mineRemove,
+                            active && styles.quickTextActive,
+                          ]}
+                        >
+                          ×
+                        </Text>
+                      </Pressable>
+                    </View>
+                  );
+                })}
+                <View style={styles.mineAdd}>
+                  <TextInput
+                    value={draft}
+                    onChangeText={setDraft}
+                    onSubmitEditing={submitDraft}
+                    placeholder="직접 추가"
+                    placeholderTextColor={colors.textMuted}
+                    style={styles.mineAddInput}
+                    returnKeyType="done"
+                    accessibilityLabel="자주 쓰는 재료 추가"
+                  />
+                  <Pressable
+                    onPress={submitDraft}
+                    accessibilityRole="button"
+                    accessibilityLabel="추가"
+                    hitSlop={8}
+                  >
+                    <Text style={styles.mineAddPlus}>＋</Text>
+                  </Pressable>
+                </View>
+              </View>
             </View>
 
             <View style={styles.vibeBlock}>
@@ -204,6 +288,39 @@ const styles = StyleSheet.create({
   quickText: { fontSize: font.small, color: colors.text, fontWeight: "600" },
   quickTextActive: { color: colors.primaryText },
   vibeBlock: { gap: spacing(2) },
+  mineBlock: { gap: spacing(2) },
+  mineChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing(1.5),
+    paddingVertical: spacing(2),
+    paddingHorizontal: spacing(3),
+    borderRadius: radius.pill,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  mineChipActive: { backgroundColor: colors.accent, borderColor: colors.accent },
+  mineRemove: { fontSize: font.body, color: colors.textMuted, fontWeight: "700" },
+  mineAdd: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing(1),
+    paddingVertical: spacing(1),
+    paddingHorizontal: spacing(2.5),
+    borderRadius: radius.pill,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderStyle: "dashed",
+  },
+  mineAddInput: {
+    minWidth: 72,
+    fontSize: font.small,
+    color: colors.text,
+    paddingVertical: spacing(1),
+  },
+  mineAddPlus: { fontSize: font.body, color: colors.textMuted, fontWeight: "700" },
   vibeTitle: { fontSize: font.small, fontWeight: "800", color: colors.textMuted },
   vibe: {
     paddingVertical: spacing(2),
