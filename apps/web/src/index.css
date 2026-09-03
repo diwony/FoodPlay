@@ -54,11 +54,12 @@
   width: 100%;
   aspect-ratio: 16 / 9;
 }
-/* 쇼츠(세로 9:16) — 화면을 다 먹지 않게 폭을 좁히고 높이를 캡 */
+/* 쇼츠(세로 9:16) — 폭을 좁혀 화면을 다 먹지 않게. vw 는 일부 환경에서
+   0 으로 계산돼 플레이어가 사라지므로 px 고정폭 + max-width 100% 로 처리 */
 .player-slot.is-portrait {
   aspect-ratio: 9 / 16;
-  max-width: min(62vw, 300px);
-  max-height: 68vh;
+  width: 280px;
+  max-width: 100%;
   margin-inline: auto;
 }
 .player-slot.is-portrait .player {
