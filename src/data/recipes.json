@@ -1,0 +1,142 @@
+{
+  "generatedAt": "2026-09-03",
+  "_note": "시드(seed) 데이터. 영상 ID는 실제 유튜브 영상이지만 각 스텝의 start 초는 파이프라인 검수 전의 예시 값이다. pipeline/README.md 참고.",
+  "recipes": [
+    {
+      "id": "kimchi-fried-rice",
+      "title": "백종원 김치볶음밥",
+      "youtubeId": "aDQIZDk1hAM",
+      "channel": "집밥백선생",
+      "cookMinutes": 15,
+      "difficulty": "easy",
+      "coreIngredients": ["밥", "김치", "대파", "계란"],
+      "extraIngredients": ["식용유", "간장", "참기름", "설탕", "김가루"],
+      "steps": [
+        { "order": 1, "text": "김치를 잘게 썰고 신 김치면 설탕 한 꼬집을 넣어 볶을 준비를 한다.", "start": 35 },
+        { "order": 2, "text": "팬에 식용유를 넉넉히 두르고 대파를 넣어 파기름을 낸다.", "start": 78 },
+        { "order": 3, "text": "김치를 넣고 갈색이 돌 때까지 충분히 볶는다.", "start": 132 },
+        { "order": 4, "text": "찬밥을 넣고 김치와 고루 섞으며 눌러가며 볶는다.", "start": 190 },
+        { "order": 5, "text": "간장을 팬 가장자리에 둘러 불맛을 내고 참기름으로 마무리한다.", "start": 244 },
+        { "order": 6, "text": "접시에 담고 계란프라이와 김가루를 올린다.", "start": 292 }
+      ]
+    },
+    {
+      "id": "gyeran-mari",
+      "title": "백종원 달걀말이",
+      "youtubeId": "1arrUjCHgm8",
+      "channel": "집밥백선생",
+      "cookMinutes": 10,
+      "difficulty": "easy",
+      "coreIngredients": ["계란", "대파", "당근"],
+      "extraIngredients": ["식용유", "소금", "맛술"],
+      "steps": [
+        { "order": 1, "text": "계란을 풀고 소금으로 간한 뒤 잘게 다진 대파와 당근을 섞는다.", "start": 28 },
+        { "order": 2, "text": "체에 한 번 걸러 알끈을 제거하면 결이 곱게 나온다.", "start": 71 },
+        { "order": 3, "text": "약불로 달군 팬에 기름을 얇게 두르고 계란물을 한 국자 붓는다.", "start": 110 },
+        { "order": 4, "text": "가장자리가 익으면 한쪽으로 말고, 빈 자리에 계란물을 다시 붓는다.", "start": 158 },
+        { "order": 5, "text": "여러 번 반복해 도톰하게 말고 김발이나 키친타월로 모양을 잡는다.", "start": 214 },
+        { "order": 6, "text": "한 김 식힌 뒤 먹기 좋게 썬다.", "start": 268 }
+      ]
+    },
+    {
+      "id": "doenjang-jjigae-beef",
+      "title": "백종원 소고기 된장찌개",
+      "youtubeId": "3-xgRrEX-sQ",
+      "channel": "백종원 PAIK JONG WON",
+      "cookMinutes": 25,
+      "difficulty": "medium",
+      "coreIngredients": ["소고기", "된장", "애호박", "양파", "두부", "대파"],
+      "extraIngredients": ["고춧가루", "다진마늘", "멸치육수", "청양고추"],
+      "steps": [
+        { "order": 1, "text": "냄비에 소고기를 넣고 볶아 겉면을 익힌다.", "start": 45 },
+        { "order": 2, "text": "물(또는 멸치육수)을 붓고 된장을 체에 풀어 넣는다.", "start": 96 },
+        { "order": 3, "text": "양파와 애호박을 큼직하게 썰어 넣고 끓인다.", "start": 152 },
+        { "order": 4, "text": "다진 마늘과 고춧가루를 넣어 국물 색과 감칠맛을 낸다.", "start": 210 },
+        { "order": 5, "text": "두부를 넣고 한소끔 더 끓인다.", "start": 265 },
+        { "order": 6, "text": "대파와 청양고추를 넣고 불을 끈다.", "start": 312 }
+      ]
+    },
+    {
+      "id": "jeyuk-bokkeum",
+      "title": "백종원 제육볶음",
+      "youtubeId": "4ioPBiTWm3M",
+      "channel": "백종원 PAIK JONG WON",
+      "cookMinutes": 20,
+      "difficulty": "medium",
+      "coreIngredients": ["돼지고기", "양파", "대파", "고추장"],
+      "extraIngredients": ["고춧가루", "간장", "설탕", "다진마늘", "생강", "식용유"],
+      "steps": [
+        { "order": 1, "text": "고추장, 고춧가루, 간장, 설탕, 다진 마늘, 생강으로 양념장을 만든다.", "start": 40 },
+        { "order": 2, "text": "얇게 썬 돼지고기에 양념장을 넣고 30분 재운다.", "start": 105 },
+        { "order": 3, "text": "센 불로 달군 팬에 식용유를 두르고 고기를 펴서 볶는다.", "start": 168 },
+        { "order": 4, "text": "고기가 반쯤 익으면 양파를 넣고 함께 볶는다.", "start": 226 },
+        { "order": 5, "text": "물기가 졸아들면 대파를 넣고 불맛이 나게 강불에서 마무리한다.", "start": 288 }
+      ]
+    },
+    {
+      "id": "gamja-chae-bokkeum",
+      "title": "백종원 감자채볶음",
+      "youtubeId": "LTcCF262210",
+      "channel": "더보리 THE BOB",
+      "cookMinutes": 15,
+      "difficulty": "easy",
+      "coreIngredients": ["감자", "양파", "당근"],
+      "extraIngredients": ["식용유", "소금", "쪽파"],
+      "steps": [
+        { "order": 1, "text": "감자를 채 썰어 찬물에 헹궈 전분기를 뺀 뒤 물기를 뺀다.", "start": 22 },
+        { "order": 2, "text": "팬에 식용유를 두르고 양파를 먼저 볶아 단맛을 낸다.", "start": 63 },
+        { "order": 3, "text": "감자채와 당근채를 넣고 소금으로 간하며 볶는다.", "start": 108 },
+        { "order": 4, "text": "감자가 투명해지고 익으면 쪽파를 넣고 불을 끈다.", "start": 156 }
+      ]
+    },
+    {
+      "id": "eomuk-bokkeum",
+      "title": "백종원 간장 어묵볶음",
+      "youtubeId": "LqgHlHsdFtw",
+      "channel": "백종원 PAIK JONG WON",
+      "cookMinutes": 10,
+      "difficulty": "easy",
+      "coreIngredients": ["어묵", "양파", "대파", "당근"],
+      "extraIngredients": ["간장", "설탕", "식용유", "물엿", "다진마늘"],
+      "steps": [
+        { "order": 1, "text": "어묵을 먹기 좋은 크기로 썰고 양파, 당근은 채 썬다.", "start": 30 },
+        { "order": 2, "text": "팬에 기름을 두르고 양파와 당근을 볶는다.", "start": 74 },
+        { "order": 3, "text": "어묵을 넣고 간장, 설탕, 다진 마늘을 넣어 볶는다.", "start": 120 },
+        { "order": 4, "text": "물을 반 컵 넣어 조리듯 볶아 타지 않게 한다.", "start": 168 },
+        { "order": 5, "text": "물엿을 넣어 윤기를 내고 대파를 넣어 마무리한다.", "start": 210 }
+      ]
+    },
+    {
+      "id": "kongnamul-muchim",
+      "title": "백종원 콩나물무침",
+      "youtubeId": "pUeyA967Tho",
+      "channel": "집밥백선생",
+      "cookMinutes": 15,
+      "difficulty": "easy",
+      "coreIngredients": ["콩나물", "대파"],
+      "extraIngredients": ["소금", "다진마늘", "참기름", "깨소금", "고춧가루"],
+      "steps": [
+        { "order": 1, "text": "콩나물을 씻어 냄비에 넣고 물과 소금을 약간 넣어 뚜껑 덮고 삶는다.", "start": 26 },
+        { "order": 2, "text": "김이 오르면 4~5분 뒤 불을 끄고 찬물에 헹궈 물기를 뺀다.", "start": 78 },
+        { "order": 3, "text": "볼에 콩나물, 다진 마늘, 소금, 송송 썬 대파를 넣는다.", "start": 132 },
+        { "order": 4, "text": "참기름과 깨소금을 넣고 조물조물 무친다. 매콤하게는 고춧가루를 추가한다.", "start": 180 }
+      ]
+    },
+    {
+      "id": "eomuk-bokkeum-spicy",
+      "title": "백종원 매콤 어묵볶음",
+      "youtubeId": "GdTe272fmbA",
+      "channel": "백종원 PAIK JONG WON",
+      "cookMinutes": 12,
+      "difficulty": "easy",
+      "coreIngredients": ["어묵", "양파", "청양고추", "대파"],
+      "extraIngredients": ["간장", "고춧가루", "설탕", "식용유", "다진마늘"],
+      "steps": [
+        { "order": 1, "text": "어묵은 데쳐 기름기를 빼고 양파, 청양고추는 어슷하게 썬다.", "start": 33 },
+        { "order": 2, "text": "팬에 기름을 두르고 다진 마늘과 고춧가루를 약불에 볶아 고추기름을 낸다.", "start": 82 },
+        { "order": 3, "text": "양파를 넣어 볶다가 어묵을 넣고 간장, 설탕으로 간한다.", "start": 138 },
+        { "order": 4, "text": "청양고추와 대파를 넣고 센 불에 빠르게 볶아 마무리한다.", "start": 192 }
+      ]
+    }
+  ]
+}

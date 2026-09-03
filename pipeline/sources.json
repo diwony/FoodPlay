@@ -1,0 +1,13 @@
+{
+  "$comment": "큐레이션 파이프라인 입력. 각 항목은 사람이 고른 '좋은 영상' 하나다. build.mjs 가 이 목록을 읽어 recipes.json 을 생성한다.",
+  "sources": [
+    { "id": "kimchi-fried-rice", "dish": "김치볶음밥", "youtubeId": "aDQIZDk1hAM" },
+    { "id": "gyeran-mari", "dish": "달걀말이", "youtubeId": "1arrUjCHgm8" },
+    { "id": "doenjang-jjigae-beef", "dish": "소고기 된장찌개", "youtubeId": "3-xgRrEX-sQ" },
+    { "id": "jeyuk-bokkeum", "dish": "제육볶음", "youtubeId": "4ioPBiTWm3M" },
+    { "id": "gamja-chae-bokkeum", "dish": "감자채볶음", "youtubeId": "LTcCF262210" },
+    { "id": "eomuk-bokkeum", "dish": "간장 어묵볶음", "youtubeId": "LqgHlHsdFtw" },
+    { "id": "kongnamul-muchim", "dish": "콩나물무침", "youtubeId": "pUeyA967Tho" },
+    { "id": "eomuk-bokkeum-spicy", "dish": "매콤 어묵볶음", "youtubeId": "GdTe272fmbA" }
+  ]
+}
