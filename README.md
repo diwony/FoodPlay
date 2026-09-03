@@ -19,7 +19,7 @@
 - **웹**은 별도 React(Vite) 앱, **모바일 앱**은 Expo(React Native). 매칭·데이터
   로직은 `@foodplay/core` 패키지로 100% 공유
 
-`prjsingle` 포트폴리오의 개인 프로젝트(PERSONAL PROJECT 카드, 슬롯 04·05 통합).
+1인 개인 프로젝트 — 기획 · 디자인 · 프론트엔드 · 데이터 파이프라인.
 
 ## 바로 실행 (설치 불필요)
 
