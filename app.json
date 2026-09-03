@@ -32,9 +32,15 @@
       "expo-font",
       "expo-splash-screen"
     ],
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "enabled": true,
+      "fallbackToCacheTimeout": 0
+    },
     "experiments": {
-      "typedRoutes": true,
-      "baseUrl": "/FoodPlay"
+      "typedRoutes": true
     }
   }
 }
