@@ -10,6 +10,14 @@
 
 `prjsingle` 포트폴리오의 개인 프로젝트(PERSONAL PROJECT 카드, 슬롯 04·05 통합).
 
+## 바로 실행 (설치 불필요)
+
+**웹 데모: https://diwony.github.io/FoodPlay/** — 폰 브라우저에서 바로 열림. Expo Go 안 받아도 됨.
+
+<img src="docs/qr.png" alt="FoodPlay 웹 데모 QR" width="220" />
+
+재배포: `npm run deploy:web` (웹 빌드 → `gh-pages` 브랜치 push).
+
 ## 스택
 
 | 영역 | 선택 |

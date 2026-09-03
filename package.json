@@ -23,6 +23,7 @@
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.123.0",
     "@types/react": "~19.2.2",
+    "qrcode": "^1.5.4",
     "typescript": "~6.0.3"
   },
   "scripts": {
@@ -32,7 +33,8 @@
     "build:web": "expo export --platform web",
     "typecheck": "tsc --noEmit",
     "pipeline": "node pipeline/build.mjs",
-    "pipeline:check": "node pipeline/validate.mjs"
+    "pipeline:check": "node pipeline/validate.mjs",
+    "deploy:web": "bash scripts/deploy-web.sh"
   },
   "private": true
 }
