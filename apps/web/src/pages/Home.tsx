@@ -1,5 +1,6 @@
 import { useCallback, useDeferredValue, useMemo, useState } from "react";
 import {
+  browseRecipes,
   matchRecipes,
   parseIngredients,
   parseVibes,
@@ -40,6 +41,7 @@ export default function Home() {
     () => matchRecipes(ingredients, { vibes }),
     [ingredients, vibes],
   );
+  const browse = useMemo(() => browseRecipes(vibes), [vibes]);
 
   const toggleIngredient = useCallback((item: string) => {
     setRaw((cur) => {
@@ -102,7 +104,9 @@ export default function Home() {
       <section className="py-10">
         <div className="mb-4 flex items-baseline justify-between">
           <h2 className="text-[19px] font-bold tracking-tight">
-            {active ? `만들 수 있는 요리 ${matches.length}` : "이런 요리들이 있어요"}
+            {active
+              ? `만들 수 있는 요리 ${matches.length}`
+              : `이런 요리들이 있어요 · ${browse.length}`}
           </h2>
           {active && (
             <span className="text-[12px] text-faint">
@@ -112,18 +116,21 @@ export default function Home() {
           )}
         </div>
 
-        {matches.length === 0 ? (
+        {active && matches.length === 0 ? (
           <div className="rounded-[var(--radius-card)] border border-dashed border-line bg-surface/60 px-6 py-16 text-center">
             <p className="text-[15px] text-muted">
-              {ingredients.length === 0
-                ? "위에 재료를 적거나 골라보세요. 1개만 골라도 추천이 떠요."
-                : "매칭되는 레시피가 없어요. 재료를 더 추가해 보세요."}
+              매칭되는 레시피가 없어요. 재료를 더 추가하거나 빼 보세요.
             </p>
           </div>
         ) : (
           <div className="grid gap-3 sm:grid-cols-2">
-            {matches.map((m, i) => (
-              <RecipeCard key={m.recipe.id} match={m} rank={i + 1} />
+            {(active ? matches : browse).map((m, i) => (
+              <RecipeCard
+                key={m.recipe.id}
+                match={m}
+                rank={i + 1}
+                browse={!active}
+              />
             ))}
           </div>
         )}

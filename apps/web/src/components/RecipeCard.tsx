@@ -7,7 +7,14 @@ import {
   type RecipeMatch,
 } from "@foodplay/core";
 
-function RecipeCardBase({ match, rank }: { match: RecipeMatch; rank: number }) {
+interface Props {
+  match: RecipeMatch;
+  rank: number;
+  /** 홈 "둘러보기" 모드 — 재료 매칭 정보 없이 레시피만 보여준다 */
+  browse?: boolean;
+}
+
+function RecipeCardBase({ match, rank, browse = false }: Props) {
   const { recipe, have, missing, score, matchedVibes } = match;
   const pct = Math.round(score * 100);
 
@@ -28,9 +35,11 @@ function RecipeCardBase({ match, rank }: { match: RecipeMatch; rank: number }) {
             숏폼
           </span>
         )}
-        <span className="absolute left-1.5 top-1.5 rounded-md bg-ink/85 px-1.5 py-0.5 text-[10px] font-bold tabular text-white">
-          {rank <= 3 ? `TOP ${rank}` : `${pct}%`}
-        </span>
+        {!browse && (
+          <span className="absolute left-1.5 top-1.5 rounded-md bg-ink/85 px-1.5 py-0.5 text-[10px] font-bold tabular text-white">
+            {rank <= 3 ? `TOP ${rank}` : `${pct}%`}
+          </span>
+        )}
       </div>
 
       <div className="min-w-0 py-0.5">
@@ -42,36 +51,50 @@ function RecipeCardBase({ match, rank }: { match: RecipeMatch; rank: number }) {
           {formatDifficulty(recipe.difficulty)}
         </p>
 
-        <div className="mt-2 flex flex-wrap gap-1">
-          {have.map((h) => (
-            <span
-              key={h}
-              className="rounded-full bg-good-soft px-2 py-0.5 text-[11px] font-semibold text-good"
-            >
-              {h}
-            </span>
-          ))}
-          {missing.slice(0, 3).map((m) => (
-            <span
-              key={m}
-              className="rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-semibold text-accent"
-            >
-              +{m}
-            </span>
-          ))}
-        </div>
+        {browse ? (
+          <p className="mt-2 text-[12px] font-semibold text-muted">
+            {recipe.coreIngredients.slice(0, 4).join(" · ")}
+            {matchedVibes.length > 0 && (
+              <span className="text-good">
+                {"  "}
+                {matchedVibes.map((v) => `#${vibeLabel(v)}`).join(" ")}
+              </span>
+            )}
+          </p>
+        ) : (
+          <>
+            <div className="mt-2 flex flex-wrap gap-1">
+              {have.map((h) => (
+                <span
+                  key={h}
+                  className="rounded-full bg-good-soft px-2 py-0.5 text-[11px] font-semibold text-good"
+                >
+                  {h}
+                </span>
+              ))}
+              {missing.slice(0, 3).map((m) => (
+                <span
+                  key={m}
+                  className="rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-semibold text-accent"
+                >
+                  +{m}
+                </span>
+              ))}
+            </div>
 
-        <p className="mt-2 text-[12px] font-semibold text-muted">
-          {missing.length === 0
-            ? "지금 재료로 바로 가능"
-            : `${missing.length}개만 더 있으면 완성`}
-          {matchedVibes.length > 0 && (
-            <span className="text-good">
-              {"  "}
-              {matchedVibes.map((v) => `#${vibeLabel(v)}`).join(" ")}
-            </span>
-          )}
-        </p>
+            <p className="mt-2 text-[12px] font-semibold text-muted">
+              {missing.length === 0
+                ? "지금 재료로 바로 가능"
+                : `${missing.length}개만 더 있으면 완성`}
+              {matchedVibes.length > 0 && (
+                <span className="text-good">
+                  {"  "}
+                  {matchedVibes.map((v) => `#${vibeLabel(v)}`).join(" ")}
+                </span>
+              )}
+            </p>
+          </>
+        )}
       </div>
     </Link>
   );
