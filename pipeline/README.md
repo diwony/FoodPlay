@@ -21,14 +21,32 @@
 sources.json              사람이 고른 영상 목록 (dish + youtubeId)
    │
    ├─ transcripts/<id>.txt   "[초] 텍스트" 형식 자막 (수동 또는 스크립트 수집)
+   ├─ comments/<id>.json     상위 댓글 (fetch-comments.mjs 가 수집)
    │
    ▼
 build.mjs  ──▶  Claude (claude-sonnet-5)  ──▶  Recipe JSON
-   │                                              │
+   │                                              │  · steps + 타임스탬프
+   │                                              │  · coreIngredients / extraIngredients
+   │                                              │  · vibes (기분·상황 태그)
+   │                                              │  · reception (댓글 요약 + 대표 인용)
    │                                     validate.mjs (스키마 + 타임스탬프 단조성)
    ▼
 src/data/recipes.json
 ```
+
+## 댓글 반응 (`reception`)
+
+`fetch-comments.mjs` 가 유튜브 공개 댓글을 가져온다. Data API 키가 필요 없는
+비공식 innertube 엔드포인트를 쓴다(운영 시 YouTube Data API `commentThreads`
+로 교체 권장).
+
+```bash
+npm run pipeline:comments          # sources.json 전체 → pipeline/comments/<id>.json
+node pipeline/fetch-comments.mjs aDQIZDk1hAM   # 특정 영상만
+```
+
+`build.mjs` 는 이 댓글을 Claude 에 넘겨 `reception: { summary, quotes }` 를
+만든다. 인용문은 원문 그대로 짧게, "유튜브 공개 댓글에서 발췌"로 표기한다.
 
 ## 명령
 

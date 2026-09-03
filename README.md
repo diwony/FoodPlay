@@ -3,8 +3,12 @@
 냉장고에 있는 재료를 입력하면, 만들 수 있는 **유튜브 요리 영상**을 찾아주고
 조리 스텝마다 붙은 **타임스탬프를 누르면 영상의 그 장면으로 바로 이동**하는 앱.
 
-- 영상은 화면 위, 조리 스텝 텍스트는 그 아래
-- 각 레시피의 **추가로 필요한 재료 · 조리 시간 · 난이도** 표시
+- 영상은 화면 위, 조리 스텝 텍스트는 그 아래 — 스크롤하면 영상이 **우상단 미니
+  플레이어(PiP)** 로 축소·고정되어 계속 보임
+- 각 레시피의 **추가로 필요한 재료 · 조리 시간 · 난이도**, **유튜브 댓글 반응
+  요약**, **추천 영상 가로 캐러셀** 표시
+- 냉장고 재료(1개만 골라도 매칭) + **오늘 기분·상황 키워드**(간단하게 / 배고픔 /
+  꿉꿉·으슬으슬 / 스트레스·매운거 / 집들이 / 엄마밥 …)로 맞춤 추천
 - **웹 + 모바일 앱을 한 코드베이스**에서 (Expo Router). 로직은 100% 공유
 - 데이터는 **큐레이션 JSON + Claude 파이프라인** — 앱은 런타임에 외부 API 를 안 부른다
 
@@ -36,11 +40,11 @@ app/                     Expo Router 화면 (웹/앱 공용)
   index.tsx              재료 입력 + 매칭 결과
   recipe/[id].tsx        영상(위) + 스텝·타임스탬프(아래) + 재료/시간/난이도
 src/
-  data/                  recipes.json + 타입
-  lib/                   ingredients(정규화) · match(랭킹) · format — 순수 함수, 공유
-  components/            YouTubePlayer(.tsx=웹 / .native.tsx=앱) · RecipeCard · Chip · MetaRow
+  data/                  recipes.json + 타입 (Recipe · Vibe · Reception)
+  lib/                   ingredients(정규화) · match(재료+vibe 랭킹, relatedRecipes) · vibes · format — 순수 함수, 공유
+  components/            YouTubePlayer(.tsx=웹 / .native.tsx=앱) · RecipeCard · RelatedVideos · Reception · Chip · MetaRow
   theme/                 디자인 토큰 (모바일 우선)
-pipeline/                sources.json → Claude → recipes.json (README 참고)
+pipeline/                sources.json + 자막 + 댓글 → Claude → recipes.json (README 참고)
 ```
 
 ### 화면 로직 공유 방식

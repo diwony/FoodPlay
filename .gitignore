@@ -39,3 +39,6 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# pipeline fetch cache
+pipeline/comments/

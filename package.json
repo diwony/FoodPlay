@@ -34,7 +34,8 @@
     "typecheck": "tsc --noEmit",
     "pipeline": "node pipeline/build.mjs",
     "pipeline:check": "node pipeline/validate.mjs",
-    "deploy:web": "bash scripts/deploy-web.sh"
+    "deploy:web": "bash scripts/deploy-web.sh",
+    "pipeline:comments": "node pipeline/fetch-comments.mjs --all"
   },
   "private": true
 }

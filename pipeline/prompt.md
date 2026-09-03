@@ -18,6 +18,12 @@
 - 모든 텍스트는 한국어. 재료명은 공백 없는 표준 명사(예: `대파`, `애호박`).
 - `difficulty` 는 `easy` | `medium` | `hard`.
 - 스텝은 4~7개로 요약한다.
+- `vibes` 는 다음에서 0~3개: `quick`(간단) · `hearty`(든든/배고픔) ·
+  `warm`(뜨끈/추운날) · `spicy`(매콤/스트레스) · `guests`(집들이·손님상) ·
+  `homey`(엄마밥·집밥) · `light`(가볍게).
+- `reception` 은 제공된 댓글이 있을 때만. `summary` 는 한 줄 총평,
+  `quotes` 는 대표 댓글 2~3개(원문 그대로, 길면 …로 줄임, `likes` 포함).
+  칭찬/불만/팁을 균형 있게 고른다.
 
 ## User (조립됨)
 
@@ -42,6 +48,11 @@ youtubeId: {{youtubeId}}
   "difficulty": "easy",
   "coreIngredients": ["…"],
   "extraIngredients": ["…"],
+  "vibes": ["quick", "homey"],
+  "reception": {
+    "summary": "…",
+    "quotes": [{ "text": "…", "likes": 12 }]
+  },
   "steps": [
     { "order": 1, "text": "…", "start": 35 }
   ]
