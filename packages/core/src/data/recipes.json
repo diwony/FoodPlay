@@ -213,76 +213,76 @@
     },
     {
       "id": "chamchi-kimchi-jjigae",
-      "title": "참치김치찌개 7분 완성",
-      "youtubeId": "2ebjEWk4E4I",
-      "channel": "이 남자의 cook",
-      "cookMinutes": 12,
+      "title": "참치김치찌개 황금레시피",
+      "youtubeId": "z3IQaaor0PY",
+      "channel": "자취요리신 simple cooking",
+      "cookMinutes": 15,
       "difficulty": "easy",
       "reception": {
-        "summary": "설명이 친절하고(불 세기까지) 재미있다는 반응. 참치는 마지막에 넣으라는 팁이 인상적이라는 댓글.",
+        "summary": "'김치를 충분히 볶은 다음 물을 넣어야 맛있다'는 핵심 팁에 공감. 신 김치·식초 활용 댓글이 많음.",
         "quotes": [
-          { "text": "이 채널을 좋아하는 이유: 불 세기까지 알려줌", "likes": 34 },
-          { "text": "지금 참치를 넣으면 나중에 명탐정이 와도 찾을 수 없습니다 ㅋㅋㅋ", "likes": 47 }
+          { "text": "김치를 덜 볶은 상태에서 물 넣으면 맛없어요. 김치를 충분히 볶자", "likes": 133 },
+          { "text": "기름에 볶는 건 항상 옳습니다. 이거 명언 ㅋㅋ", "likes": 7 }
         ]
       },
       "coreIngredients": ["김치", "참치캔", "양파", "대파", "두부"],
       "extraIngredients": ["고춧가루", "다진마늘", "국간장", "설탕"],
       "vibes": ["warm", "spicy", "hearty", "quick"],
       "steps": [
-        { "order": 1, "text": "냄비에 신 김치를 넣고 참기름에 볶아 익힌다.", "start": 25 },
-        { "order": 2, "text": "물을 붓고 고춧가루, 다진 마늘, 설탕을 넣어 끓인다.", "start": 62 },
-        { "order": 3, "text": "양파와 두부를 넣고 중불에서 끓인다.", "start": 108 },
-        { "order": 4, "text": "국간장으로 간을 맞춘다.", "start": 140 },
-        { "order": 5, "text": "불을 끄기 직전 참치와 대파를 넣는다. 참치는 오래 끓이지 않는다.", "start": 165 }
+        { "order": 1, "text": "냄비에 신 김치를 넣고 기름에 갈색이 돌 때까지 충분히 볶는다.", "start": 22 },
+        { "order": 2, "text": "물을 붓고 고춧가루, 다진 마늘, 설탕을 넣어 끓인다.", "start": 68 },
+        { "order": 3, "text": "양파와 두부를 넣고 중불에서 끓인다.", "start": 120 },
+        { "order": 4, "text": "국간장으로 간을 맞춘다.", "start": 158 },
+        { "order": 5, "text": "불을 끄기 직전 참치와 대파를 넣는다. 참치는 오래 끓이지 않는다.", "start": 188 }
       ]
     },
     {
       "id": "aehobak-bokkeum",
       "title": "애호박 새우젓볶음",
-      "youtubeId": "DbpuzpXZCDg",
-      "channel": "김대석 셰프TV",
+      "youtubeId": "pEwk5Z5S-4g",
+      "channel": "엄마의손맛",
       "cookMinutes": 10,
       "difficulty": "easy",
       "reception": {
-        "summary": "'엄마가 새우젓 넣어 볶아주던 그 맛'이라는 반응. 설명이 친절하다는 댓글이 많음.",
+        "summary": "마늘·새우젓을 먼저 볶다가 미림 넣고 호박을 넣는 순서가 포인트. 차분하고 간단해서 좋다는 반응.",
         "quotes": [
-          { "text": "친정 엄마가 늘 새우젓을 넣어 애호박을 볶아 주셨어요~ 낼 저녁에 해먹을래요", "likes": 12 },
-          { "text": "친절한 요리 설명 감사합니다! 행복한 하루 되세요!!", "likes": 20 }
+          { "text": "마늘과 새우젓 먼저 볶다가 미림 넣고 호박 투하. 정보 감사합니다", "likes": 17 },
+          { "text": "호박볶음 중 최고네요♡", "likes": 6 }
         ]
       },
       "coreIngredients": ["애호박", "양파", "대파", "당근"],
-      "extraIngredients": ["새우젓", "다진마늘", "식용유", "참기름", "깨소금"],
+      "extraIngredients": ["새우젓", "다진마늘", "미림", "식용유", "참기름", "깨소금"],
       "vibes": ["quick", "homey", "light"],
       "steps": [
-        { "order": 1, "text": "애호박은 반달 썰고 양파, 당근은 채 썬다.", "start": 18 },
-        { "order": 2, "text": "팬에 기름을 두르고 다진 마늘과 양파를 볶는다.", "start": 55 },
-        { "order": 3, "text": "애호박과 당근을 넣고 새우젓으로 간하며 볶는다.", "start": 100 },
-        { "order": 4, "text": "애호박이 살캉하게 익으면 대파, 참기름, 깨소금을 넣고 마무리한다.", "start": 150 }
+        { "order": 1, "text": "애호박은 반달 썰고 양파, 당근은 채 썬다.", "start": 25 },
+        { "order": 2, "text": "팬에 기름을 두르고 다진 마늘과 새우젓을 먼저 볶는다.", "start": 78 },
+        { "order": 3, "text": "미림을 살짝 넣고 애호박, 양파, 당근을 넣어 볶는다.", "start": 130 },
+        { "order": 4, "text": "애호박이 살캉하게 익으면 대파, 참기름, 깨소금을 넣고 마무리한다.", "start": 200 }
       ]
     },
     {
       "id": "sogogi-miyeokguk",
       "title": "소고기 미역국",
-      "youtubeId": "sPCjieBk9KE",
-      "channel": "이 남자의 cook",
+      "youtubeId": "OYj15IxqKJM",
+      "channel": "엄마의손맛",
       "cookMinutes": 40,
       "difficulty": "easy",
       "reception": {
-        "summary": "생일상·가족 식사에 꾸준히 쓴다는 후기가 많음. 레시피만큼 특유의 드립도 인기.",
+        "summary": "생일상·가족 식사에 쓰려고 찾아본다는 후기가 많음. 계량을 정리해 준 댓글이 상단에 고정.",
         "quotes": [
-          { "text": "항상 이 레시피로 미역국을 끓여요. 중3 아들이 미역국 100점이라네요", "likes": 127 },
-          { "text": "3년째 이 영상을 보며 와이프 생일상을 차립니다", "likes": 207 }
+          { "text": "내일 아내 생일입니다. 가르쳐 주신 대로 도전해 볼게요. 고마워요", "likes": 7 },
+          { "text": "취사병이라 레시피 찾아보는데 도움이 되네요. 낼 아침 미역국인데 잘 끓여보겠습니다", "likes": 16 }
         ]
       },
       "coreIngredients": ["미역", "소고기", "대파"],
-      "extraIngredients": ["국간장", "참기름", "다진마늘", "액젓"],
+      "extraIngredients": ["국간장", "참기름", "다진마늘", "청주", "액젓"],
       "vibes": ["warm", "homey"],
       "steps": [
-        { "order": 1, "text": "마른 미역을 물에 20분 불려 씻고 먹기 좋게 자른다.", "start": 30 },
-        { "order": 2, "text": "냄비에 참기름을 두르고 소고기를 볶는다.", "start": 90 },
-        { "order": 3, "text": "미역을 넣고 국간장을 넣어 함께 볶는다.", "start": 150 },
-        { "order": 4, "text": "물을 넉넉히 붓고 센 불로 끓이다 중불로 30분 이상 푹 끓인다.", "start": 215 },
-        { "order": 5, "text": "다진 마늘과 액젓으로 간을 맞추고 대파를 넣는다.", "start": 270 }
+        { "order": 1, "text": "마른 미역을 물에 불려 씻고 먹기 좋게 자른다.", "start": 25 },
+        { "order": 2, "text": "냄비에 참기름을 두르고 소고기와 다진 마늘을 볶는다.", "start": 80 },
+        { "order": 3, "text": "미역을 넣고 국간장, 청주를 넣어 함께 볶는다.", "start": 145 },
+        { "order": 4, "text": "물을 넉넉히 붓고 센 불로 끓이다 중불로 30분 이상 푹 끓인다.", "start": 210 },
+        { "order": 5, "text": "액젓으로 간을 맞추고 대파를 넣는다.", "start": 275 }
       ]
     },
     {
@@ -337,27 +337,27 @@
     },
     {
       "id": "buchujeon",
-      "title": "간단 부추전",
-      "youtubeId": "y7jsJ-14t9U",
-      "channel": "이 남자의 cook",
+      "title": "바삭한 부추전",
+      "youtubeId": "-af5_s0mgMY",
+      "channel": "딸을 위한 레시피",
       "cookMinutes": 15,
       "difficulty": "easy",
       "reception": {
-        "summary": "'부추전에 뭘 자꾸 넣냐, 간단하게'라는 컨셉에 공감. 부침가루 활용과 특유의 말투가 인기.",
+        "summary": "오징어·새우 없이 재료가 간소해서 좋다는 반응. 장마철·막걸리 안주로 언급이 많음.",
         "quotes": [
-          { "text": "조미료는 이럴 때 쓰라고 있는 겁니다 에서 빵 터졌어요", "likes": 489 },
-          { "text": "일반 밀가루가 커피라면 부침가루는 TOP ㅋㅋㅋ", "likes": 312 }
+          { "text": "재료도 간소하고 좋네요", "likes": 13 },
+          { "text": "장마철엔 역시 부침개에 막걸리죠 ❤", "likes": 1 }
         ]
       },
       "coreIngredients": ["부추", "양파", "청양고추"],
       "extraIngredients": ["부침가루", "물", "식용유", "간장", "식초"],
       "vibes": ["warm", "guests", "quick"],
       "steps": [
-        { "order": 1, "text": "부추는 5cm로 자르고 양파, 청양고추는 채 썬다.", "start": 20 },
-        { "order": 2, "text": "부침가루와 찬물을 1:1 비율로 섞어 반죽을 만든다.", "start": 60 },
-        { "order": 3, "text": "채소를 반죽에 넣고 살살 섞는다.", "start": 110 },
-        { "order": 4, "text": "기름을 넉넉히 두른 팬에 얇게 펴 부치고 앞뒤로 바삭하게 굽는다.", "start": 150 },
-        { "order": 5, "text": "간장에 식초를 섞은 초간장을 곁들인다.", "start": 190 }
+        { "order": 1, "text": "부추는 5cm로 자르고 양파, 청양고추는 채 썬다.", "start": 30 },
+        { "order": 2, "text": "부침가루와 찬물을 1:1 비율로 섞어 반죽을 만든다.", "start": 95 },
+        { "order": 3, "text": "채소를 반죽에 넣고 살살 섞는다.", "start": 160 },
+        { "order": 4, "text": "기름을 넉넉히 두른 팬에 얇게 펴 부치고 앞뒤로 바삭하게 굽는다.", "start": 220 },
+        { "order": 5, "text": "간장에 식초를 섞은 초간장을 곁들인다.", "start": 290 }
       ]
     },
     {
