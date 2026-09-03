@@ -30,10 +30,18 @@ yarn-error.*
 .DS_Store
 *.pem
 
-# local env files
-.env*.local
+# local env files / secrets
+.env
+.env.*
+!.env.example
 apps/web/.env
 apps/web/.env.production
+
+# chatbot 실험 폴더 (별도 작업물 — 비밀키·빌드 산물 커밋 방지)
+chatbot/**/.env
+chatbot/**/__pycache__/
+chatbot/**/node_modules/
+chatbot/**/dist/
 
 # typescript
 *.tsbuildinfo
