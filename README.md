@@ -19,11 +19,11 @@
 
 ## 바로 실행 (설치 불필요)
 
-**웹 데모: https://diwony.github.io/FoodPlay/**
+**웹 데모: https://diwony.github.io/FoodPlay/** — `apps/web` (Vite React) 빌드가 GitHub Pages 로 배포됨
 
 <img src="docs/qr.png" alt="FoodPlay 웹 데모 QR" width="220" />
 
-> 데모는 이전 Expo-web 빌드 기준. 새 Vite React 웹으로 재배포 예정.
+재배포: `npm run deploy:web` (`apps/web` 빌드 → `gh-pages` 브랜치 push).
 
 ## 스택
 
