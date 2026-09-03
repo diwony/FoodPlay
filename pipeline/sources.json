@@ -1,5 +1,5 @@
 {
-  "$comment": "큐레이션 파이프라인 입력. 각 항목은 사람이 고른 '좋은 영상' 하나다. build.mjs 가 이 목록을 읽어 recipes.json 을 생성한다.",
+  "$comment": "큐레이션 파이프라인 입력. 각 항목은 사람이 고른 '좋은 영상' 하나다. build.mjs 가 이 목록을 읽어 recipes.json 을 생성한다. 채널을 백종원에 한정하지 않고 유튜브 전체에서 고른다.",
   "sources": [
     { "id": "kimchi-fried-rice", "dish": "김치볶음밥", "youtubeId": "aDQIZDk1hAM" },
     { "id": "gyeran-mari", "dish": "달걀말이", "youtubeId": "1arrUjCHgm8" },
@@ -8,6 +8,16 @@
     { "id": "gamja-chae-bokkeum", "dish": "감자채볶음", "youtubeId": "LTcCF262210" },
     { "id": "eomuk-bokkeum", "dish": "간장 어묵볶음", "youtubeId": "LqgHlHsdFtw" },
     { "id": "kongnamul-muchim", "dish": "콩나물무침", "youtubeId": "pUeyA967Tho" },
-    { "id": "eomuk-bokkeum-spicy", "dish": "매콤 어묵볶음", "youtubeId": "GdTe272fmbA" }
+    { "id": "eomuk-bokkeum-spicy", "dish": "매콤 어묵볶음", "youtubeId": "GdTe272fmbA" },
+    { "id": "ganjang-gyeranbap", "dish": "간장계란밥", "youtubeId": "UekEolhleeU" },
+    { "id": "chamchi-kimchi-jjigae", "dish": "참치김치찌개", "youtubeId": "2ebjEWk4E4I" },
+    { "id": "aehobak-bokkeum", "dish": "애호박볶음", "youtubeId": "DbpuzpXZCDg" },
+    { "id": "sogogi-miyeokguk", "dish": "소고기 미역국", "youtubeId": "sPCjieBk9KE" },
+    { "id": "so-bulgogi", "dish": "소불고기", "youtubeId": "0tFQaJ3XeVw" },
+    { "id": "dakbokkeumtang", "dish": "닭볶음탕", "youtubeId": "pNtwZuhYQeg" },
+    { "id": "buchujeon", "dish": "부추전", "youtubeId": "y7jsJ-14t9U" },
+    { "id": "ganjang-tteokbokki", "dish": "간장떡볶이", "youtubeId": "TEfW6u_Vfy8" },
+    { "id": "yangbaechu-bokkeum", "dish": "양배추볶음", "youtubeId": "R_nwLsNPL5k" },
+    { "id": "dubu-kimchi", "dish": "두부김치", "youtubeId": "dYatXniNTMo" }
   ]
 }

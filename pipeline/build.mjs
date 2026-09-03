@@ -1,7 +1,7 @@
 /**
  * 큐레이션 파이프라인.
  *
- *   sources.json  +  transcripts/<id>.txt  ──▶  Claude  ──▶  src/data/recipes.json
+ *   sources.json  +  transcripts/<id>.txt  ──▶  Claude  ──▶  packages/core/src/data/recipes.json
  *
  * 실행:
  *   ANTHROPIC_API_KEY=... node pipeline/build.mjs            # 전체
@@ -68,7 +68,7 @@ for (const source of targets) {
   if (dryRun || !transcript) {
     // 자막이 없으면 기존 recipes.json 의 항목을 그대로 유지 (증분 빌드)
     const existing = JSON.parse(
-      readFileSync(new URL("src/data/recipes.json", ROOT), "utf8"),
+      readFileSync(new URL("packages/core/src/data/recipes.json", ROOT), "utf8"),
     ).recipes.find((r) => r.id === source.id);
     if (existing) {
       recipes.push(existing);
@@ -103,7 +103,7 @@ if (dbErrors.length) {
 }
 
 if (!dryRun) {
-  const out = fileURLToPath(new URL("src/data/recipes.json", ROOT));
+  const out = fileURLToPath(new URL("packages/core/src/data/recipes.json", ROOT));
   writeFileSync(out, JSON.stringify(db, null, 2) + "\n");
   console.log(`\n📝 ${out} (${recipes.length}개 레시피)`);
 }

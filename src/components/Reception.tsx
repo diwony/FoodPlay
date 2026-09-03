@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import type { Reception as ReceptionData } from "../data/types";
+import type { Reception as ReceptionData } from "@foodplay/core";
 import { colors, font, radius, spacing } from "../theme/theme";
 
 interface Props {

@@ -18,8 +18,7 @@ import RelatedVideos from "../../src/components/RelatedVideos";
 import YouTubePlayer, {
   type YouTubePlayerHandle,
 } from "../../src/components/YouTubePlayer";
-import { formatTimestamp } from "../../src/lib/format";
-import { getRecipe, relatedRecipes } from "../../src/lib/match";
+import { formatTimestamp, getRecipe, relatedRecipes } from "@foodplay/core";
 import { CONTENT_MAX_WIDTH, colors, font, radius, spacing } from "../../src/theme/theme";
 
 export default function RecipeScreen() {

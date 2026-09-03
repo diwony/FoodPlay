@@ -4,8 +4,17 @@
     "strict": true,
     "resolveJsonModule": true,
     "paths": {
+      "@foodplay/core": ["./packages/core/index.ts"],
       "@/*": ["./src/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
+  "include": [
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "packages/core/**/*.ts",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ]
 }

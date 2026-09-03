@@ -1,7 +1,7 @@
 # FoodPlay 큐레이션 파이프라인
 
 앱은 **런타임에 유튜브 API 나 LLM 을 호출하지 않는다.** 대신 이 폴더의
-스크립트가 빌드 타임에 한 번 돌아 `src/data/recipes.json` 을 만든다.
+스크립트가 빌드 타임에 한 번 돌아 `packages/core/src/data/recipes.json` 을 만든다.
 웹과 앱은 그 정적 JSON 만 읽는다.
 
 ## 왜 큐레이션 JSON + Claude 파이프라인인가
@@ -31,7 +31,7 @@ build.mjs  ──▶  Claude (claude-sonnet-5)  ──▶  Recipe JSON
    │                                              │  · reception (댓글 요약 + 대표 인용)
    │                                     validate.mjs (스키마 + 타임스탬프 단조성)
    ▼
-src/data/recipes.json
+packages/core/src/data/recipes.json
 ```
 
 ## 댓글 반응 (`reception`)

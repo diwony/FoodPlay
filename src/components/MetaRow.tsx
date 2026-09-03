@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import type { Recipe } from "../data/types";
-import { formatCookTime, formatDifficulty } from "../lib/format";
+import { formatCookTime, formatDifficulty, type Recipe } from "@foodplay/core";
 import { colors, font, radius, spacing } from "../theme/theme";
 
 interface Props {

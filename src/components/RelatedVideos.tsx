@@ -7,8 +7,7 @@ import {
   Text,
   View,
 } from "react-native";
-import type { Recipe } from "../data/types";
-import { formatCookTime } from "../lib/format";
+import { formatCookTime, type Recipe } from "@foodplay/core";
 import { colors, font, radius, spacing } from "../theme/theme";
 
 interface Props {

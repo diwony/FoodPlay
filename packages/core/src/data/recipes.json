@@ -186,6 +186,254 @@
         { "order": 3, "text": "양파를 넣어 볶다가 어묵을 넣고 간장, 설탕으로 간한다.", "start": 138 },
         { "order": 4, "text": "청양고추와 대파를 넣고 센 불에 빠르게 볶아 마무리한다.", "start": 192 }
       ]
+    },
+    {
+      "id": "ganjang-gyeranbap",
+      "title": "간장계란밥 3가지",
+      "youtubeId": "UekEolhleeU",
+      "channel": "자취요리신 simple cooking",
+      "cookMinutes": 5,
+      "difficulty": "easy",
+      "reception": {
+        "summary": "'아무것도 하기 싫을 때 해먹었는데 진짜 맛있다'는 공감 댓글이 많음. 김치와 곁들이는 걸 추천.",
+        "quotes": [
+          { "text": "배달음식만 먹다 돈 없어서 해먹었는데 진짜 맛있네요", "likes": 194 },
+          { "text": "간장계란밥에 김치랑 같이 먹으면 진짜 끝장나지 ㅋㅋ", "likes": 141 }
+        ]
+      },
+      "coreIngredients": ["밥", "계란", "대파"],
+      "extraIngredients": ["간장", "참기름", "버터", "김가루", "설탕"],
+      "vibes": ["quick", "homey", "hearty"],
+      "steps": [
+        { "order": 1, "text": "팬에 기름을 두르고 계란을 반숙 프라이로 부친다.", "start": 20 },
+        { "order": 2, "text": "따뜻한 밥에 버터 한 조각과 간장, 참기름을 넣는다.", "start": 74 },
+        { "order": 3, "text": "송송 썬 대파와 김가루를 올리고 계란을 얹는다.", "start": 150 },
+        { "order": 4, "text": "노른자를 터뜨려 비벼 먹는다. 설탕을 살짝 넣으면 감칠맛이 산다.", "start": 210 }
+      ]
+    },
+    {
+      "id": "chamchi-kimchi-jjigae",
+      "title": "참치김치찌개 7분 완성",
+      "youtubeId": "2ebjEWk4E4I",
+      "channel": "이 남자의 cook",
+      "cookMinutes": 12,
+      "difficulty": "easy",
+      "reception": {
+        "summary": "설명이 친절하고(불 세기까지) 재미있다는 반응. 참치는 마지막에 넣으라는 팁이 인상적이라는 댓글.",
+        "quotes": [
+          { "text": "이 채널을 좋아하는 이유: 불 세기까지 알려줌", "likes": 34 },
+          { "text": "지금 참치를 넣으면 나중에 명탐정이 와도 찾을 수 없습니다 ㅋㅋㅋ", "likes": 47 }
+        ]
+      },
+      "coreIngredients": ["김치", "참치캔", "양파", "대파", "두부"],
+      "extraIngredients": ["고춧가루", "다진마늘", "국간장", "설탕"],
+      "vibes": ["warm", "spicy", "hearty", "quick"],
+      "steps": [
+        { "order": 1, "text": "냄비에 신 김치를 넣고 참기름에 볶아 익힌다.", "start": 25 },
+        { "order": 2, "text": "물을 붓고 고춧가루, 다진 마늘, 설탕을 넣어 끓인다.", "start": 62 },
+        { "order": 3, "text": "양파와 두부를 넣고 중불에서 끓인다.", "start": 108 },
+        { "order": 4, "text": "국간장으로 간을 맞춘다.", "start": 140 },
+        { "order": 5, "text": "불을 끄기 직전 참치와 대파를 넣는다. 참치는 오래 끓이지 않는다.", "start": 165 }
+      ]
+    },
+    {
+      "id": "aehobak-bokkeum",
+      "title": "애호박 새우젓볶음",
+      "youtubeId": "DbpuzpXZCDg",
+      "channel": "김대석 셰프TV",
+      "cookMinutes": 10,
+      "difficulty": "easy",
+      "reception": {
+        "summary": "'엄마가 새우젓 넣어 볶아주던 그 맛'이라는 반응. 설명이 친절하다는 댓글이 많음.",
+        "quotes": [
+          { "text": "친정 엄마가 늘 새우젓을 넣어 애호박을 볶아 주셨어요~ 낼 저녁에 해먹을래요", "likes": 12 },
+          { "text": "친절한 요리 설명 감사합니다! 행복한 하루 되세요!!", "likes": 20 }
+        ]
+      },
+      "coreIngredients": ["애호박", "양파", "대파", "당근"],
+      "extraIngredients": ["새우젓", "다진마늘", "식용유", "참기름", "깨소금"],
+      "vibes": ["quick", "homey", "light"],
+      "steps": [
+        { "order": 1, "text": "애호박은 반달 썰고 양파, 당근은 채 썬다.", "start": 18 },
+        { "order": 2, "text": "팬에 기름을 두르고 다진 마늘과 양파를 볶는다.", "start": 55 },
+        { "order": 3, "text": "애호박과 당근을 넣고 새우젓으로 간하며 볶는다.", "start": 100 },
+        { "order": 4, "text": "애호박이 살캉하게 익으면 대파, 참기름, 깨소금을 넣고 마무리한다.", "start": 150 }
+      ]
+    },
+    {
+      "id": "sogogi-miyeokguk",
+      "title": "소고기 미역국",
+      "youtubeId": "sPCjieBk9KE",
+      "channel": "이 남자의 cook",
+      "cookMinutes": 40,
+      "difficulty": "easy",
+      "reception": {
+        "summary": "생일상·가족 식사에 꾸준히 쓴다는 후기가 많음. 레시피만큼 특유의 드립도 인기.",
+        "quotes": [
+          { "text": "항상 이 레시피로 미역국을 끓여요. 중3 아들이 미역국 100점이라네요", "likes": 127 },
+          { "text": "3년째 이 영상을 보며 와이프 생일상을 차립니다", "likes": 207 }
+        ]
+      },
+      "coreIngredients": ["미역", "소고기", "대파"],
+      "extraIngredients": ["국간장", "참기름", "다진마늘", "액젓"],
+      "vibes": ["warm", "homey"],
+      "steps": [
+        { "order": 1, "text": "마른 미역을 물에 20분 불려 씻고 먹기 좋게 자른다.", "start": 30 },
+        { "order": 2, "text": "냄비에 참기름을 두르고 소고기를 볶는다.", "start": 90 },
+        { "order": 3, "text": "미역을 넣고 국간장을 넣어 함께 볶는다.", "start": 150 },
+        { "order": 4, "text": "물을 넉넉히 붓고 센 불로 끓이다 중불로 30분 이상 푹 끓인다.", "start": 215 },
+        { "order": 5, "text": "다진 마늘과 액젓으로 간을 맞추고 대파를 넣는다.", "start": 270 }
+      ]
+    },
+    {
+      "id": "so-bulgogi",
+      "title": "부드러운 소불고기",
+      "youtubeId": "0tFQaJ3XeVw",
+      "channel": "딸을 위한 레시피",
+      "cookMinutes": 40,
+      "difficulty": "medium",
+      "reception": {
+        "summary": "차분한 설명 그대로 따라 하면 부드럽게 된다는 후기. 나이 지긋한 시청자층의 감사 댓글이 많음.",
+        "quotes": [
+          { "text": "80이 지나 주방권을 잡았는데 부드러운 불고기가 우리 짝에게 딱이어서 바로 실행했어요", "likes": 64 },
+          { "text": "정말 차분히 잘하시는 듯요", "likes": 9 }
+        ]
+      },
+      "coreIngredients": ["소고기", "양파", "대파", "당근", "버섯"],
+      "extraIngredients": ["간장", "설탕", "배즙", "다진마늘", "참기름", "후추"],
+      "vibes": ["guests", "homey", "hearty"],
+      "steps": [
+        { "order": 1, "text": "불고기용 소고기는 키친타월로 핏물을 닦는다.", "start": 40 },
+        { "order": 2, "text": "간장, 설탕, 배즙, 다진 마늘, 참기름, 후추로 양념장을 만든다.", "start": 110 },
+        { "order": 3, "text": "고기에 양념을 넣고 조물조물해 30분 재운다.", "start": 200 },
+        { "order": 4, "text": "양파, 당근, 버섯을 썰어 넣고 센 불에 볶는다.", "start": 300 },
+        { "order": 5, "text": "국물이 자작해지면 대파를 넣고 불을 끈다.", "start": 380 }
+      ]
+    },
+    {
+      "id": "dakbokkeumtang",
+      "title": "닭볶음탕 황금 레시피",
+      "youtubeId": "pNtwZuhYQeg",
+      "channel": "정호영의 오늘도 요리",
+      "cookMinutes": 35,
+      "difficulty": "medium",
+      "reception": {
+        "summary": "'초반에 간장에 졸여 닭에 간을 배게 하는' 방식이 핵심이라는 반응. 온 가족이 잘 먹는다는 후기가 많음.",
+        "quotes": [
+          { "text": "초반에 간장에 졸이니 닭에 간이 싹 배고 진짜 존맛", "likes": 51 },
+          { "text": "남은 국물에 라면까지 졸이듯 끓이면 완전 존맛탱", "likes": 924 }
+        ]
+      },
+      "coreIngredients": ["닭", "감자", "양파", "당근", "대파"],
+      "extraIngredients": ["고추장", "고춧가루", "간장", "설탕", "다진마늘", "생강"],
+      "vibes": ["spicy", "hearty", "guests"],
+      "steps": [
+        { "order": 1, "text": "닭은 끓는 물에 살짝 데쳐 기름과 불순물을 뺀다.", "start": 60 },
+        { "order": 2, "text": "냄비에 닭과 간장, 물을 넣고 센 불에 졸이듯 끓여 간을 배게 한다.", "start": 180 },
+        { "order": 3, "text": "고추장, 고춧가루, 설탕, 다진 마늘, 생강으로 만든 양념을 절반 넣는다.", "start": 300 },
+        { "order": 4, "text": "감자, 당근, 양파를 넣고 중불에서 끓인다.", "start": 430 },
+        { "order": 5, "text": "남은 양념을 마저 넣고 국물을 졸인 뒤 대파를 넣는다.", "start": 560 }
+      ]
+    },
+    {
+      "id": "buchujeon",
+      "title": "간단 부추전",
+      "youtubeId": "y7jsJ-14t9U",
+      "channel": "이 남자의 cook",
+      "cookMinutes": 15,
+      "difficulty": "easy",
+      "reception": {
+        "summary": "'부추전에 뭘 자꾸 넣냐, 간단하게'라는 컨셉에 공감. 부침가루 활용과 특유의 말투가 인기.",
+        "quotes": [
+          { "text": "조미료는 이럴 때 쓰라고 있는 겁니다 에서 빵 터졌어요", "likes": 489 },
+          { "text": "일반 밀가루가 커피라면 부침가루는 TOP ㅋㅋㅋ", "likes": 312 }
+        ]
+      },
+      "coreIngredients": ["부추", "양파", "청양고추"],
+      "extraIngredients": ["부침가루", "물", "식용유", "간장", "식초"],
+      "vibes": ["warm", "guests", "quick"],
+      "steps": [
+        { "order": 1, "text": "부추는 5cm로 자르고 양파, 청양고추는 채 썬다.", "start": 20 },
+        { "order": 2, "text": "부침가루와 찬물을 1:1 비율로 섞어 반죽을 만든다.", "start": 60 },
+        { "order": 3, "text": "채소를 반죽에 넣고 살살 섞는다.", "start": 110 },
+        { "order": 4, "text": "기름을 넉넉히 두른 팬에 얇게 펴 부치고 앞뒤로 바삭하게 굽는다.", "start": 150 },
+        { "order": 5, "text": "간장에 식초를 섞은 초간장을 곁들인다.", "start": 190 }
+      ]
+    },
+    {
+      "id": "ganjang-tteokbokki",
+      "title": "간장떡볶이",
+      "youtubeId": "TEfW6u_Vfy8",
+      "channel": "하루한끼",
+      "cookMinutes": 15,
+      "difficulty": "easy",
+      "reception": {
+        "summary": "굴소스 없이 집에 있는 기본 재료로 되는데 맛있다는 반응. 아이들도 잘 먹는다는 후기.",
+        "quotes": [
+          { "text": "굴소스 그런 거 없이 집에 있는 기본 소스로 쉽고 빠르게. 애들도 너무 잘 먹습니다", "likes": 776 },
+          { "text": "이 레시피 최곱니다", "likes": 776 }
+        ]
+      },
+      "coreIngredients": ["떡볶이떡", "양파", "대파", "당근", "계란"],
+      "extraIngredients": ["간장", "설탕", "다진마늘", "참기름", "깨소금", "식용유"],
+      "vibes": ["quick", "homey"],
+      "steps": [
+        { "order": 1, "text": "떡은 물에 불리고 계란은 삶아 둔다.", "start": 15 },
+        { "order": 2, "text": "팬에 기름을 두르고 양파, 당근, 대파를 볶는다.", "start": 45 },
+        { "order": 3, "text": "떡을 넣고 간장, 설탕, 다진 마늘을 넣어 볶는다.", "start": 85 },
+        { "order": 4, "text": "물을 조금 넣어 떡이 말랑해질 때까지 조린다.", "start": 120 },
+        { "order": 5, "text": "삶은 계란을 넣고 참기름, 깨소금으로 마무리한다.", "start": 150 }
+      ]
+    },
+    {
+      "id": "yangbaechu-bokkeum",
+      "title": "성시경 양배추볶음",
+      "youtubeId": "R_nwLsNPL5k",
+      "channel": "성시경 SUNG SI KYUNG",
+      "cookMinutes": 15,
+      "difficulty": "easy",
+      "reception": {
+        "summary": "설명만 봐도 맛있어 보인다는 반응. '양배추 요리의 완결판'이라는 댓글.",
+        "quotes": [
+          { "text": "설명만 봐도... 맛나겠는데요 ㅎㅎ", "likes": 28 },
+          { "text": "오오 양배추 요리의 완결판", "likes": 31 }
+        ]
+      },
+      "coreIngredients": ["양배추", "대파", "양파"],
+      "extraIngredients": ["간장", "참치액", "들기름", "다진마늘", "고춧가루", "깨소금"],
+      "vibes": ["quick", "light", "homey"],
+      "steps": [
+        { "order": 1, "text": "양배추는 큼직하게 썰고 대파는 어슷 썬다.", "start": 40 },
+        { "order": 2, "text": "팬에 들기름을 두르고 대파와 다진 마늘로 파기름을 낸다.", "start": 110 },
+        { "order": 3, "text": "양배추를 넣고 센 불에 빠르게 볶는다.", "start": 190 },
+        { "order": 4, "text": "간장과 참치액으로 간하고 고춧가루를 살짝 넣는다.", "start": 260 },
+        { "order": 5, "text": "숨이 적당히 죽으면 깨소금을 뿌려 마무리한다.", "start": 320 }
+      ]
+    },
+    {
+      "id": "dubu-kimchi",
+      "title": "고기 없는 두부김치",
+      "youtubeId": "dYatXniNTMo",
+      "channel": "딸을 위한 레시피",
+      "cookMinutes": 15,
+      "difficulty": "easy",
+      "reception": {
+        "summary": "고기 없이 김치와 두부만으로 술안주가 된다는 반응. 재료가 적고 깔끔하다는 평.",
+        "quotes": [
+          { "text": "김치랑 두부만으로 이런 맛이 나네요. 다시다 뺐는데 빼도 맛있어요", "likes": 19 },
+          { "text": "최소한의 재료로 간단히, 엄마가 해주시던 맛있는 김치볶음이에요", "likes": 20 }
+        ]
+      },
+      "coreIngredients": ["두부", "김치", "양파", "대파"],
+      "extraIngredients": ["고춧가루", "설탕", "간장", "식용유", "참기름", "깨소금"],
+      "vibes": ["guests", "spicy", "hearty"],
+      "steps": [
+        { "order": 1, "text": "두부는 도톰하게 썰어 끓는 소금물에 데친 뒤 물기를 뺀다.", "start": 30 },
+        { "order": 2, "text": "팬에 기름을 두르고 양파와 신 김치를 넣어 볶는다.", "start": 110 },
+        { "order": 3, "text": "고춧가루, 설탕, 간장을 넣어 김치가 부드러워질 때까지 볶는다.", "start": 200 },
+        { "order": 4, "text": "대파와 참기름, 깨소금을 넣고 마무리한다.", "start": 300 },
+        { "order": 5, "text": "접시에 데친 두부를 두르고 가운데에 볶은 김치를 담는다.", "start": 360 }
+      ]
     }
   ]
 }

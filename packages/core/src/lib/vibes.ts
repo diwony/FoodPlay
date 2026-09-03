@@ -29,3 +29,26 @@ const LABEL: Record<Vibe, string> = Object.fromEntries(
 export function vibeLabel(v: Vibe): string {
   return LABEL[v] ?? v;
 }
+
+/** 자유 입력 문장에서 vibe 키워드를 감지한다. 예: "비 오고 으슬으슬해" → ["warm"] */
+const VIBE_KEYWORDS: Record<Vibe, string[]> = {
+  quick: ["간단", "빨리", "후딱", "귀찮", "초간단", "자취", "10분", "5분", "간편"],
+  hearty: ["배고", "든든", "배부", "헛헛", "허기", "많이", "폭식"],
+  warm: [
+    "추", "쌀쌀", "꿉꿉", "으슬", "찌뿌", "뜨끈", "따뜻", "국물", "비 ", "비와", "비온",
+    "장마", "감기", "몸살", "쌀쌀",
+  ],
+  spicy: ["스트레스", "매운", "매콤", "얼큰", "화나", "빡", "열받", "짜증", "칼칼"],
+  guests: ["집들이", "손님", "대접", "모임", "파티", "안주", "한상", "초대"],
+  homey: ["엄마", "집밥", "그리운", "고향", "어릴", "옛날", "할머니", "위로"],
+  light: ["가볍", "다이어트", "담백", "산뜻", "느끼", "깔끔", "속이"],
+};
+
+export function parseVibes(text: string): Vibe[] {
+  if (!text.trim()) return [];
+  const t = text.toLowerCase();
+  const hits = (Object.keys(VIBE_KEYWORDS) as Vibe[]).filter((v) =>
+    VIBE_KEYWORDS[v].some((kw) => t.includes(kw)),
+  );
+  return hits;
+}

@@ -101,7 +101,7 @@ export function validateDatabase(db) {
 const { fileURLToPath } = await import("node:url");
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const { readFileSync } = await import("node:fs");
-  const path = new URL("../src/data/recipes.json", import.meta.url);
+  const path = new URL("../packages/core/src/data/recipes.json", import.meta.url);
   const db = JSON.parse(readFileSync(path, "utf8"));
   const errors = validateDatabase(db);
   if (errors.length) {

@@ -30,13 +30,14 @@
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
-    "web": "expo start --web",
-    "build:web": "expo export --platform web",
     "typecheck": "tsc --noEmit",
     "pipeline": "node pipeline/build.mjs",
     "pipeline:check": "node pipeline/validate.mjs",
     "deploy:web": "bash scripts/deploy-web.sh",
-    "pipeline:comments": "node pipeline/fetch-comments.mjs --all"
+    "pipeline:comments": "node pipeline/fetch-comments.mjs --all",
+    "web:dev": "npm run dev --prefix apps/web",
+    "web:build": "npm run build --prefix apps/web",
+    "web:typecheck": "npm run typecheck --prefix apps/web"
   },
   "private": true
 }

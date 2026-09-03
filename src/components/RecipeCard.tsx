@@ -1,8 +1,6 @@
 import { Link } from "expo-router";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import type { RecipeMatch } from "../lib/match";
-import { formatCookTime, formatDifficulty } from "../lib/format";
-import { vibeLabel } from "../lib/vibes";
+import { formatCookTime, formatDifficulty, vibeLabel, type RecipeMatch } from "@foodplay/core";
 import { colors, font, radius, spacing } from "../theme/theme";
 import Chip from "./Chip";
 

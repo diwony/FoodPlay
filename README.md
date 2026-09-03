@@ -7,71 +7,70 @@
   플레이어(PiP)** 로 축소·고정되어 계속 보임
 - 각 레시피의 **추가로 필요한 재료 · 조리 시간 · 난이도**, **유튜브 댓글 반응
   요약**, **추천 영상 가로 캐러셀** 표시
-- 냉장고 재료(1개만 골라도 매칭) + **오늘 기분·상황 키워드**(간단하게 / 배고픔 /
-  꿉꿉·으슬으슬 / 스트레스·매운거 / 집들이 / 엄마밥 …)로 맞춤 추천
-- **웹 + 모바일 앱을 한 코드베이스**에서 (Expo Router). 로직은 100% 공유
+- 냉장고 재료(1개만 골라도 매칭) + **오늘 기분·상황**(칩 선택 + 자유 입력: "비 와서
+  으슬으슬해", "집들이 하는데" → 키워드 자동 인식)로 맞춤 추천
+- 레시피는 **여러 유튜버**에서 큐레이션 (백종원 · 이 남자의 cook · 자취요리신 ·
+  성시경 · 김대석 셰프 · 딸을 위한 레시피 · 정호영 · 하루한끼 …)
+- **웹**은 별도 React(Vite) 앱, **모바일 앱**은 Expo(React Native). 매칭·데이터
+  로직은 `@foodplay/core` 패키지로 100% 공유
 - 데이터는 **큐레이션 JSON + Claude 파이프라인** — 앱은 런타임에 외부 API 를 안 부른다
 
 `prjsingle` 포트폴리오의 개인 프로젝트(PERSONAL PROJECT 카드, 슬롯 04·05 통합).
 
 ## 바로 실행 (설치 불필요)
 
-**웹 데모: https://diwony.github.io/FoodPlay/** — 폰 브라우저에서 바로 열림. Expo Go 안 받아도 됨.
+**웹 데모: https://diwony.github.io/FoodPlay/**
 
 <img src="docs/qr.png" alt="FoodPlay 웹 데모 QR" width="220" />
 
-재배포: `npm run deploy:web` (웹 빌드 → `gh-pages` 브랜치 push).
+> 데모는 이전 Expo-web 빌드 기준. 새 Vite React 웹으로 재배포 예정.
 
 ## 스택
 
 | 영역 | 선택 |
 | --- | --- |
-| 런타임 | React 19 + React Native 0.86 (New Architecture) |
-| 라우팅/공유 | Expo Router — `app/` 파일 라우팅이 웹·iOS·Android 동시 타깃 |
-| 웹 | react-native-web, 정적 렌더링(`output: "static"`) |
-| 영상 | 웹: YouTube IFrame Player API / 네이티브: `react-native-youtube-iframe` (동일한 `seekTo` 인터페이스) |
-| 데이터 | 정적 `src/data/recipes.json` + `pipeline/` (빌드 타임 Claude 큐레이션) |
+| 공유 로직 | `@foodplay/core` — 재료 정규화 · 매칭/랭킹 · vibe · 포맷 · `recipes.json` (순수 TS, 의존성 0) |
+| 웹 | **Vite + React 19 + React Router + Tailwind v4** (`apps/web`) |
+| 모바일 앱 | **Expo + React Native 0.86 + Expo Router** (루트) |
+| 영상 | 웹: YouTube IFrame Player API / 앱: `react-native-youtube-iframe` (동일한 `seekTo`·`pause` 계약) |
+| 데이터 | `packages/core/src/data/recipes.json` + `pipeline/` (빌드 타임 Claude 큐레이션) |
 
 ## 구조
 
 ```
-app/                     Expo Router 화면 (웹/앱 공용)
-  _layout.tsx            스택 네비게이터
-  index.tsx              재료 입력 + 매칭 결과
-  recipe/[id].tsx        영상(위) + 스텝·타임스탬프(아래) + 재료/시간/난이도
-src/
-  data/                  recipes.json + 타입 (Recipe · Vibe · Reception)
-  lib/                   ingredients(정규화) · match(재료+vibe 랭킹, relatedRecipes) · vibes · format — 순수 함수, 공유
-  components/            YouTubePlayer(.tsx=웹 / .native.tsx=앱) · RecipeCard · RelatedVideos · Reception · Chip · MetaRow
-  theme/                 디자인 토큰 (모바일 우선)
-pipeline/                sources.json + 자막 + 댓글 → Claude → recipes.json (README 참고)
+packages/core/           웹·앱 공유. UI·플랫폼 의존성 없음
+  index.ts               배럴 export (@foodplay/core)
+  src/data/              recipes.json + 타입 (Recipe · Vibe · Reception)
+  src/lib/               ingredients · match (재료+vibe 랭킹, relatedRecipes) · vibes (parseVibes) · format
+
+apps/web/                Vite React 웹 (주력 화면)
+  src/pages/             Home · Recipe · NotFound
+  src/components/        RecipeCard · IngredientField · VibeField · RelatedRail · ReceptionBlock
+  src/lib/               useYouTube (IFrame API) · useMiniPlayer (스크롤 시 PiP)
+
+app/  src/  (루트)       Expo Router 모바일 앱 (+ RN-web 프리뷰)
+  app/index.tsx          재료·기분 입력 + 결과
+  app/recipe/[id].tsx    영상(위) + 스텝·타임스탬프(아래) + 댓글 반응 + 추천 캐러셀
+  src/components/         YouTubePlayer(.tsx=웹 / .native.tsx=앱) 등
+
+pipeline/                sources.json + 자막 + 댓글 → Claude → recipes.json
 ```
-
-### 화면 로직 공유 방식
-
-`app/recipe/[id].tsx` 는 `YouTubePlayer` 컴포넌트에 `ref.seekTo(seconds)` 만
-호출한다. Metro 가 플랫폼에 따라 `YouTubePlayer.tsx`(웹, iframe API) 또는
-`YouTubePlayer.native.tsx`(앱, WebView 기반)를 선택한다. 매칭·정규화·포맷은
-`src/lib/` 의 순수 함수라 두 타깃이 그대로 쓴다.
 
 ## 실행
 
 ```bash
+# 웹 (Vite React) — 주력
+npm install --prefix apps/web
+npm run dev --prefix apps/web            # http://localhost:5173
+
+# 모바일 앱 (Expo)
 npm install
-
-# 웹 (개발) — 대부분 모바일 브라우저에서 열린다고 가정한 모바일 우선 레이아웃
-npm run web
-
-# 웹 정적 빌드 → dist/
-npm run build:web
-
-# 앱 (앱스토어 출시 없이 컴퓨터에서 확인)
-npm run android          # Android 에뮬레이터 또는 USB 연결 기기
-npm start                # QR → 본인 휴대폰 Expo Go 앱
+npm run android                          # Android 에뮬레이터 / 실기기
+npm start                                # QR → Expo Go
 ```
 
-> iOS 시뮬레이터는 macOS 가 필요하다. Windows 개발 환경에서는
-> Android 에뮬레이터 + 웹 + Expo Go(실기기) 로 전체 기능을 확인할 수 있다.
+> iOS 시뮬레이터는 macOS 필요. Windows 에서는 Android 에뮬레이터 + 웹 +
+> Expo Go(실기기) 로 전체 기능 확인 가능.
 
 ## 데이터 파이프라인
 
@@ -90,9 +89,10 @@ ANTHROPIC_API_KEY=sk-... npm run pipeline     # 재생성
 ## 품질 체크
 
 ```bash
-npm run typecheck        # tsc --noEmit
-npm run pipeline:check    # 데이터 스키마
-npm run build:web         # 웹 번들 성공 여부
+npm run pipeline:check                    # recipes.json 스키마·타임스탬프 검증
+npm run typecheck                         # 모바일(Expo) 타입체크
+npm run typecheck --prefix apps/web       # 웹 타입체크
+npm run build --prefix apps/web           # 웹 프로덕션 번들
 ```
 
 ## 라이선스

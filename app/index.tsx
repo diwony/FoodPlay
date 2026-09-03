@@ -10,10 +10,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import RecipeCard from "../src/components/RecipeCard";
-import type { Vibe } from "../src/data/types";
-import { parseIngredients } from "../src/lib/ingredients";
-import { matchRecipes } from "../src/lib/match";
-import { VIBE_CHIPS } from "../src/lib/vibes";
+import { matchRecipes, parseIngredients, VIBE_CHIPS, type Vibe } from "@foodplay/core";
 import { CONTENT_MAX_WIDTH, colors, font, radius, spacing } from "../src/theme/theme";
 
 const QUICK_ADD = [
@@ -24,13 +21,20 @@ const QUICK_ADD = [
   "두부",
   "감자",
   "당근",
-  "어묵",
+  "애호박",
+  "양배추",
+  "부추",
+  "미역",
   "콩나물",
+  "어묵",
+  "참치캔",
+  "떡볶이떡",
+  "버섯",
   "돼지고기",
   "소고기",
+  "닭",
   "된장",
   "고추장",
-  "애호박",
   "밥",
 ];
 
