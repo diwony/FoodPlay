@@ -42,8 +42,6 @@ youtubeId: {{youtubeId}}
 {
   "id": "{{id}}",
   "title": "…",
-  "youtubeId": "{{youtubeId}}",
-  "channel": "…",
   "cookMinutes": 15,
   "difficulty": "easy",
   "coreIngredients": ["…"],
@@ -53,8 +51,11 @@ youtubeId: {{youtubeId}}
     "summary": "…",
     "quotes": [{ "text": "…", "likes": 12 }]
   },
-  "steps": [
-    { "order": 1, "text": "…", "start": 35 }
-  ]
+  "long": {
+    "youtubeId": "{{youtubeId}}",
+    "channel": "…",
+    "steps": [{ "order": 1, "text": "…", "start": 35 }]
+  },
+  "short": { "youtubeId": "…", "channel": "…" }  // 1분 내외 요약 영상 (없으면 생략)
 }
 ```

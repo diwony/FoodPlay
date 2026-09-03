@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
   formatCookTime,
@@ -6,6 +6,7 @@ import {
   formatTimestamp,
   getRecipe,
   relatedRecipes,
+  type VideoFormat,
 } from "@foodplay/core";
 import { useMiniPlayer } from "../lib/useMiniPlayer";
 import { useYouTube } from "../lib/useYouTube";
@@ -17,7 +18,12 @@ export default function Recipe() {
   const recipe = getRecipe(id);
   const hostRef = useRef<HTMLDivElement>(null);
   const { slotRef, mini, expand } = useMiniPlayer();
-  const player = useYouTube(hostRef, recipe?.youtubeId ?? "");
+
+  const [fmt, setFmt] = useState<VideoFormat>("long");
+  const useShort = fmt === "short" && !!recipe?.short;
+  const video = useShort ? recipe!.short! : recipe?.long;
+
+  const player = useYouTube(hostRef, video?.youtubeId ?? "");
 
   if (!recipe) {
     return (
@@ -31,6 +37,7 @@ export default function Recipe() {
   }
 
   const related = relatedRecipes(recipe.id);
+  const activeChannel = useShort ? recipe.short!.channel : recipe.long.channel;
 
   const jump = (s: number) => {
     player.seekTo(s);
@@ -64,10 +71,32 @@ export default function Recipe() {
         </div>
       </div>
 
-      <h1 className="mt-6 text-[24px] font-bold leading-tight tracking-tight">
+      {/* 숏폼 / 롱폼 선택 */}
+      {recipe.short && (
+        <div className="mt-4 inline-flex rounded-full border border-line bg-surface p-0.5 text-[13px] font-semibold">
+          {(["long", "short"] as VideoFormat[]).map((f) => (
+            <button
+              key={f}
+              onClick={() => setFmt(f)}
+              aria-pressed={fmt === f}
+              className={
+                "rounded-full px-3.5 py-1.5 transition-colors " +
+                (fmt === f ? "bg-ink text-bg" : "text-muted hover:text-ink")
+              }
+            >
+              {f === "long" ? "롱폼 · 자세히" : "숏폼 · 1분컷"}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <h1 className="mt-4 text-[24px] font-bold leading-tight tracking-tight">
         {recipe.title}
       </h1>
-      <p className="mt-1 text-[13px] text-faint">{recipe.channel}</p>
+      <p className="mt-1 text-[13px] text-faint">
+        {activeChannel}
+        {useShort && " · 숏폼"}
+      </p>
 
       <div className="mt-3 flex flex-wrap gap-1.5">
         {[
@@ -101,20 +130,28 @@ export default function Recipe() {
       <section className="mt-8">
         <h2 className="text-[17px] font-bold tracking-tight">조리 순서</h2>
         <p className="mb-3 mt-0.5 text-[13px] text-faint">
-          시간을 누르면 영상의 그 장면으로 이동해요.
+          {useShort
+            ? "숏폼은 타임스탬프 없이 한 번에 훑어요. 자세한 구간 이동은 롱폼에서."
+            : "시간을 누르면 영상의 그 장면으로 이동해요."}
         </p>
         <ol className="grid gap-2">
-          {recipe.steps.map((step) => (
+          {recipe.long.steps.map((step) => (
             <li
               key={step.order}
               className="flex gap-3 rounded-xl border border-line bg-surface p-3.5"
             >
-              <button
-                onClick={() => jump(step.start)}
-                className="h-fit shrink-0 rounded-lg bg-accent-soft px-2 py-1 text-[12px] font-bold text-accent tabular transition-colors hover:bg-accent hover:text-white"
-              >
-                ▶ {formatTimestamp(step.start)}
-              </button>
+              {useShort ? (
+                <span className="h-fit shrink-0 rounded-lg bg-surface px-2 py-1 text-[12px] font-bold text-faint tabular ring-1 ring-line">
+                  {step.order}
+                </span>
+              ) : (
+                <button
+                  onClick={() => jump(step.start)}
+                  className="h-fit shrink-0 rounded-lg bg-accent-soft px-2 py-1 text-[12px] font-bold text-accent tabular transition-colors hover:bg-accent hover:text-white"
+                >
+                  ▶ {formatTimestamp(step.start)}
+                </button>
+              )}
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-wider text-faint">
                   Step {step.order}
@@ -131,7 +168,7 @@ export default function Recipe() {
       <RelatedRail recipes={related} />
 
       <a
-        href={`https://www.youtube.com/watch?v=${recipe.youtubeId}`}
+        href={`https://www.youtube.com/watch?v=${video!.youtubeId}`}
         target="_blank"
         rel="noreferrer"
         className="mt-8 flex items-center justify-center rounded-xl border border-line py-3 text-[14px] font-semibold text-good transition-colors hover:border-good/40"

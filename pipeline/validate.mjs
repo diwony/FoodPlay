@@ -25,11 +25,20 @@ export function validateRecipe(r, index = 0) {
     Array.isArray(r[k]) && r[k].length > 0 ||
     e.push(`${at}.${k}: 최소 1개 원소의 배열이어야 함`);
 
+  const ytId = (id) => /^[\w-]{11}$/.test(id ?? "");
+
   str("id");
   str("title");
-  str("channel");
-  if (!/^[\w-]{11}$/.test(r.youtubeId ?? ""))
-    e.push(`${at}.youtubeId: 유튜브 ID 11자리여야 함 (받은 값: ${r.youtubeId})`);
+  if (!r.long || !ytId(r.long.youtubeId))
+    e.push(`${at}.long.youtubeId: 유튜브 ID 11자리여야 함 (받은 값: ${r.long?.youtubeId})`);
+  if (!r.long || typeof r.long.channel !== "string" || !r.long.channel.trim())
+    e.push(`${at}.long.channel: 비어있지 않은 문자열이어야 함`);
+  if (r.short !== undefined) {
+    if (!ytId(r.short?.youtubeId))
+      e.push(`${at}.short.youtubeId: 유튜브 ID 11자리여야 함 (받은 값: ${r.short?.youtubeId})`);
+    if (typeof r.short?.channel !== "string" || !r.short.channel.trim())
+      e.push(`${at}.short.channel: 비어있지 않은 문자열이어야 함`);
+  }
   if (!Number.isInteger(r.cookMinutes) || r.cookMinutes <= 0)
     e.push(`${at}.cookMinutes: 양의 정수여야 함`);
   if (!DIFFICULTIES.has(r.difficulty))
@@ -61,19 +70,20 @@ export function validateRecipe(r, index = 0) {
       });
   }
 
-  if (!Array.isArray(r.steps) || r.steps.length < 3) {
-    e.push(`${at}.steps: 최소 3개여야 함`);
+  const steps = r.long?.steps;
+  if (!Array.isArray(steps) || steps.length < 3) {
+    e.push(`${at}.long.steps: 최소 3개여야 함`);
   } else {
     let prev = -1;
-    r.steps.forEach((s, i) => {
+    steps.forEach((s, i) => {
       if (!Number.isInteger(s.order) || s.order !== i + 1)
-        e.push(`${at}.steps[${i}].order: ${i + 1} 이어야 함`);
+        e.push(`${at}.long.steps[${i}].order: ${i + 1} 이어야 함`);
       if (typeof s.text !== "string" || !s.text.trim())
-        e.push(`${at}.steps[${i}].text: 비어있지 않은 문자열이어야 함`);
+        e.push(`${at}.long.steps[${i}].text: 비어있지 않은 문자열이어야 함`);
       if (!Number.isInteger(s.start) || s.start < 0)
-        e.push(`${at}.steps[${i}].start: 0 이상 정수여야 함`);
+        e.push(`${at}.long.steps[${i}].start: 0 이상 정수여야 함`);
       else if (s.start <= prev)
-        e.push(`${at}.steps[${i}].start: 이전 스텝(${prev}s)보다 커야 함`);
+        e.push(`${at}.long.steps[${i}].start: 이전 스텝(${prev}s)보다 커야 함`);
       prev = s.start;
     });
   }

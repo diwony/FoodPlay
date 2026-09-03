@@ -14,7 +14,7 @@ export default function RelatedRail({ recipes }: { recipes: Recipe[] }) {
             className="w-[168px] shrink-0 snap-start"
           >
             <img
-              src={`https://i.ytimg.com/vi/${r.youtubeId}/mqdefault.jpg`}
+              src={`https://i.ytimg.com/vi/${r.long.youtubeId}/mqdefault.jpg`}
               alt=""
               loading="lazy"
               className="aspect-video w-full rounded-xl border border-line object-cover"
@@ -23,7 +23,7 @@ export default function RelatedRail({ recipes }: { recipes: Recipe[] }) {
               {r.title}
             </p>
             <p className="text-[11px] text-faint">
-              {r.channel} · {formatCookTime(r.cookMinutes)}
+              {r.long.channel} · {formatCookTime(r.cookMinutes)}
             </p>
           </Link>
         ))}

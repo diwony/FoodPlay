@@ -34,6 +34,7 @@ export default function RecipeScreen() {
 
   const [mini, setMini] = useState(false);
   const [dismissed, setDismissed] = useState(false);
+  const [fmt, setFmt] = useState<"long" | "short">("long");
 
   // ── 레이아웃 계산 ──────────────────────────────────────────
   const PAD = spacing(4);
@@ -84,13 +85,17 @@ export default function RecipeScreen() {
     );
   }
 
+  const useShort = fmt === "short" && !!recipe.short;
+  const activeVideoId = useShort ? recipe.short!.youtubeId : recipe.long.youtubeId;
+  const activeChannel = useShort ? recipe.short!.channel : recipe.long.channel;
+
   const jumpTo = (seconds: number) => {
     playerRef.current?.seekTo(seconds);
     if (mini) scrollToTop();
   };
 
   const openInYouTube = () =>
-    Linking.openURL(`https://www.youtube.com/watch?v=${recipe.youtubeId}`);
+    Linking.openURL(`https://www.youtube.com/watch?v=${activeVideoId}`);
 
   const showPlayer = !(mini && dismissed);
 
@@ -113,8 +118,31 @@ export default function RecipeScreen() {
           {/* 영상이 차지하는 자리 (플레이어는 아래 오버레이로 항상 떠 있음) */}
           <View style={{ height: dockedH, marginBottom: spacing(3) }} />
 
+          {recipe.short && (
+            <View style={styles.segment}>
+              {(["long", "short"] as const).map((f) => (
+                <Pressable
+                  key={f}
+                  onPress={() => setFmt(f)}
+                  style={[styles.segBtn, fmt === f && styles.segBtnActive]}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: fmt === f }}
+                >
+                  <Text
+                    style={[styles.segText, fmt === f && styles.segTextActive]}
+                  >
+                    {f === "long" ? "롱폼 · 자세히" : "숏폼 · 1분컷"}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          )}
+
           <Text style={styles.title}>{recipe.title}</Text>
-          <Text style={styles.channel}>{recipe.channel}</Text>
+          <Text style={styles.channel}>
+            {activeChannel}
+            {useShort ? " · 숏폼" : ""}
+          </Text>
 
           <MetaRow recipe={recipe} />
 
@@ -129,23 +157,33 @@ export default function RecipeScreen() {
 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>조리 순서</Text>
-            <Text style={styles.hint}>시간을 누르면 영상의 그 장면으로 이동해요.</Text>
+            <Text style={styles.hint}>
+              {useShort
+                ? "숏폼은 타임스탬프 없이 한 번에 훑어요. 구간 이동은 롱폼에서."
+                : "시간을 누르면 영상의 그 장면으로 이동해요."}
+            </Text>
 
-            {recipe.steps.map((step) => (
+            {recipe.long.steps.map((step) => (
               <View key={step.order} style={styles.step}>
-                <Pressable
-                  onPress={() => jumpTo(step.start)}
-                  style={({ pressed }) => [
-                    styles.timeBtn,
-                    pressed && styles.timeBtnPressed,
-                  ]}
-                  accessibilityRole="button"
-                  accessibilityLabel={`${step.order}번 스텝, 영상 ${formatTimestamp(
-                    step.start,
-                  )} 지점으로 이동`}
-                >
-                  <Text style={styles.timeText}>▶ {formatTimestamp(step.start)}</Text>
-                </Pressable>
+                {useShort ? (
+                  <View style={[styles.timeBtn, styles.stepNumBtn]}>
+                    <Text style={styles.stepNumText}>{step.order}</Text>
+                  </View>
+                ) : (
+                  <Pressable
+                    onPress={() => jumpTo(step.start)}
+                    style={({ pressed }) => [
+                      styles.timeBtn,
+                      pressed && styles.timeBtnPressed,
+                    ]}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${step.order}번 스텝, 영상 ${formatTimestamp(
+                      step.start,
+                    )} 지점으로 이동`}
+                  >
+                    <Text style={styles.timeText}>▶ {formatTimestamp(step.start)}</Text>
+                  </Pressable>
+                )}
                 <View style={styles.stepBody}>
                   <Text style={styles.stepOrder}>STEP {step.order}</Text>
                   <Text style={styles.stepText}>{step.text}</Text>
@@ -189,7 +227,7 @@ export default function RecipeScreen() {
             >
               <YouTubePlayer
                 ref={playerRef}
-                youtubeId={recipe.youtubeId}
+                youtubeId={activeVideoId}
                 width={dockedW}
               />
             </Animated.View>
@@ -264,6 +302,25 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: font.h2, fontWeight: "800", color: colors.text },
   hint: { fontSize: font.small, color: colors.textMuted },
   chipRow: { flexDirection: "row", flexWrap: "wrap", gap: spacing(2) },
+  segment: {
+    flexDirection: "row",
+    alignSelf: "flex-start",
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    padding: 2,
+  },
+  segBtn: {
+    paddingVertical: spacing(1.5),
+    paddingHorizontal: spacing(3),
+    borderRadius: radius.pill,
+  },
+  segBtnActive: { backgroundColor: colors.text },
+  segText: { fontSize: font.small, fontWeight: "700", color: colors.textMuted },
+  segTextActive: { color: colors.bg },
+  stepNumBtn: { minWidth: 34, alignItems: "center" },
+  stepNumText: { fontSize: font.small, fontWeight: "800", color: colors.textMuted },
   step: {
     flexDirection: "row",
     gap: spacing(3),

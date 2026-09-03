@@ -39,12 +39,25 @@ export interface Reception {
   quotes: { text: string; likes?: number }[];
 }
 
-export interface Recipe {
-  id: string;
-  title: string;
+export type VideoFormat = "long" | "short";
+
+/** 상세 영상 — 스텝별 타임스탬프가 붙는다. */
+export interface LongVideo {
   /** 유튜브 영상 ID (watch?v= 뒤의 11자리) */
   youtubeId: string;
   channel: string;
+  steps: RecipeStep[];
+}
+
+/** 1분 내외 요약 영상 — 타임스탬프 없이 빠르게 훑는 용도. */
+export interface ShortVideo {
+  youtubeId: string;
+  channel: string;
+}
+
+export interface Recipe {
+  id: string;
+  title: string;
   /** 총 조리 시간(분) */
   cookMinutes: number;
   difficulty: Difficulty;
@@ -59,7 +72,10 @@ export interface Recipe {
   coreIngredients: string[];
   /** 레시피에 필요하지만 냉장고에 없을 가능성이 큰 추가 재료 */
   extraIngredients: string[];
-  steps: RecipeStep[];
+  /** 롱폼(상세) 영상 + 스텝 */
+  long: LongVideo;
+  /** 숏폼(요약) 영상. 없을 수도 있다. */
+  short?: ShortVideo;
 }
 
 export interface RecipeDatabase {

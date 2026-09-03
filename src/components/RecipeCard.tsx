@@ -22,7 +22,7 @@ export default function RecipeCard({ match }: Props) {
           {/* 유튜브 기본 썸네일 — API 키 불필요 */}
           <Image
             source={{
-              uri: `https://img.youtube.com/vi/${recipe.youtubeId}/hqdefault.jpg`,
+              uri: `https://img.youtube.com/vi/${recipe.long.youtubeId}/hqdefault.jpg`,
             }}
             style={styles.thumb}
             resizeMode="cover"
@@ -38,7 +38,7 @@ export default function RecipeCard({ match }: Props) {
             {recipe.title}
           </Text>
           <Text style={styles.sub}>
-            {recipe.channel} · {formatCookTime(recipe.cookMinutes)} ·{" "}
+            {recipe.long.channel} · {formatCookTime(recipe.cookMinutes)} ·{" "}
             {formatDifficulty(recipe.difficulty)}
           </Text>
 

@@ -88,7 +88,7 @@ for (const source of targets) {
       continue;
     }
     recipes.push(recipe);
-    console.log(`✓ ${source.id}: ${recipe.steps.length} 스텝`);
+    console.log(`✓ ${source.id}: ${recipe.long.steps.length} 스텝`);
   } catch (err) {
     failed++;
     console.error(`✗ ${source.id}: ${err.message}`);

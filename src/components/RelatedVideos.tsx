@@ -42,7 +42,7 @@ export default function RelatedVideos({ recipes }: Props) {
           >
             <Image
               source={{
-                uri: `https://img.youtube.com/vi/${r.youtubeId}/mqdefault.jpg`,
+                uri: `https://img.youtube.com/vi/${r.long.youtubeId}/mqdefault.jpg`,
               }}
               style={styles.thumb}
               resizeMode="cover"
@@ -52,7 +52,7 @@ export default function RelatedVideos({ recipes }: Props) {
               {r.title}
             </Text>
             <Text style={styles.cardMeta}>
-              {r.channel} · {formatCookTime(r.cookMinutes)}
+              {r.long.channel} · {formatCookTime(r.cookMinutes)}
             </Text>
           </Pressable>
         ))}

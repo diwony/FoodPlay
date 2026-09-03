@@ -18,11 +18,16 @@ function RecipeCardBase({ match, rank }: { match: RecipeMatch; rank: number }) {
     >
       <div className="relative overflow-hidden rounded-xl bg-accent-soft">
         <img
-          src={`https://i.ytimg.com/vi/${recipe.youtubeId}/mqdefault.jpg`}
+          src={`https://i.ytimg.com/vi/${recipe.long.youtubeId}/mqdefault.jpg`}
           alt=""
           loading="lazy"
           className="aspect-square h-full w-full scale-[1.35] object-cover transition-transform duration-300 group-hover:scale-[1.45]"
         />
+        {recipe.short && (
+          <span className="absolute bottom-1 right-1 rounded bg-ink/80 px-1 py-0.5 text-[9px] font-bold text-white">
+            숏폼
+          </span>
+        )}
         <span className="absolute left-1.5 top-1.5 rounded-md bg-ink/85 px-1.5 py-0.5 text-[10px] font-bold tabular text-white">
           {rank <= 3 ? `TOP ${rank}` : `${pct}%`}
         </span>
@@ -33,7 +38,7 @@ function RecipeCardBase({ match, rank }: { match: RecipeMatch; rank: number }) {
           {recipe.title}
         </h3>
         <p className="mt-0.5 text-[12px] text-faint">
-          {recipe.channel} · {formatCookTime(recipe.cookMinutes)} ·{" "}
+          {recipe.long.channel} · {formatCookTime(recipe.cookMinutes)} ·{" "}
           {formatDifficulty(recipe.difficulty)}
         </p>
 
