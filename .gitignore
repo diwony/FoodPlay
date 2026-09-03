@@ -30,8 +30,10 @@ yarn-error.*
 .DS_Store
 *.pem
 
-# 개발 노트 (작성자용, 비공개)
+# 작성자용 비공개 문서 (포트폴리오 배치·시연 메모 등)
 DEV.md
+docs/portfolio-card.md
+docs/app-preview.md
 
 # local env files / secrets
 .env
