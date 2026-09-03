@@ -89,13 +89,17 @@ npm start                                # QR → Expo Go
 칸은 큐레이션에 없는 채널까지 유튜브 전체에서 관련 영상을 끌어온다.
 
 - **키 없이 배포된 상태**: 유튜브 검색 결과 페이지로 보내는 링크로 동작한다.
-- **`VITE_YT_API_KEY` 를 넣으면**: 앱 안에서 바로 결과 그리드를 띄우고,
-  누르면 `/yt/:id` 에서 재생한다. 검색 1회 = 쿼터 100units 라 자동 호출은
-  안 하고 버튼을 눌러야 돈다(세션 캐시).
+- **나만 쓰기**: 앱의 `🔑 API 키 연결` 에 키를 붙여넣으면 그 브라우저의
+  localStorage 에 저장돼 바로 인앱 검색이 된다(재배포 불필요).
+- **방문자 전체에게 켜기**: `apps/web/.env.local` 에 `VITE_YT_API_KEY=...` 를
+  넣고 `npm run deploy:web`. 키가 빌드에 박혀 모든 방문자가 인앱 검색을 쓴다.
 
-설정: `apps/web/.env.example` 참고 → `apps/web/.env.local` 에 키 저장
-(git 제외). 정적 사이트라 키는 번들에 노출되므로 Google Cloud Console 에서
-HTTP 리퍼러를 `https://diwony.github.io/*` 로 잠근다.
+검색 1회 = 쿼터 100units. 기본 일 할당량 10,000 → 하루 약 100회(전체 방문자
+합산). 초과하면 그날은 링크아웃으로 자동 대체될 뿐 **요금은 안 나온다**
+(YouTube Data API 는 유료 등급이 없다). 더 필요하면 Google 에 무료 증량 신청.
+
+정적 사이트라 키는 번들에 노출되므로 Google Cloud Console 에서 HTTP 리퍼러를
+`https://diwony.github.io/*` 로 잠근다(설정: `apps/web/.env.example`).
 
 ## 데이터 파이프라인
 
