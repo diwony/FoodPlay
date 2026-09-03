@@ -1,11 +1,16 @@
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useYouTubeSearch } from "../lib/useYouTubeSearch";
-import { youtubeSearchEnabled, youtubeSearchUrl } from "../lib/youtube";
+import {
+  hasYouTubeKey,
+  setUserApiKey,
+  youtubeSearchUrl,
+} from "../lib/youtube";
 
 interface Props {
   /** 유튜브에 던질 검색어. 보통 "재료 + 레시피". 비어 있으면 렌더 안 함. */
   query: string;
-  /** 섹션 부제 (예: "김치볶음밥 · 참치김치찌개 …" 대신 맥락 한 줄) */
+  /** 섹션 부제 */
   hint?: string;
 }
 
@@ -15,8 +20,21 @@ interface Props {
  */
 export default function YouTubeRail({ query, hint }: Props) {
   const { state, run } = useYouTubeSearch();
+  // 키 저장/삭제 시 리렌더용
+  const [keyVersion, setKeyVersion] = useState(0);
+  const [showKeyForm, setShowKeyForm] = useState(false);
+  const [keyDraft, setKeyDraft] = useState("");
+  const hasKey = useMemo(() => hasYouTubeKey(), [keyVersion]);
+
   const q = query.trim();
   if (!q) return null;
+
+  const saveKey = () => {
+    setUserApiKey(keyDraft);
+    setKeyDraft("");
+    setShowKeyForm(false);
+    setKeyVersion((n) => n + 1);
+  };
 
   const openSearch = (
     <a
@@ -29,19 +47,56 @@ export default function YouTubeRail({ query, hint }: Props) {
     </a>
   );
 
+  const keyForm = (
+    <div className="mt-3 rounded-xl border border-line bg-bg/60 p-3">
+      <p className="text-[12px] font-semibold text-muted">
+        YouTube Data API v3 키 (이 브라우저에만 저장돼요)
+      </p>
+      <div className="mt-2 flex gap-2">
+        <input
+          value={keyDraft}
+          onChange={(e) => setKeyDraft(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && saveKey()}
+          placeholder="AIza…"
+          className="min-w-0 flex-1 rounded-lg border border-line bg-surface px-3 py-2 text-[13px] outline-none focus:border-good/50"
+        />
+        <button
+          onClick={saveKey}
+          className="shrink-0 rounded-lg bg-ink px-3 py-2 text-[13px] font-semibold text-bg"
+        >
+          연결
+        </button>
+      </div>
+      <p className="mt-2 text-[11px] leading-relaxed text-faint">
+        console.cloud.google.com → YouTube Data API v3 사용 설정 → API 키 생성 →
+        HTTP 리퍼러를 <code>{location.origin}/*</code> 로 제한. 자세히는 저장소
+        <code> apps/web/.env.example</code>.
+      </p>
+    </div>
+  );
+
   return (
     <section className="mt-10 border-t border-line pt-8">
       <div className="flex items-baseline justify-between gap-3">
         <h2 className="text-[19px] font-bold tracking-tight">유튜브에서 더 찾기</h2>
-        {state.status === "done" && (
-          <a
-            href={youtubeSearchUrl(q)}
-            target="_blank"
-            rel="noreferrer"
-            className="shrink-0 text-[12px] font-semibold text-faint hover:text-good"
+        {hasKey ? (
+          <button
+            onClick={() => setShowKeyForm((s) => !s)}
+            className="shrink-0 text-[12px] font-semibold text-faint hover:text-ink"
           >
-            전체 결과 ↗
-          </a>
+            🔑 키 변경
+          </button>
+        ) : (
+          state.status === "done" && (
+            <a
+              href={youtubeSearchUrl(q)}
+              target="_blank"
+              rel="noreferrer"
+              className="shrink-0 text-[12px] font-semibold text-faint hover:text-good"
+            >
+              전체 결과 ↗
+            </a>
+          )
         )}
       </div>
       <p className="mt-1 text-[13px] text-muted">
@@ -49,15 +104,25 @@ export default function YouTubeRail({ query, hint }: Props) {
       </p>
 
       <div className="mt-4">
-        {!youtubeSearchEnabled ? (
+        {!hasKey ? (
           <div className="rounded-[var(--radius-card)] border border-dashed border-line bg-surface/60 px-5 py-6">
             <p className="text-[13px] text-muted">
-              이 데모에는 YouTube API 키가 연결돼 있지 않아 앱 안에서 바로
-              불러오지는 못해요. 아래 버튼으로 유튜브의 전체 관련 영상을 볼 수
-              있어요.
+              앱 안에서 바로 불러오려면 YouTube API 키를 연결하세요. 키 없이도
+              아래 버튼으로 유튜브의 전체 관련 영상을 볼 수 있어요.
             </p>
-            <div className="mt-3">{openSearch}</div>
+            <div className="mt-3 flex flex-wrap items-center gap-4">
+              {openSearch}
+              <button
+                onClick={() => setShowKeyForm((s) => !s)}
+                className="text-[13px] font-semibold text-ink hover:underline"
+              >
+                🔑 API 키 연결
+              </button>
+            </div>
+            {showKeyForm && keyForm}
           </div>
+        ) : showKeyForm ? (
+          keyForm
         ) : state.status === "idle" ? (
           <button
             onClick={() => run(q)}
@@ -78,10 +143,20 @@ export default function YouTubeRail({ query, hint }: Props) {
           <div className="rounded-[var(--radius-card)] border border-dashed border-line bg-surface/60 px-5 py-6">
             <p className="text-[13px] text-muted">
               {state.kind === "quota"
-                ? "오늘 유튜브 검색 한도를 다 썼어요. 잠시 후 다시 시도하거나 아래에서 유튜브로 바로 보세요."
-                : "유튜브 검색을 불러오지 못했어요. 아래에서 유튜브로 바로 볼 수 있어요."}
+                ? "유튜브 검색 한도를 다 썼거나 키 권한이 막혀 있어요(리퍼러 제한 확인). 아래에서 유튜브로 바로 보세요."
+                : state.kind === "bad-key"
+                  ? "API 키 형식이 올바르지 않아요. 키를 다시 확인해 주세요."
+                  : "유튜브 검색을 불러오지 못했어요. 아래에서 유튜브로 바로 볼 수 있어요."}
             </p>
-            <div className="mt-3">{openSearch}</div>
+            <div className="mt-3 flex flex-wrap items-center gap-4">
+              {openSearch}
+              <button
+                onClick={() => setShowKeyForm(true)}
+                className="text-[13px] font-semibold text-ink hover:underline"
+              >
+                🔑 키 변경
+              </button>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">

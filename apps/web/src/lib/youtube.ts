@@ -4,31 +4,46 @@
  * 큐레이션 레시피(스텝 타임스탬프)가 이 앱의 본체이고, 이건 그 아래에서
  * "더 많은 관련 영상"을 유튜브 전체에서 긁어오는 보조 기능이다.
  *
- * ── 키가 없을 때 ────────────────────────────────────────────────
- * 정적 사이트라 서버가 없다. YouTube Data API 키(`VITE_YT_API_KEY`)가
- * 빌드에 들어가 있지 않으면 검색 호출을 하지 않고, 대신 유튜브 검색
- * 페이지로 바로 보내는 링크(`youtubeSearchUrl`)만 쓴다. 이래도 "관련
- * 영상 전부"라는 목적은 달성된다 — 유튜브가 직접 보여주니까.
+ * ── API 키 ─────────────────────────────────────────────────────
+ * 정적 사이트라 서버가 없다. YouTube Data API v3 키가 있어야 검색이 된다.
+ * 키는 두 군데서 읽는다(로컬 우선):
+ *   1. localStorage["yt_api_key"] — 앱 안 "키 연결" 입력창에서 저장. 이 브라우저
+ *      에서만 쓰인다. 재빌드·재배포 필요 없음.
+ *   2. import.meta.env.VITE_YT_API_KEY — 빌드에 박은 키. 배포본 방문자 전체가
+ *      쓰게 하려면 이 방법. apps/web/.env.local 참고.
+ * 둘 다 없으면 검색을 호출하지 않고 유튜브 검색 페이지 링크로 대체한다.
  *
- * 키를 넣으려면: apps/web/.env.local 에
- *   VITE_YT_API_KEY=AIza...
- * Google Cloud Console 에서 YouTube Data API v3 키를 만들고,
+ * 정적 사이트라 키는 어차피 노출되므로, Google Cloud Console 에서
  * "애플리케이션 제한 → HTTP 리퍼러" 를 https://diwony.github.io/* 로 잠근다.
- * (키는 어차피 번들에 노출되므로 리퍼러 제한이 사실상의 방어선이다.)
  */
 
-export interface YouTubeHit {
-  videoId: string;
-  title: string;
-  channel: string;
-  publishedAt: string;
-  thumbnail: string;
+const LS_KEY = "yt_api_key";
+
+export function getApiKey(): string | undefined {
+  try {
+    const local = localStorage.getItem(LS_KEY);
+    if (local && local.trim()) return local.trim();
+  } catch {
+    /* localStorage 접근 불가(프라이빗 모드 등) — env 로 폴백 */
+  }
+  const env = import.meta.env.VITE_YT_API_KEY;
+  return env && env.trim() ? env.trim() : undefined;
 }
 
-const API_KEY = import.meta.env.VITE_YT_API_KEY as string | undefined;
+/** 사용자가 앱에서 입력한 키를 이 브라우저에 저장. */
+export function setUserApiKey(key: string): void {
+  try {
+    const v = key.trim();
+    if (v) localStorage.setItem(LS_KEY, v);
+    else localStorage.removeItem(LS_KEY);
+  } catch {
+    /* 무시 */
+  }
+}
 
-/** 빌드에 키가 들어있으면 true. UI 분기에 쓴다. */
-export const youtubeSearchEnabled = Boolean(API_KEY);
+export function hasYouTubeKey(): boolean {
+  return Boolean(getApiKey());
+}
 
 /** 유튜브 검색 결과 페이지 URL (키 없이도 항상 동작하는 대체 경로). */
 export function youtubeSearchUrl(query: string): string {
@@ -38,11 +53,19 @@ export function youtubeSearchUrl(query: string): string {
 export class YouTubeSearchError extends Error {
   constructor(
     message: string,
-    readonly kind: "no-key" | "quota" | "http" | "network",
+    readonly kind: "no-key" | "quota" | "bad-key" | "http" | "network",
   ) {
     super(message);
     this.name = "YouTubeSearchError";
   }
+}
+
+export interface YouTubeHit {
+  videoId: string;
+  title: string;
+  channel: string;
+  publishedAt: string;
+  thumbnail: string;
 }
 
 interface RawItem {
@@ -63,7 +86,8 @@ export async function searchYouTube(
   query: string,
   opts: { signal?: AbortSignal; order?: "relevance" | "viewCount" } = {},
 ): Promise<YouTubeHit[]> {
-  if (!API_KEY) {
+  const key = getApiKey();
+  if (!key) {
     throw new YouTubeSearchError("YouTube API 키가 없습니다.", "no-key");
   }
   const url = new URL("https://www.googleapis.com/youtube/v3/search");
@@ -75,7 +99,7 @@ export async function searchYouTube(
   url.searchParams.set("relevanceLanguage", "ko");
   url.searchParams.set("order", opts.order ?? "relevance");
   url.searchParams.set("q", query);
-  url.searchParams.set("key", API_KEY);
+  url.searchParams.set("key", key);
 
   let res: Response;
   try {
@@ -85,7 +109,13 @@ export async function searchYouTube(
     throw new YouTubeSearchError("네트워크 오류", "network");
   }
   if (!res.ok) {
-    const kind = res.status === 403 ? "quota" : "http";
+    // 400 = 키 형식 오류, 403 = 쿼터 초과 또는 리퍼러/권한 거부
+    const kind =
+      res.status === 400
+        ? "bad-key"
+        : res.status === 403
+          ? "quota"
+          : "http";
     throw new YouTubeSearchError(`YouTube API ${res.status}`, kind);
   }
   const json = (await res.json()) as { items?: RawItem[] };

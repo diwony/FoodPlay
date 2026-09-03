@@ -12,8 +12,10 @@
   상세 화면 별도 칸에 추천
 - 각 레시피의 **추가로 필요한 재료 · 조리 시간 · 난이도**, **유튜브 댓글 반응
   요약**, **추천 영상 가로 캐러셀** 표시
-- 냉장고 재료(1개만 골라도 매칭) + **오늘 기분·상황**(칩 선택 + 자유 입력: "비 와서
-  으슬으슬해", "집들이 하는데" → 키워드 자동 인식)로 맞춤 추천
+- 시작을 **3가지 모드**로 나눔 — ① 냉장고 재료로 만들기(재료 없이 **오늘 기분·
+  상황만 골라도** 추천) ② 밀키트 푸짐하게 보충(곁들일 반찬 + 더 넣을 재료)
+  ③ 장보기 추천(예산·날씨·땡기는 맛 → 오늘 저녁 + 장 볼 목록)
+- 기분·상황은 칩 선택 + 자유 입력("비 와서 으슬으슬해" → 키워드 자동 인식)
 - 레시피는 **여러 유튜버**에서 큐레이션 (백종원 · 이 남자의 cook · 자취요리신 ·
   성시경 · 김대석 셰프 · 딸을 위한 레시피 · 정호영 · 하루한끼 …)
 - **웹**은 별도 React(Vite) 앱, **모바일 앱**은 Expo(React Native). 매칭·데이터
@@ -51,8 +53,10 @@ packages/core/           웹·앱 공유. UI·플랫폼 의존성 없음
   src/lib/               ingredients · match (재료+vibe 랭킹, relatedRecipes) · vibes (parseVibes) · format
 
 apps/web/                Vite React 웹 (주력 화면)
-  src/pages/             Home · Recipe · Watch(/yt/:id 유튜브 검색 결과 재생) · NotFound
-  src/components/        RecipeCard · IngredientField · VibeField · RelatedRail · ReceptionBlock · YouTubeRail
+  src/pages/             Landing(3모드) · Fridge(재료·기분) · MealKit(밀키트 곁들임)
+                         · Shop(장보기: 예산·날씨·맛) · Recipe · Watch(/yt/:id) · NotFound
+  src/components/        RecipeCard · ResultList · IngredientField · VibeField · RelatedRail
+                         · ReceptionBlock · YouTubeRail
   src/lib/               useYouTube (IFrame API) · useMiniPlayer (스크롤 시 PiP) · youtube / useYouTubeSearch
 
 app/  src/  (루트)       Expo Router 모바일 앱 (+ RN-web 프리뷰)

@@ -16,6 +16,8 @@ interface Props {
 
 export default function RecipeCard({ match }: Props) {
   const { recipe, have, missing, score, matchedVibes } = match;
+  // 재료 없이 기분만으로 온 결과는 매칭 점수가 없다(0).
+  const browse = have.length === 0 && score === 0;
 
   return (
     <Link href={`/recipe/${recipe.id}`} asChild>
@@ -34,9 +36,11 @@ export default function RecipeCard({ match }: Props) {
             resizeMode="cover"
             accessibilityIgnoresInvertColors
           />
-          <View style={styles.scoreBadge}>
-            <Text style={styles.scoreText}>{Math.round(score * 100)}%</Text>
-          </View>
+          {!browse && (
+            <View style={styles.scoreBadge}>
+              <Text style={styles.scoreText}>{Math.round(score * 100)}%</Text>
+            </View>
+          )}
         </View>
 
         <View style={styles.body}>
@@ -60,7 +64,11 @@ export default function RecipeCard({ match }: Props) {
             ))}
           </View>
 
-          {missing.length > 0 ? (
+          {browse ? (
+            <Text style={styles.sub}>
+              {recipe.coreIngredients.slice(0, 4).join(" · ")}
+            </Text>
+          ) : missing.length > 0 ? (
             <Text style={styles.missingNote}>
               {missing.length}개만 더 있으면 완성
             </Text>

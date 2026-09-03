@@ -11,6 +11,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import RecipeCard from "../src/components/RecipeCard";
 import {
+  browseRecipes,
   INGREDIENT_GROUPS,
   matchRecipes,
   parseIngredients,
@@ -29,8 +30,12 @@ export default function HomeScreen() {
   const myIngredients = useMyIngredients();
 
   const ingredients = useMemo(() => parseIngredients(raw), [raw]);
+  // 재료가 있으면 재료 매칭, 없으면 (기분만 골라도) 둘러보기를 기분순으로.
   const matches = useMemo(
-    () => matchRecipes(ingredients, { vibes }),
+    () =>
+      ingredients.length > 0
+        ? matchRecipes(ingredients, { vibes })
+        : browseRecipes(vibes),
     [ingredients, vibes],
   );
 

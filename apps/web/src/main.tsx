@@ -3,7 +3,10 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import Layout from "./Layout";
-import Home from "./pages/Home";
+import Landing from "./pages/Landing";
+import Fridge from "./pages/Fridge";
+import MealKit from "./pages/MealKit";
+import Shop from "./pages/Shop";
 import Recipe from "./pages/Recipe";
 import Watch from "./pages/Watch";
 import NotFound from "./pages/NotFound";
@@ -13,7 +16,10 @@ const router = createBrowserRouter(
     {
       element: <Layout />,
       children: [
-        { path: "/", element: <Home /> },
+        { path: "/", element: <Landing /> },
+        { path: "/fridge", element: <Fridge /> },
+        { path: "/mealkit", element: <MealKit /> },
+        { path: "/shop", element: <Shop /> },
         { path: "/recipe/:id", element: <Recipe /> },
         { path: "/yt/:id", element: <Watch /> },
         { path: "*", element: <NotFound /> },

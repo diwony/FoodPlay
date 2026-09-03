@@ -3,6 +3,7 @@ import { Link, Outlet, ScrollRestoration, useLocation } from "react-router-dom";
 export default function Layout() {
   const { pathname } = useLocation();
   const onHome = pathname === "/";
+  const onSubPage = ["/fridge", "/mealkit", "/shop"].includes(pathname);
 
   return (
     <div className="min-h-dvh">
@@ -22,7 +23,7 @@ export default function Layout() {
               to="/"
               className="text-[13px] font-medium text-muted transition-colors hover:text-ink"
             >
-              ← 재료 다시 고르기
+              {onSubPage ? "← 다른 방식으로" : "← 처음으로"}
             </Link>
           )}
         </div>

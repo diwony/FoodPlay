@@ -1,9 +1,12 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import {
+  BUDGET_LABEL,
   compactViews,
+  estimateBudget,
   formatCookTime,
   formatDifficulty,
+  shoppingItems,
   vibeLabel,
   type RecipeMatch,
 } from "@foodplay/core";
@@ -13,11 +16,14 @@ interface Props {
   rank: number;
   /** 홈 "둘러보기" 모드 — 재료 매칭 정보 없이 레시피만 보여준다 */
   browse?: boolean;
+  /** 장보기 모드 — 예산과 "살 것" 목록을 보여준다 */
+  shopping?: boolean;
 }
 
-function RecipeCardBase({ match, rank, browse = false }: Props) {
+function RecipeCardBase({ match, rank, browse = false, shopping = false }: Props) {
   const { recipe, have, missing, score, matchedVibes } = match;
   const pct = Math.round(score * 100);
+  const buy = shopping ? shoppingItems(recipe) : [];
 
   return (
     <Link
@@ -36,9 +42,14 @@ function RecipeCardBase({ match, rank, browse = false }: Props) {
             숏폼
           </span>
         )}
-        {!browse && (
+        {!browse && !shopping && (
           <span className="absolute left-1.5 top-1.5 rounded-md bg-ink/85 px-1.5 py-0.5 text-[10px] font-bold tabular text-white">
             {rank <= 3 ? `TOP ${rank}` : `${pct}%`}
+          </span>
+        )}
+        {shopping && rank <= 3 && (
+          <span className="absolute left-1.5 top-1.5 rounded-md bg-good/90 px-1.5 py-0.5 text-[10px] font-bold text-white">
+            추천 {rank}
           </span>
         )}
       </div>
@@ -55,7 +66,22 @@ function RecipeCardBase({ match, rank, browse = false }: Props) {
           )}
         </p>
 
-        {browse ? (
+        {shopping ? (
+          <>
+            <p className="mt-1.5 text-[12px] font-semibold text-good">
+              장바구니 {BUDGET_LABEL[estimateBudget(recipe)]}
+              {matchedVibes.length > 0 && (
+                <span className="text-muted">
+                  {"  "}
+                  {matchedVibes.map((v) => `#${vibeLabel(v)}`).join(" ")}
+                </span>
+              )}
+            </p>
+            <p className="mt-1 text-[12px] text-muted">
+              🛒 {buy.length > 0 ? buy.slice(0, 5).join(" · ") : "집에 있는 걸로 가능"}
+            </p>
+          </>
+        ) : browse ? (
           <p className="mt-2 text-[12px] font-semibold text-muted">
             {recipe.coreIngredients.slice(0, 4).join(" · ")}
             {matchedVibes.length > 0 && (
