@@ -19,7 +19,8 @@ export type Vibe =
   | "spicy" // 매콤하게 / 스트레스
   | "guests" // 집들이 / 손님상
   | "homey" // 엄마밥 / 집밥
-  | "light"; // 가볍게
+  | "light" // 가볍게
+  | "convenience"; // 편의점·간단 한끼 / 혼밥 / 편의점 정찬 (편스토랑 감성)
 
 /** 조리 스텝. 특정 영상 구간과 1:1로 연결된다. */
 export interface RecipeStep {

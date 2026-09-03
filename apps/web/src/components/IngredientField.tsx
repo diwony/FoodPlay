@@ -1,12 +1,5 @@
 import { memo, useState } from "react";
-
-const QUICK_ADD = [
-  "계란", "김치", "대파", "양파", "두부", "감자", "당근", "애호박",
-  "양배추", "부추", "미역", "콩나물", "어묵", "참치캔", "떡볶이떡", "버섯",
-  "돼지고기", "소고기", "닭", "된장", "고추장", "밥",
-];
-
-const DEFAULT_SET = new Set(QUICK_ADD);
+import { INGREDIENT_GROUPS, QUICK_ADD_SET } from "@foodplay/core";
 
 interface Props {
   value: string;
@@ -39,7 +32,7 @@ function IngredientField({
   };
 
   // 기본 칩에 이미 있는 건 "내 재료"에서 중복 표시하지 않는다
-  const mine = myItems.filter((i) => !DEFAULT_SET.has(i));
+  const mine = myItems.filter((i) => !QUICK_ADD_SET.has(i));
 
   return (
     <div>
@@ -52,27 +45,40 @@ function IngredientField({
         className="mt-2 w-full resize-none rounded-xl border border-line bg-surface px-4 py-3 text-[15px] outline-none transition-colors placeholder:text-faint focus:border-ink/40"
       />
 
-      <div className="mt-2.5 flex flex-wrap gap-1.5">
-        {QUICK_ADD.map((item) => {
-          const on = selected.has(item);
-          return (
-            <button
-              key={item}
-              type="button"
-              onClick={() => onToggle(item)}
-              aria-pressed={on}
-              className={
-                "rounded-full border px-3 py-1.5 text-[13px] font-medium transition-colors " +
-                (on
-                  ? "border-ink bg-ink text-bg"
-                  : "border-line bg-surface text-ink hover:border-ink/30")
-              }
-            >
-              {on ? "✓ " : "+ "}
-              {item}
-            </button>
-          );
-        })}
+      <div className="mt-3 grid gap-3">
+        {INGREDIENT_GROUPS.map((group) => (
+          <div key={group.key}>
+            <p className="text-[12px] font-bold text-faint">
+              <span className="mr-1">{group.emoji}</span>
+              {group.label}
+            </p>
+            {group.hint && (
+              <p className="mt-0.5 text-[11px] text-faint/80">{group.hint}</p>
+            )}
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              {group.items.map((item) => {
+                const on = selected.has(item);
+                return (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => onToggle(item)}
+                    aria-pressed={on}
+                    className={
+                      "rounded-full border px-3 py-1.5 text-[13px] font-medium transition-colors " +
+                      (on
+                        ? "border-ink bg-ink text-bg"
+                        : "border-line bg-surface text-ink hover:border-ink/30")
+                    }
+                  >
+                    {on ? "✓ " : "+ "}
+                    {item}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* 내가 자주 쓰는 재료 */}

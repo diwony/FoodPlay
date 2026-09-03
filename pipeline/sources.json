@@ -60,6 +60,13 @@
     { "id": "buchujeon", "dish": "부추전", "youtubeId": "-af5_s0mgMY", "views": 950000 },
     { "id": "ganjang-tteokbokki", "dish": "간장떡볶이", "youtubeId": "TEfW6u_Vfy8", "views": 1300000 },
     { "id": "yangbaechu-bokkeum", "dish": "양배추볶음", "youtubeId": "R_nwLsNPL5k", "views": 2600000 },
-    { "id": "dubu-kimchi", "dish": "두부김치", "youtubeId": "dYatXniNTMo", "views": 880000 }
+    { "id": "dubu-kimchi", "dish": "두부김치", "youtubeId": "dYatXniNTMo", "views": 880000 },
+    { "id": "kimchi-jjigae-classic", "dish": "김치찌개", "youtubeId": "FTtiaEzQ3fc" },
+    { "id": "gyeran-bokkeumbap", "dish": "계란볶음밥", "youtubeId": "jS4Fy17Fsdk" },
+    { "id": "spam-gyeran-bokkeumbap", "dish": "스팸계란볶음밥", "youtubeId": "KXsJquQYq5c" },
+    { "id": "chamchi-mayo-deopbap", "dish": "참치마요덮밥", "youtubeId": "xbR0UQitMXI" },
+    { "id": "omurice", "dish": "오므라이스", "youtubeId": "6W907EOznpM" },
+    { "id": "sundubu-jjigae", "dish": "순두부찌개", "youtubeId": "Zt1kQ71z4Vs" },
+    { "id": "pyeonstore-jeyuk", "dish": "편스토랑 제육볶음", "youtubeId": "oe_WhcK2X4Q" }
   ]
 }

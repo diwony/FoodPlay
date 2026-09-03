@@ -23,7 +23,8 @@
       "vibes": [
         "quick",
         "hearty",
-        "homey"
+        "homey",
+        "convenience"
       ],
       "reception": {
         "summary": "쉽고 따라 하기 좋다는 반응이 대부분. 계량을 정확히 안 알려준다는 지적도 소수 있음.",
@@ -105,7 +106,8 @@
       "vibes": [
         "quick",
         "homey",
-        "guests"
+        "guests",
+        "convenience"
       ],
       "reception": {
         "summary": "처음 해봤는데도 성공했다는 후기가 많음. 계란 간 맞추기가 포인트라는 의견.",
@@ -421,7 +423,8 @@
       ],
       "vibes": [
         "quick",
-        "homey"
+        "homey",
+        "convenience"
       ],
       "long": {
         "youtubeId": "LqgHlHsdFtw",
@@ -597,7 +600,8 @@
       "vibes": [
         "quick",
         "homey",
-        "hearty"
+        "hearty",
+        "convenience"
       ],
       "reception": {
         "summary": "'아무것도 하기 싫을 때 해먹었는데 진짜 맛있다'는 공감 댓글이 많음. 김치와 곁들이는 걸 추천.",
@@ -665,7 +669,8 @@
         "warm",
         "spicy",
         "hearty",
-        "quick"
+        "quick",
+        "convenience"
       ],
       "reception": {
         "summary": "'김치를 충분히 볶은 다음 물을 넣어야 맛있다'는 핵심 팁에 공감. 신 김치·식초 활용 댓글이 많음.",
@@ -1109,7 +1114,8 @@
       ],
       "vibes": [
         "quick",
-        "homey"
+        "homey",
+        "convenience"
       ],
       "reception": {
         "summary": "굴소스 없이 집에 있는 기본 재료로 되는데 맛있다는 반응. 아이들도 잘 먹는다는 후기.",
@@ -1303,6 +1309,404 @@
       },
       "short": {
         "youtubeId": "0He-3LOnRYM"
+      }
+    },
+    {
+      "id": "kimchi-jjigae-classic",
+      "title": "영업집 인생 김치찌개",
+      "cookMinutes": 25,
+      "difficulty": "medium",
+      "coreIngredients": [
+        "김치",
+        "돼지고기",
+        "두부",
+        "대파",
+        "양파"
+      ],
+      "extraIngredients": [
+        "고춧가루",
+        "다진마늘",
+        "국간장",
+        "설탕",
+        "식용유"
+      ],
+      "vibes": [
+        "warm",
+        "spicy",
+        "hearty",
+        "homey"
+      ],
+      "long": {
+        "youtubeId": "FTtiaEzQ3fc",
+        "channel": "신나는셰프 김선영",
+        "steps": [
+          {
+            "order": 1,
+            "text": "냄비에 식용유를 두르고 잘게 썬 돼지고기를 볶아 겉을 익힌다.",
+            "start": 30
+          },
+          {
+            "order": 2,
+            "text": "신 김치를 넣고 설탕을 조금 넣어 갈색이 돌 때까지 충분히 볶는다.",
+            "start": 85
+          },
+          {
+            "order": 3,
+            "text": "고춧가루와 다진 마늘을 넣어 양념 기름을 내듯 한 번 더 볶는다.",
+            "start": 150
+          },
+          {
+            "order": 4,
+            "text": "김치가 잠길 만큼 물을 붓고 센 불로 끓이다 중불로 15분 끓인다.",
+            "start": 210
+          },
+          {
+            "order": 5,
+            "text": "양파와 두부를 넣고 국간장으로 간을 맞춘 뒤 5분 더 끓인다.",
+            "start": 290
+          },
+          {
+            "order": 6,
+            "text": "대파를 넣고 불을 끈다.",
+            "start": 340
+          }
+        ]
+      }
+    },
+    {
+      "id": "gyeran-bokkeumbap",
+      "title": "계란만 잘 익히면 끝, 계란볶음밥",
+      "cookMinutes": 10,
+      "difficulty": "easy",
+      "coreIngredients": [
+        "밥",
+        "계란",
+        "대파",
+        "양파"
+      ],
+      "extraIngredients": [
+        "식용유",
+        "간장",
+        "굴소스",
+        "후추"
+      ],
+      "vibes": [
+        "quick",
+        "convenience",
+        "hearty"
+      ],
+      "long": {
+        "youtubeId": "jS4Fy17Fsdk",
+        "channel": "여경옥의 옥사부tv",
+        "steps": [
+          {
+            "order": 1,
+            "text": "팬에 기름을 넉넉히 두르고 풀어둔 계란을 넣어 스크램블로 살짝 익혀 뺀다.",
+            "start": 25
+          },
+          {
+            "order": 2,
+            "text": "같은 팬에 대파와 양파를 넣고 파기름을 낸다.",
+            "start": 70
+          },
+          {
+            "order": 3,
+            "text": "찬밥을 넣고 기름이 밥알에 코팅되도록 눌러가며 볶는다.",
+            "start": 120
+          },
+          {
+            "order": 4,
+            "text": "간장을 팬 가장자리에 둘러 불맛을 내고 굴소스로 감칠맛을 더한다.",
+            "start": 170
+          },
+          {
+            "order": 5,
+            "text": "익혀둔 계란을 다시 넣어 섞고 후추로 마무리한다.",
+            "start": 215
+          }
+        ]
+      }
+    },
+    {
+      "id": "spam-gyeran-bokkeumbap",
+      "title": "5분 완성 스팸계란볶음밥",
+      "cookMinutes": 5,
+      "difficulty": "easy",
+      "coreIngredients": [
+        "밥",
+        "스팸",
+        "계란",
+        "대파"
+      ],
+      "extraIngredients": [
+        "식용유",
+        "간장",
+        "굴소스",
+        "김가루",
+        "후추"
+      ],
+      "vibes": [
+        "quick",
+        "convenience",
+        "hearty"
+      ],
+      "long": {
+        "youtubeId": "KXsJquQYq5c",
+        "channel": "호영집밥",
+        "steps": [
+          {
+            "order": 1,
+            "text": "스팸을 작게 깍둑 썰어 팬에 노릇하게 굽는다.",
+            "start": 15
+          },
+          {
+            "order": 2,
+            "text": "대파를 넣어 파기름을 내고 풀어둔 계란을 넣어 함께 볶는다.",
+            "start": 50
+          },
+          {
+            "order": 3,
+            "text": "즉석밥이나 찬밥을 넣고 눌러가며 볶는다.",
+            "start": 90
+          },
+          {
+            "order": 4,
+            "text": "간장과 굴소스를 넣어 간하고 후추를 뿌린다.",
+            "start": 135
+          },
+          {
+            "order": 5,
+            "text": "그릇에 담고 김가루를 올린다.",
+            "start": 170
+          }
+        ]
+      }
+    },
+    {
+      "id": "chamchi-mayo-deopbap",
+      "title": "급이 다른 참치마요덮밥",
+      "cookMinutes": 10,
+      "difficulty": "easy",
+      "coreIngredients": [
+        "밥",
+        "참치캔",
+        "계란",
+        "양파"
+      ],
+      "extraIngredients": [
+        "마요네즈",
+        "간장",
+        "설탕",
+        "식용유",
+        "김가루"
+      ],
+      "vibes": [
+        "quick",
+        "convenience",
+        "hearty"
+      ],
+      "long": {
+        "youtubeId": "xbR0UQitMXI",
+        "channel": "자취요리신 simple cooking",
+        "steps": [
+          {
+            "order": 1,
+            "text": "참치캔은 기름을 꼭 짜고 마요네즈와 섞어 참치마요를 만든다.",
+            "start": 20
+          },
+          {
+            "order": 2,
+            "text": "잘게 썬 양파를 팬에 볶다가 간장과 설탕을 넣어 달큰하게 조린다.",
+            "start": 65
+          },
+          {
+            "order": 3,
+            "text": "계란을 부드럽게 스크램블한다.",
+            "start": 110
+          },
+          {
+            "order": 4,
+            "text": "따뜻한 밥 위에 조린 양파, 스크램블, 참치마요를 올린다.",
+            "start": 150
+          },
+          {
+            "order": 5,
+            "text": "김가루를 뿌리고 취향에 따라 스리라차를 곁들인다.",
+            "start": 190
+          }
+        ]
+      }
+    },
+    {
+      "id": "omurice",
+      "title": "부드러운 오므라이스",
+      "cookMinutes": 20,
+      "difficulty": "medium",
+      "coreIngredients": [
+        "밥",
+        "계란",
+        "양파",
+        "당근",
+        "대파"
+      ],
+      "extraIngredients": [
+        "케첩",
+        "버터",
+        "소금",
+        "후추",
+        "식용유"
+      ],
+      "vibes": [
+        "homey",
+        "hearty"
+      ],
+      "long": {
+        "youtubeId": "6W907EOznpM",
+        "channel": "앙알앙알쿡",
+        "steps": [
+          {
+            "order": 1,
+            "text": "양파, 당근, 대파를 잘게 다져 버터에 볶는다.",
+            "start": 30
+          },
+          {
+            "order": 2,
+            "text": "밥을 넣고 케첩을 넣어 고루 볶은 뒤 소금·후추로 간해 케첩라이스를 만든다.",
+            "start": 90
+          },
+          {
+            "order": 3,
+            "text": "계란 2~3개를 풀어 체에 한 번 걸러 곱게 만든다.",
+            "start": 150
+          },
+          {
+            "order": 4,
+            "text": "약불 팬에 기름을 얇게 두르고 계란물을 부어 반숙으로 익힌다.",
+            "start": 210
+          },
+          {
+            "order": 5,
+            "text": "케첩라이스를 담은 접시 위에 계란을 덮고 모양을 잡는다.",
+            "start": 270
+          },
+          {
+            "order": 6,
+            "text": "케첩으로 장식한다.",
+            "start": 320
+          }
+        ]
+      }
+    },
+    {
+      "id": "sundubu-jjigae",
+      "title": "식당보다 맛있는 순두부찌개",
+      "cookMinutes": 20,
+      "difficulty": "easy",
+      "coreIngredients": [
+        "순두부",
+        "바지락",
+        "계란",
+        "양파",
+        "대파"
+      ],
+      "extraIngredients": [
+        "고춧가루",
+        "고추기름",
+        "다진마늘",
+        "국간장",
+        "새우젓"
+      ],
+      "vibes": [
+        "warm",
+        "spicy",
+        "hearty"
+      ],
+      "long": {
+        "youtubeId": "Zt1kQ71z4Vs",
+        "channel": "정호영의 오늘도 요리",
+        "steps": [
+          {
+            "order": 1,
+            "text": "뚝배기에 고추기름을 두르고 다진 마늘과 고춧가루를 약불에 볶아 양념 기름을 낸다.",
+            "start": 35
+          },
+          {
+            "order": 2,
+            "text": "양파를 넣어 볶다가 물을 붓고 끓인다.",
+            "start": 95
+          },
+          {
+            "order": 3,
+            "text": "해감한 바지락을 넣고 입이 벌어질 때까지 끓인다.",
+            "start": 150
+          },
+          {
+            "order": 4,
+            "text": "순두부를 큼직하게 떠 넣고 국간장·새우젓으로 간한다.",
+            "start": 215
+          },
+          {
+            "order": 5,
+            "text": "한소끔 끓으면 계란을 깨 넣고 대파를 올린 뒤 불을 끈다.",
+            "start": 270
+          }
+        ]
+      }
+    },
+    {
+      "id": "pyeonstore-jeyuk",
+      "title": "편스토랑 어남선생 제육볶음",
+      "cookMinutes": 20,
+      "difficulty": "easy",
+      "coreIngredients": [
+        "돼지고기",
+        "양파",
+        "대파",
+        "고추장"
+      ],
+      "extraIngredients": [
+        "고춧가루",
+        "간장",
+        "설탕",
+        "다진마늘",
+        "후추",
+        "식용유"
+      ],
+      "vibes": [
+        "convenience",
+        "spicy",
+        "hearty"
+      ],
+      "long": {
+        "youtubeId": "oe_WhcK2X4Q",
+        "channel": "편스토랑 어남선생 류수영",
+        "steps": [
+          {
+            "order": 1,
+            "text": "고추장, 고춧가루, 간장, 설탕, 다진 마늘, 후추를 섞어 양념장을 만든다.",
+            "start": 40
+          },
+          {
+            "order": 2,
+            "text": "얇게 썬 돼지고기에 양념장을 넣고 조물조물 무쳐 잠깐 재운다.",
+            "start": 100
+          },
+          {
+            "order": 3,
+            "text": "센 불로 달군 팬에 기름을 두르고 고기를 펼쳐 볶는다.",
+            "start": 165
+          },
+          {
+            "order": 4,
+            "text": "고기가 익으면 굵게 썬 양파를 넣고 함께 볶는다.",
+            "start": 225
+          },
+          {
+            "order": 5,
+            "text": "물기가 졸아들면 대파를 넣고 강불에 불맛을 내며 마무리한다.",
+            "start": 285
+          }
+        ]
       }
     }
   ]

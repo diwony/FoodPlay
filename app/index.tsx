@@ -10,36 +10,16 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import RecipeCard from "../src/components/RecipeCard";
-import { matchRecipes, parseIngredients, VIBE_CHIPS, type Vibe } from "@foodplay/core";
+import {
+  INGREDIENT_GROUPS,
+  matchRecipes,
+  parseIngredients,
+  QUICK_ADD_SET,
+  VIBE_CHIPS,
+  type Vibe,
+} from "@foodplay/core";
 import { CONTENT_MAX_WIDTH, colors, font, radius, spacing } from "../src/theme/theme";
 import { useMyIngredients } from "../src/lib/myIngredients";
-
-const QUICK_ADD = [
-  "계란",
-  "김치",
-  "대파",
-  "양파",
-  "두부",
-  "감자",
-  "당근",
-  "애호박",
-  "양배추",
-  "부추",
-  "미역",
-  "콩나물",
-  "어묵",
-  "참치캔",
-  "떡볶이떡",
-  "버섯",
-  "돼지고기",
-  "소고기",
-  "닭",
-  "된장",
-  "고추장",
-  "밥",
-];
-
-const QUICK_ADD_SET = new Set(QUICK_ADD);
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -133,26 +113,41 @@ export default function HomeScreen() {
               accessibilityLabel="냉장고 재료 입력"
             />
 
-            <View style={styles.quickWrap}>
-              {QUICK_ADD.map((item) => {
-                const active = ingredients.includes(item);
-                return (
-                  <Pressable
-                    key={item}
-                    onPress={() => toggleQuick(item)}
-                    style={[styles.quick, active && styles.quickActive]}
-                    accessibilityRole="button"
-                    accessibilityState={{ selected: active }}
-                  >
-                    <Text
-                      style={[styles.quickText, active && styles.quickTextActive]}
-                    >
-                      {active ? "✓ " : "+ "}
-                      {item}
-                    </Text>
-                  </Pressable>
-                );
-              })}
+            <View style={styles.groupList}>
+              {INGREDIENT_GROUPS.map((group) => (
+                <View key={group.key} style={styles.group}>
+                  <Text style={styles.vibeTitle}>
+                    {group.emoji} {group.label}
+                  </Text>
+                  {group.hint ? (
+                    <Text style={styles.groupHint}>{group.hint}</Text>
+                  ) : null}
+                  <View style={styles.quickWrap}>
+                    {group.items.map((item) => {
+                      const active = ingredients.includes(item);
+                      return (
+                        <Pressable
+                          key={item}
+                          onPress={() => toggleQuick(item)}
+                          style={[styles.quick, active && styles.quickActive]}
+                          accessibilityRole="button"
+                          accessibilityState={{ selected: active }}
+                        >
+                          <Text
+                            style={[
+                              styles.quickText,
+                              active && styles.quickTextActive,
+                            ]}
+                          >
+                            {active ? "✓ " : "+ "}
+                            {item}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                </View>
+              ))}
             </View>
 
             <View style={styles.mineBlock}>
@@ -296,6 +291,9 @@ const styles = StyleSheet.create({
     color: colors.text,
     minHeight: 56,
   },
+  groupList: { gap: spacing(3) },
+  group: { gap: spacing(1.5) },
+  groupHint: { fontSize: font.small, color: colors.textMuted, lineHeight: 18 },
   quickWrap: { flexDirection: "row", flexWrap: "wrap", gap: spacing(2) },
   quick: {
     paddingVertical: spacing(2),

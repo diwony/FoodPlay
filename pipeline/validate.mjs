@@ -12,6 +12,7 @@ const VIBES = new Set([
   "guests",
   "homey",
   "light",
+  "convenience",
 ]);
 
 /** @returns {string[]} 오류 메시지 목록 (빈 배열이면 통과) */

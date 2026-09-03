@@ -7,6 +7,7 @@ export * from "./src/data/types";
 export { default as recipeDatabase } from "./src/data/recipes.json";
 
 export * from "./src/lib/ingredients";
+export * from "./src/lib/quickAdd";
 export * from "./src/lib/match";
 export * from "./src/lib/format";
 export * from "./src/lib/vibes";

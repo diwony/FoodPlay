@@ -20,6 +20,7 @@ export const VIBE_CHIPS: VibeChip[] = [
   { vibe: "guests", label: "집들이·손님상", emoji: "🎉" },
   { vibe: "homey", label: "엄마밥 생각", emoji: "🏠" },
   { vibe: "light", label: "가볍게", emoji: "🥗" },
+  { vibe: "convenience", label: "편의점·간단 한끼", emoji: "🏪" },
 ];
 
 const LABEL: Record<Vibe, string> = Object.fromEntries(
@@ -42,6 +43,10 @@ const VIBE_KEYWORDS: Record<Vibe, string[]> = {
   guests: ["집들이", "손님", "대접", "모임", "파티", "안주", "한상", "초대"],
   homey: ["엄마", "집밥", "그리운", "고향", "어릴", "옛날", "할머니", "위로"],
   light: ["가볍", "다이어트", "담백", "산뜻", "느끼", "깔끔", "속이"],
+  convenience: [
+    "편의점", "편스토랑", "정찬", "혼밥", "1인분", "일인분", "야식", "간편식",
+    "대충", "한끼", "냉털", "편세권",
+  ],
 };
 
 export function parseVibes(text: string): Vibe[] {
