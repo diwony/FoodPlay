@@ -2,6 +2,7 @@ import { Link } from "expo-router";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import type { RecipeMatch } from "../lib/match";
 import { formatCookTime, formatDifficulty } from "../lib/format";
+import { vibeLabel } from "../lib/vibes";
 import { colors, font, radius, spacing } from "../theme/theme";
 import Chip from "./Chip";
 
@@ -10,7 +11,7 @@ interface Props {
 }
 
 export default function RecipeCard({ match }: Props) {
-  const { recipe, have, missing, score } = match;
+  const { recipe, have, missing, score, matchedVibes } = match;
 
   return (
     <Link href={`/recipe/${recipe.id}`} asChild>
@@ -59,6 +60,12 @@ export default function RecipeCard({ match }: Props) {
           ) : (
             <Text style={styles.readyNote}>지금 재료로 바로 가능</Text>
           )}
+
+          {matchedVibes.length > 0 && (
+            <Text style={styles.vibeNote}>
+              {matchedVibes.map((v) => `#${vibeLabel(v)}`).join("  ")}
+            </Text>
+          )}
         </View>
       </Pressable>
     </Link>
@@ -99,4 +106,5 @@ const styles = StyleSheet.create({
   chips: { flexDirection: "row", flexWrap: "wrap", gap: spacing(1.5), marginTop: spacing(1) },
   missingNote: { fontSize: font.small, color: colors.primary, fontWeight: "700", marginTop: spacing(1) },
   readyNote: { fontSize: font.small, color: colors.accent, fontWeight: "700", marginTop: spacing(1) },
+  vibeNote: { fontSize: font.tiny, color: colors.accent, fontWeight: "700" },
 });

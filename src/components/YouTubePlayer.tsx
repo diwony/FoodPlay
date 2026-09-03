@@ -10,12 +10,16 @@ import { radius } from "../theme/theme";
 export interface YouTubePlayerHandle {
   /** 지정한 초 지점으로 이동하고 재생한다. */
   seekTo: (seconds: number) => void;
+  /** 재생을 멈춘다. */
+  pause: () => void;
 }
 
-interface Props {
+export interface YouTubePlayerProps {
   youtubeId: string;
   /** 플레이어 폭(px). 높이는 16:9 로 계산된다. */
   width: number;
+  /** 첫 재생이 시작되면 한 번 호출 (미니 플레이어 활성화 트리거) */
+  onPlaybackStart?: () => void;
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -41,14 +45,23 @@ function loadYouTubeApi(): Promise<void> {
 
 /**
  * 웹 구현 — YouTube IFrame Player API.
- * 네이티브 구현(YouTubePlayer.native.tsx)과 동일하게 `seekTo` 를 노출한다.
+ * 네이티브 구현(YouTubePlayer.native.tsx)과 동일한 계약.
  */
-const YouTubePlayer = forwardRef<YouTubePlayerHandle, Props>(
-  ({ youtubeId, width }, ref) => {
+const YouTubePlayer = forwardRef<YouTubePlayerHandle, YouTubePlayerProps>(
+  ({ youtubeId, width, onPlaybackStart }, ref) => {
     const hostRef = useRef<HTMLDivElement>(null);
     const playerRef = useRef<any>(null);
     const pendingSeek = useRef<number | null>(null);
+    const startedRef = useRef(false);
+    const startCbRef = useRef(onPlaybackStart);
+    startCbRef.current = onPlaybackStart;
     const height = Math.round((width * 9) / 16);
+
+    const markStarted = () => {
+      if (startedRef.current) return;
+      startedRef.current = true;
+      startCbRef.current?.();
+    };
 
     useEffect(() => {
       let cancelled = false;
@@ -68,6 +81,10 @@ const YouTubePlayer = forwardRef<YouTubePlayerHandle, Props>(
                 pendingSeek.current = null;
               }
             },
+            onStateChange: (e: any) => {
+              // YT.PlayerState.PLAYING === 1
+              if (e?.data === 1) markStarted();
+            },
           },
         });
       });
@@ -75,8 +92,8 @@ const YouTubePlayer = forwardRef<YouTubePlayerHandle, Props>(
         cancelled = true;
         playerRef.current?.destroy?.();
         playerRef.current = null;
+        startedRef.current = false;
       };
-      // width/height 변경 시 재생성하지 않고 아래 effect 에서 크기만 조정
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [youtubeId]);
 
@@ -93,10 +110,12 @@ const YouTubePlayer = forwardRef<YouTubePlayerHandle, Props>(
           if (p && p.seekTo) {
             p.seekTo(t, true);
             p.playVideo();
+            markStarted();
           } else {
             pendingSeek.current = t;
           }
         },
+        pause: () => playerRef.current?.pauseVideo?.(),
       }),
       [],
     );

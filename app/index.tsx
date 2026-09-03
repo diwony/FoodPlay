@@ -10,8 +10,10 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import RecipeCard from "../src/components/RecipeCard";
+import type { Vibe } from "../src/data/types";
 import { parseIngredients } from "../src/lib/ingredients";
 import { matchRecipes } from "../src/lib/match";
+import { VIBE_CHIPS } from "../src/lib/vibes";
 import { CONTENT_MAX_WIDTH, colors, font, radius, spacing } from "../src/theme/theme";
 
 const QUICK_ADD = [
@@ -35,18 +37,28 @@ const QUICK_ADD = [
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const [raw, setRaw] = useState("");
+  const [vibes, setVibes] = useState<Vibe[]>([]);
 
   const ingredients = useMemo(() => parseIngredients(raw), [raw]);
-  const matches = useMemo(() => matchRecipes(ingredients), [ingredients]);
+  const matches = useMemo(
+    () => matchRecipes(ingredients, { vibes }),
+    [ingredients, vibes],
+  );
 
   const toggleQuick = (item: string) => {
     const has = ingredients.includes(item);
-    if (has) {
-      setRaw(ingredients.filter((i) => i !== item).join(", "));
-    } else {
-      setRaw([...ingredients, item].join(", "));
-    }
+    setRaw(
+      (has ? ingredients.filter((i) => i !== item) : [...ingredients, item]).join(
+        ", ",
+      ),
+    );
     Keyboard.dismiss();
+  };
+
+  const toggleVibe = (v: Vibe) => {
+    setVibes((prev) =>
+      prev.includes(v) ? prev.filter((x) => x !== v) : [...prev, v],
+    );
   };
 
   return (
@@ -64,7 +76,8 @@ export default function HomeScreen() {
           <View style={styles.header}>
             <Text style={styles.h1}>냉장고에 뭐 있어요?</Text>
             <Text style={styles.lead}>
-              가진 재료를 적으면 만들 수 있는 요리 영상을 찾아드려요.
+              가진 재료를 적으면 만들 수 있는 요리 영상을 찾아드려요. 재료 1개만
+              골라도 추천이 떠요.
             </Text>
 
             <TextInput
@@ -89,10 +102,7 @@ export default function HomeScreen() {
                     accessibilityState={{ selected: active }}
                   >
                     <Text
-                      style={[
-                        styles.quickText,
-                        active && styles.quickTextActive,
-                      ]}
+                      style={[styles.quickText, active && styles.quickTextActive]}
                     >
                       {active ? "✓ " : "+ "}
                       {item}
@@ -102,9 +112,38 @@ export default function HomeScreen() {
               })}
             </View>
 
-            {ingredients.length > 0 && (
+            <View style={styles.vibeBlock}>
+              <Text style={styles.vibeTitle}>오늘 기분 · 상황 (선택)</Text>
+              <View style={styles.quickWrap}>
+                {VIBE_CHIPS.map((c) => {
+                  const active = vibes.includes(c.vibe);
+                  return (
+                    <Pressable
+                      key={c.vibe}
+                      onPress={() => toggleVibe(c.vibe)}
+                      style={[styles.vibe, active && styles.vibeActive]}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: active }}
+                    >
+                      <Text
+                        style={[
+                          styles.vibeText,
+                          active && styles.vibeTextActive,
+                        ]}
+                      >
+                        {c.emoji} {c.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+
+            {(ingredients.length > 0 || vibes.length > 0) && (
               <Text style={styles.count}>
-                재료 {ingredients.length}개 · 레시피 {matches.length}개 매칭
+                재료 {ingredients.length}개
+                {vibes.length > 0 ? ` · 기분 ${vibes.length}개` : ""} · 레시피{" "}
+                {matches.length}개 매칭
               </Text>
             )}
           </View>
@@ -160,6 +199,19 @@ const styles = StyleSheet.create({
   quickActive: { backgroundColor: colors.primary, borderColor: colors.primary },
   quickText: { fontSize: font.small, color: colors.text, fontWeight: "600" },
   quickTextActive: { color: colors.primaryText },
+  vibeBlock: { gap: spacing(2) },
+  vibeTitle: { fontSize: font.small, fontWeight: "800", color: colors.textMuted },
+  vibe: {
+    paddingVertical: spacing(2),
+    paddingHorizontal: spacing(3),
+    borderRadius: radius.pill,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  vibeActive: { backgroundColor: colors.accent, borderColor: colors.accent },
+  vibeText: { fontSize: font.small, color: colors.text, fontWeight: "600" },
+  vibeTextActive: { color: "#FFFFFF" },
   count: { fontSize: font.small, color: colors.textMuted, fontWeight: "600" },
   empty: { alignItems: "center", gap: spacing(3), paddingVertical: spacing(12) },
   emptyEmoji: { fontSize: 44 },

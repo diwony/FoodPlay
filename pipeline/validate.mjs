@@ -4,6 +4,15 @@
  */
 
 const DIFFICULTIES = new Set(["easy", "medium", "hard"]);
+const VIBES = new Set([
+  "quick",
+  "hearty",
+  "warm",
+  "spicy",
+  "guests",
+  "homey",
+  "light",
+]);
 
 /** @returns {string[]} 오류 메시지 목록 (빈 배열이면 통과) */
 export function validateRecipe(r, index = 0) {
@@ -27,6 +36,30 @@ export function validateRecipe(r, index = 0) {
     e.push(`${at}.difficulty: easy|medium|hard 중 하나여야 함`);
   arr("coreIngredients");
   arr("extraIngredients");
+
+  if (r.vibes !== undefined) {
+    if (!Array.isArray(r.vibes))
+      e.push(`${at}.vibes: 배열이어야 함`);
+    else
+      r.vibes.forEach((v, i) => {
+        if (!VIBES.has(v)) e.push(`${at}.vibes[${i}]: 허용되지 않은 값 "${v}"`);
+      });
+  }
+
+  if (r.reception !== undefined) {
+    const rc = r.reception;
+    if (typeof rc?.summary !== "string" || !rc.summary.trim())
+      e.push(`${at}.reception.summary: 비어있지 않은 문자열이어야 함`);
+    if (!Array.isArray(rc?.quotes) || rc.quotes.length === 0)
+      e.push(`${at}.reception.quotes: 최소 1개 배열이어야 함`);
+    else
+      rc.quotes.forEach((q, i) => {
+        if (typeof q?.text !== "string" || !q.text.trim())
+          e.push(`${at}.reception.quotes[${i}].text: 비어있지 않은 문자열이어야 함`);
+        if (q.likes !== undefined && !Number.isInteger(q.likes))
+          e.push(`${at}.reception.quotes[${i}].likes: 정수여야 함`);
+      });
+  }
 
   if (!Array.isArray(r.steps) || r.steps.length < 3) {
     e.push(`${at}.steps: 최소 3개여야 함`);
