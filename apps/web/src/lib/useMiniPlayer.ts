@@ -15,12 +15,17 @@ export function useMiniPlayer() {
     const check = () => {
       const el = slotRef.current;
       if (!el) return;
-      setMini(el.getBoundingClientRect().top < DOCK_OUT);
+      const r = el.getBoundingClientRect();
+      // 레이아웃 전(0 크기)에는 판단하지 않는다 — 처음엔 도킹 상태 유지
+      if (r.width === 0 && r.height === 0) return;
+      setMini(r.top < DOCK_OUT);
     };
-    check();
+    // 첫 프레임 이후에 한 번 (레이아웃 완료 보장)
+    const raf = requestAnimationFrame(check);
     window.addEventListener("scroll", check, { passive: true });
     window.addEventListener("resize", check);
     return () => {
+      cancelAnimationFrame(raf);
       window.removeEventListener("scroll", check);
       window.removeEventListener("resize", check);
     };

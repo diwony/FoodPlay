@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, ScrollRestoration, useLocation } from "react-router-dom";
 
 export default function Layout() {
   const { pathname } = useLocation();
@@ -6,6 +6,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-dvh">
+      <ScrollRestoration />
       <header className="sticky top-0 z-30 border-b border-line/80 bg-bg/85 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-5">
           <Link to="/" className="group flex items-center gap-2">
