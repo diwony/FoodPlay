@@ -94,3 +94,10 @@ npm run typecheck        # tsc --noEmit
 npm run pipeline:check    # 데이터 스키마
 npm run build:web         # 웹 번들 성공 여부
 ```
+
+## 라이선스
+
+**모든 권리 보유 (All Rights Reserved)** — [`LICENSE`](LICENSE) 참고.
+이 저장소는 포트폴리오 열람·평가 목적으로만 공개됩니다. 코드 열람과 GitHub
+포크는 자유지만, 사전 서면 허가 없이 사용·실행·복제·수정·재배포할 수 없습니다.
+문의: gjiwon566@gmail.com

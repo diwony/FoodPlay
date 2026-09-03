@@ -2,6 +2,7 @@
   "name": "foodplay",
   "version": "1.0.0",
   "main": "expo-router/entry",
+  "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
     "@expo/metro-runtime": "~57.0.15",
     "expo": "~57.0.19",

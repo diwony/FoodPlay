@@ -1,21 +1,59 @@
-The MIT License (MIT)
+FoodPlay — All Rights Reserved
+Copyright (c) 2026 지원 (github.com/diwony)
 
-Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)
+This source code is published for viewing and evaluation purposes only
+(for example, to review the author's portfolio and coding work).
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+You MAY:
+  - View and read the source code in this repository.
+  - Fork the repository on GitHub solely as required by GitHub's normal
+    interface for viewing and referencing the code.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+You MAY NOT, without prior written permission from the copyright holder:
+  - Use, run, or deploy this software or any part of it, in whole or in
+    part, for any purpose (personal, educational, or commercial).
+  - Copy, reproduce, or redistribute the source code or built artifacts
+    outside of GitHub's own viewing/forking mechanism.
+  - Modify the code or create derivative works from it.
+  - Remove or alter this notice.
+
+No license or right is granted by implication, estoppel, or otherwise,
+except the limited viewing rights stated above.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+AUTHOR OR COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+For any use beyond viewing, contact: gjiwon566@gmail.com
+
+---
+
+FoodPlay — 모든 권리 보유 (All Rights Reserved)
+저작권 (c) 2026 지원 (github.com/diwony)
+
+이 저장소의 소스 코드는 열람 및 평가 목적(예: 작성자의 포트폴리오·코딩
+역량 검토)으로만 공개됩니다.
+
+허용되는 행위:
+  - 이 저장소의 소스 코드를 열람하고 읽는 것.
+  - 코드 열람·참조를 위해 GitHub의 일반적인 인터페이스에서 저장소를
+    포크하는 것.
+
+저작권자의 사전 서면 허가 없이는 다음을 할 수 없습니다:
+  - 이 소프트웨어 또는 그 일부를 어떤 목적(개인·교육·상업)으로든
+    사용·실행·배포하는 것.
+  - GitHub 자체의 열람/포크 기능을 벗어나 소스 코드 또는 빌드 결과물을
+    복제·재배포하는 것.
+  - 코드를 수정하거나 2차적 저작물을 만드는 것.
+  - 이 고지를 제거하거나 변경하는 것.
+
+위에 명시된 제한적 열람 권리를 제외하고, 어떠한 라이선스나 권리도
+묵시적으로 부여되지 않습니다.
+
+이 소프트웨어는 어떠한 종류의 명시적·묵시적 보증 없이 "있는 그대로"
+제공됩니다.
+
+열람 외의 이용 문의: gjiwon566@gmail.com
