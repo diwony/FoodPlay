@@ -42,10 +42,15 @@ export interface PoolQuery {
   /** 이미 큐레이션에 있는 유튜브 ID — 중복 제거용 */
   exclude?: Set<string>;
   /**
-   * "recipe"(기본): 먹방 영상을 뺀 요리 영상만.
-   * "mukbang": 먹방(`mukbang` 태그) 영상만 — 결과 옆 "같이 보는 먹방" 칸용.
+   * 영상 종류 (태그 조합으로 거른다):
+   * - "recipe"(기본): 먹방·디저트 아닌 일반 요리 영상.
+   * - "mukbang": 먹방(`mukbang`)이면서 디저트 아닌 것 — "같이 보는 먹방" 칸.
+   * - "dessert": 디저트(`dessert`)이면서 먹방 아닌 것 — 디저트·베이킹 화면.
+   * - "dessert-mukbang": 디저트 먹방.
    */
-  kind?: "recipe" | "mukbang";
+  kind?: "recipe" | "mukbang" | "dessert" | "dessert-mukbang";
+  /** 이 태그가 모두 있는 영상만 (예: 베이킹 난이도 "baking-easy"). */
+  require?: string[];
 }
 
 /**
@@ -55,11 +60,18 @@ export interface PoolQuery {
 export function searchPool(all: PoolVideo[], q: PoolQuery): PoolVideo[] {
   const ing = new Set(q.ingredients);
   const vibes = new Set(q.vibes);
-  const mukbang = q.kind === "mukbang";
+  const wantMukbang = q.kind === "mukbang" || q.kind === "dessert-mukbang";
+  const wantDessert = q.kind === "dessert" || q.kind === "dessert-mukbang";
+  const require = q.require ?? [];
 
   const scored = all
     .filter((v) => !q.exclude?.has(v.id))
-    .filter((v) => v.tags.includes("mukbang") === mukbang)
+    .filter(
+      (v) =>
+        v.tags.includes("mukbang") === wantMukbang &&
+        v.tags.includes("dessert") === wantDessert &&
+        require.every((t) => v.tags.includes(t)),
+    )
     .map((v) => {
       const ingHit = v.tags.filter((t) => ing.has(t)).length;
       const vibeHit = v.tags.filter((t) => vibes.has(t)).length;

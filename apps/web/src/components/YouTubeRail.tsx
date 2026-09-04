@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import {
   loadPool,
   searchPool,
+  type PoolQuery,
   type PoolVideo,
 } from "../lib/youtubePool";
 import { compactViews } from "@foodplay/core";
@@ -17,6 +18,12 @@ interface Props {
   /** 이미 큐레이션에 있어 중복인 유튜브 ID */
   exclude?: string[];
   hint?: string;
+  /** 칸 제목 (기본 "유튜브에서 더 찾기") */
+  title?: string;
+  /** 영상 종류 필터 — searchPool 참고 */
+  kind?: PoolQuery["kind"];
+  /** 반드시 있어야 하는 태그 (예: 베이킹 난이도) */
+  require?: string[];
 }
 
 const STEP = 9;
@@ -31,6 +38,9 @@ export default function YouTubeRail({
   query,
   exclude = [],
   hint,
+  title = "유튜브에서 더 찾기",
+  kind,
+  require,
 }: Props) {
   const [pool, setPool] = useState<PoolVideo[] | null>(null);
   const [shown, setShown] = useState(STEP);
@@ -51,9 +61,11 @@ export default function YouTubeRail({
       vibes,
       limit: 60,
       exclude: excludeSet,
+      kind,
+      require,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pool, ingredients.join(","), vibes.join(","), excludeSet]);
+  }, [pool, ingredients.join(","), vibes.join(","), excludeSet, kind, (require ?? []).join(",")]);
 
   useEffect(() => setShown(STEP), [ingredients.join(","), vibes.join(",")]);
 
@@ -64,7 +76,7 @@ export default function YouTubeRail({
     <section className="mt-10 border-t border-line pt-8">
       <div className="flex items-baseline justify-between gap-3">
         <h2 className="text-[19px] font-bold tracking-tight">
-          유튜브에서 더 찾기
+          {title}
           {hits.length > 0 && (
             <span className="ml-2 text-[13px] font-semibold text-faint">
               {hits.length}+

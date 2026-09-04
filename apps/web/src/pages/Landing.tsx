@@ -22,6 +22,13 @@ const MODES = [
     desc: "예산·날씨·땡기는 맛으로 오늘 저녁을 정하고, 장 볼 목록까지 뽑아요.",
     cta: "조건 고르기",
   },
+  {
+    to: "/dessert",
+    emoji: "🧁",
+    title: "디저트 · 베이킹",
+    desc: "본격 / 간단 베이킹을 고르고, 재료나 요즘 뜨는 디저트로 만드는 영상을 찾아요.",
+    cta: "디저트 고르기",
+  },
 ];
 
 export default function Landing() {
@@ -42,7 +49,7 @@ export default function Landing() {
         </p>
       </section>
 
-      <section className="grid gap-4 pb-16 sm:grid-cols-3">
+      <section className="grid gap-4 pb-16 sm:grid-cols-2 lg:grid-cols-4">
         {MODES.map((m) => (
           <Link
             key={m.to}

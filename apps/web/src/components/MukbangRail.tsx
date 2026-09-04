@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { loadPool, searchPool, type PoolVideo } from "../lib/youtubePool";
+import {
+  loadPool,
+  searchPool,
+  type PoolQuery,
+  type PoolVideo,
+} from "../lib/youtubePool";
 import { compactViews } from "@foodplay/core";
 
 interface Props {
@@ -8,6 +13,14 @@ interface Props {
   ingredients?: string[];
   /** 고른 기분/상황 vibe 키. */
   vibes?: string[];
+  /** 칸 제목 (기본 "같이 보는 먹방") */
+  title?: string;
+  /** 안내 문구 */
+  hint?: string;
+  /** 먹방 종류 (기본 "mukbang"). 디저트 화면은 "dessert-mukbang". */
+  kind?: PoolQuery["kind"];
+  /** 반드시 있어야 하는 태그 */
+  require?: string[];
 }
 
 const STEP = 6;
@@ -17,7 +30,14 @@ const STEP = 6;
  * 영상만, 고른 재료·기분에 맞춰 보여준다. 조건에 맞는 게 없으면 인기 먹방으로
  * 폴백한다. (런타임 유튜브 호출 없음 — 미리 수집한 정적 풀만 읽는다.)
  */
-export default function MukbangRail({ ingredients = [], vibes = [] }: Props) {
+export default function MukbangRail({
+  ingredients = [],
+  vibes = [],
+  title = "같이 보는 먹방",
+  hint = "요리하는 김에 곁들여 볼, 고른 재료·기분에 맞는 먹방 영상이에요.",
+  kind = "mukbang",
+  require,
+}: Props) {
   const [pool, setPool] = useState<PoolVideo[] | null>(null);
   const [shown, setShown] = useState(STEP);
 
@@ -35,7 +55,8 @@ export default function MukbangRail({ ingredients = [], vibes = [] }: Props) {
       ingredients,
       vibes,
       limit: 30,
-      kind: "mukbang",
+      kind,
+      require,
     });
     if (scoped.length > 0) return scoped;
     // 고른 조건에 맞는 먹방이 없으면 인기 먹방으로 채운다.
@@ -43,12 +64,16 @@ export default function MukbangRail({ ingredients = [], vibes = [] }: Props) {
       ingredients: [],
       vibes: [],
       limit: 30,
-      kind: "mukbang",
+      kind,
+      require,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pool, ingredients.join(","), vibes.join(",")]);
+  }, [pool, ingredients.join(","), vibes.join(","), kind, (require ?? []).join(",")]);
 
-  useEffect(() => setShown(STEP), [ingredients.join(","), vibes.join(",")]);
+  useEffect(
+    () => setShown(STEP),
+    [ingredients.join(","), vibes.join(","), (require ?? []).join(",")],
+  );
 
   if (pool !== null && hits.length === 0) return null;
 
@@ -58,7 +83,7 @@ export default function MukbangRail({ ingredients = [], vibes = [] }: Props) {
     <section className="mt-10 border-t border-line pt-8">
       <div className="flex items-baseline justify-between gap-3">
         <h2 className="text-[19px] font-bold tracking-tight">
-          같이 보는 먹방
+          {title}
           {hits.length > 0 && (
             <span className="ml-2 text-[13px] font-semibold text-faint">
               {hits.length}+
@@ -66,9 +91,7 @@ export default function MukbangRail({ ingredients = [], vibes = [] }: Props) {
           )}
         </h2>
       </div>
-      <p className="mt-1 text-[13px] text-muted">
-        요리하는 김에 곁들여 볼, 고른 재료·기분에 맞는 먹방 영상이에요.
-      </p>
+      <p className="mt-1 text-[13px] text-muted">{hint}</p>
 
       <div className="mt-4">
         {pool === null ? (

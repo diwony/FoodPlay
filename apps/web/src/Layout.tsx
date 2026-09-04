@@ -3,7 +3,9 @@ import { Link, Outlet, ScrollRestoration, useLocation } from "react-router-dom";
 export default function Layout() {
   const { pathname } = useLocation();
   const onHome = pathname === "/";
-  const onSubPage = ["/fridge", "/mealkit", "/shop"].includes(pathname);
+  const onSubPage = ["/fridge", "/mealkit", "/shop", "/dessert"].includes(
+    pathname,
+  );
 
   return (
     <div className="min-h-dvh">

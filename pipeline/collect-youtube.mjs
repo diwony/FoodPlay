@@ -125,6 +125,62 @@ const KITS = [
   "파스타", "떡볶이",
 ];
 
+// 디저트·베이킹 (apps/web/src/pages/Dessert.tsx). "dessert" 태그가 기본,
+// 난이도는 "baking-full"(오븐·계량) / "baking-easy"(노오븐·전자레인지·에어프라이어).
+const DESSERT_FULL = [
+  ["파운드케이크", "파운드케이크 만들기"],
+  ["마들렌", "마들렌 만들기"],
+  ["휘낭시에", "휘낭시에 만들기"],
+  ["스콘", "스콘 만들기"],
+  ["브라우니", "브라우니 만들기"],
+  ["컵케이크", "컵케이크 만들기"],
+  ["까눌레", "까눌레 만들기"],
+  ["시폰케이크", "시폰케이크 만들기"],
+  ["바스크치즈케이크", "바스크 치즈케이크 만들기"],
+  ["당근케이크", "당근케이크 만들기"],
+  ["에그타르트", "에그타르트 만들기"],
+  ["버터쿠키", "버터 쿠키 만들기"],
+  ["카스텔라", "카스텔라 만들기"],
+  ["애플파이", "애플파이 만들기"],
+  ["초코칩쿠키", "초코칩 쿠키 만들기"],
+];
+const DESSERT_EASY = [
+  ["우유푸딩", "우유 푸딩 만들기"],
+  ["노오븐치즈케이크", "노오븐 치즈케이크 만들기"],
+  ["티라미수", "노오븐 티라미수 만들기"],
+  ["판나코타", "판나코타 만들기"],
+  ["오레오케이크", "전자레인지 오레오 케이크"],
+  ["바나나빵", "전자레인지 바나나빵"],
+  ["초코무스", "초코 무스 만들기"],
+  ["달고나", "달고나 만들기"],
+  ["요거트아이스크림", "요거트 아이스크림 만들기"],
+  ["딸기라떼", "생딸기 라떼 만들기"],
+  ["에어프라이어쿠키", "에어프라이어 쿠키"],
+  ["약과", "약과 만들기"],
+];
+// 요즘 뜨는 / 뜰 것 같은 디저트 (탐색용 칩). 난이도 태그는 안 붙인다.
+const DESSERT_TREND = [
+  ["두바이초콜릿", "두바이 초콜릿 만들기"],
+  ["크로플", "크로플 만들기"],
+  ["마리토쪼", "마리토쪼 만들기"],
+  ["밤티라미수", "밤 티라미수 만들기"],
+  ["약과쿠키", "약과 쿠키 만들기"],
+  ["뚱카롱", "뚱카롱 만들기"],
+  ["스콘", "겉바속촉 스콘 만들기"],
+  ["바스크치즈케이크", "바스크 치즈케이크"],
+  ["소금빵", "소금빵 만들기"],
+  ["개성주악", "개성주악 만들기"],
+];
+const DESSERT_ING = [
+  "박력분", "강력분", "버터", "생크림", "크림치즈", "우유", "초콜릿",
+  "코코아가루", "커피가루", "딸기", "바나나", "오레오", "견과류",
+  "마스카포네", "계란",
+];
+const DESSERT_MUKBANG = [
+  "디저트 먹방", "베이커리 먹방", "케이크 먹방", "빵 먹방", "마카롱 먹방",
+  "쿠키 먹방",
+];
+
 function buildQueries() {
   const src = JSON.parse(readFileSync(new URL("pipeline/sources.json", ROOT), "utf8"));
   const db = JSON.parse(
@@ -167,6 +223,24 @@ function buildQueries() {
     q.push({ query: `${k} 밀키트`, tags: [k] });
     q.push({ query: `${k} 먹방`, tags: ["mukbang", k] });
   }
+
+  // 디저트·베이킹
+  for (const [tag, phrase] of DESSERT_FULL)
+    q.push({ query: phrase, tags: ["dessert", "baking-full", tag] });
+  for (const [tag, phrase] of DESSERT_EASY)
+    q.push({ query: phrase, tags: ["dessert", "baking-easy", tag] });
+  for (const [tag, phrase] of DESSERT_TREND)
+    q.push({ query: phrase, tags: ["dessert", tag] });
+  for (const i of DESSERT_ING) {
+    q.push({ query: `${i} 베이킹`, tags: ["dessert", "baking-full", i] });
+    q.push({ query: `${i} 노오븐 디저트`, tags: ["dessert", "baking-easy", i] });
+  }
+  for (const p of DESSERT_MUKBANG)
+    q.push({ query: p, tags: ["dessert", "mukbang"] });
+  q.push({ query: "오븐 없이 만드는 디저트", tags: ["dessert", "baking-easy"] });
+  q.push({ query: "홈베이킹 초보 레시피", tags: ["dessert", "baking-full"] });
+  q.push({ query: "에어프라이어 베이킹", tags: ["dessert", "baking-easy"] });
+  q.push({ query: "노오븐 디저트 만들기", tags: ["dessert", "baking-easy"] });
 
   return q;
 }
