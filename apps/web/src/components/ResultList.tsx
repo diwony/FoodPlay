@@ -24,7 +24,11 @@ interface Props {
 
 const PAGE = 6;
 
-/** 재료·밀키트·장보기 세 모드가 공유하는 결과 목록 + "유튜브에서 더 찾기". */
+/**
+ * 재료·밀키트·장보기 세 모드가 공유하는 결과. "직접 정리한 레시피(스텝 O)" 와
+ * "관련 유튜브 영상(스텝 X)" 을 **한 흐름**으로 이어서 보여준다 — 위에 스텝
+ * 정리된 레시피, 이어서 관련 영상, 맨 아래 "같이 보는 먹방".
+ */
 export default function ResultList({
   list,
   heading,
@@ -34,7 +38,6 @@ export default function ResultList({
   youtubeIngredients,
   youtubeVibes,
   youtubeExclude,
-  emptyText = "조건에 맞는 레시피가 없어요. 조건을 바꿔 보세요.",
   note,
 }: Props) {
   const [shown, setShown] = useState(PAGE);
@@ -52,12 +55,11 @@ export default function ResultList({
 
       {note && <div className="mb-4">{note}</div>}
 
-      {list.length === 0 ? (
-        <div className="rounded-[var(--radius-card)] border border-dashed border-line bg-surface/60 px-6 py-12 text-center">
-          <p className="text-[15px] text-muted">{emptyText}</p>
-        </div>
-      ) : (
+      {list.length > 0 ? (
         <>
+          <p className="mb-2 text-[13px] font-semibold text-good">
+            📖 스텝까지 정리된 레시피
+          </p>
           <div className="grid gap-3 sm:grid-cols-2">
             {visible.map((m, i) => (
               <RecipeCard
@@ -79,11 +81,29 @@ export default function ResultList({
             </button>
           )}
         </>
+      ) : (
+        youtubeQuery && (
+          <p className="text-[13px] text-muted">
+            이 조건에 딱 맞게 <b>스텝까지 정리한</b> 레시피는 아직 없어요. 대신
+            같은 재료의 유튜브 영상을 모아봤어요 ↓
+          </p>
+        )
       )}
 
       {youtubeQuery && (
         <>
           <YouTubeRail
+            flat
+            title={
+              list.length > 0
+                ? "＋ 같은 재료로 나온 유튜브 영상"
+                : "관련 유튜브 영상"
+            }
+            hint={
+              list.length > 0
+                ? "스텝 정리는 없지만, 설명에 타임스탬프가 있으면 눌러서 이동돼요."
+                : undefined
+            }
             query={youtubeQuery}
             ingredients={youtubeIngredients}
             vibes={youtubeVibes}

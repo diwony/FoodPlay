@@ -43,6 +43,9 @@ function RecipeCardBase({ match, rank, browse = false, shopping = false }: Props
             숏폼
           </span>
         )}
+        <span className="absolute bottom-1 left-1 rounded bg-good/90 px-1 py-0.5 text-[9px] font-bold text-white">
+          📖 스텝
+        </span>
         {!browse && !shopping && (
           <span className="absolute left-1.5 top-1.5 rounded-md bg-ink/85 px-1.5 py-0.5 text-[10px] font-bold tabular text-white">
             {rank <= 3 ? `TOP ${rank}` : `${pct}%`}

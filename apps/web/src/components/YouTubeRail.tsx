@@ -25,6 +25,11 @@ interface Props {
   kind?: PoolQuery["kind"];
   /** 반드시 있어야 하는 태그 (예: 베이킹 난이도) */
   require?: string[];
+  /**
+   * true 면 큐레이션 목록 바로 아래에 "이어붙는" 형태로 렌더한다 —
+   * 위쪽 구분선·큰 여백 없이, 제목도 작게. (ResultList 에서 씀)
+   */
+  flat?: boolean;
 }
 
 const STEP = 9;
@@ -42,6 +47,7 @@ export default function YouTubeRail({
   title = "유튜브에서 더 찾기",
   kind,
   require,
+  flat = false,
 }: Props) {
   const [pool, setPool] = useState<PoolVideo[] | null>(null);
   const [shown, setShown] = useState(STEP);
@@ -79,10 +85,18 @@ export default function YouTubeRail({
   const ytSearch = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
   const visible = merged.slice(0, shown);
 
+  const Wrapper = flat ? "div" : "section";
+
   return (
-    <section className="mt-10 border-t border-line pt-8">
+    <Wrapper className={flat ? "mt-7" : "mt-10 border-t border-line pt-8"}>
       <div className="flex items-baseline justify-between gap-3">
-        <h2 className="text-[19px] font-bold tracking-tight">
+        <h2
+          className={
+            flat
+              ? "text-[15px] font-bold tracking-tight text-muted"
+              : "text-[19px] font-bold tracking-tight"
+          }
+        >
           {title}
           {merged.length > 0 && (
             <span className="ml-2 text-[13px] font-semibold text-faint">
@@ -99,10 +113,12 @@ export default function YouTubeRail({
           유튜브에서 직접 ↗
         </a>
       </div>
-      <p className="mt-1 text-[13px] text-muted">
-        {hint ??
-          "큐레이션에 없는 채널까지, 미리 모아둔 관련 영상을 조회수 순으로 보여줘요."}
-      </p>
+      {(!flat || hint) && (
+        <p className="mt-1 text-[13px] text-muted">
+          {hint ??
+            "큐레이션에 없는 채널까지, 미리 모아둔 관련 영상을 조회수 순으로 보여줘요."}
+        </p>
+      )}
 
       <div className="mt-4">
         {pool === null ? (
@@ -177,6 +193,6 @@ export default function YouTubeRail({
           </>
         )}
       </div>
-    </section>
+    </Wrapper>
   );
 }
