@@ -56,6 +56,14 @@ npm run dev                        # http://localhost:8787/search?q=김치찌개
 이 방식(코드 내 바인딩)을 쓴다. 값 조정은 `wrangler.toml` 의 `limit`/`period`
 (`period` 는 10 또는 60만 허용) 를 고치고 `npx wrangler deploy`.
 
+## CORS 출처 제한
+
+브라우저에서 이 프록시를 부를 수 있는 출처는 `src/index.js` 의 `ALLOWED_ORIGINS`
+로 제한된다 — FoodPlay 사이트(`https://diwony.github.io`)와 로컬 개발 포트만.
+다른 웹사이트가 우리 API 를 자기 페이지에 임베드하는 걸 막는다. 브라우저 밖
+(스크립트·직접 접속)은 CORS 와 무관하므로 그대로 응답하며, 그쪽 남용은 위의
+Rate Limiting 이 담당한다. 사이트 도메인이 바뀌면 `ALLOWED_ORIGINS` 를 고친다.
+
 ## 키는 어디에도 커밋되지 않는다
 
 - 운영: `wrangler secret` (Cloudflare 에만 저장)
