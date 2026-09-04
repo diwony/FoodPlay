@@ -153,7 +153,7 @@ export default function DailyHero() {
         )}
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px]">
         <button
           type="button"
           onClick={() => {
@@ -169,16 +169,17 @@ export default function DailyHero() {
               });
           }}
           disabled={videos.length === 0}
-          className="inline-flex items-center gap-1 text-[13px] font-semibold text-accent disabled:opacity-40"
+          className="font-semibold text-accent disabled:opacity-40"
         >
-          바로 재생 <span>→</span>
+          ▶ 추천 영상 보기
         </button>
+        <span className="text-line">·</span>
         <button
           type="button"
           onClick={() => navigate("/fridge", { state: { vibes: pick.vibes } })}
-          className="inline-flex items-center gap-1 text-[13px] font-medium text-muted hover:text-ink"
+          className="font-medium text-muted hover:text-ink"
         >
-          재료 골라서 찾기
+          내 재료로 찾기
         </button>
       </div>
     </div>

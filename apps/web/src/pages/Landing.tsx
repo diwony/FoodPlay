@@ -49,10 +49,12 @@ export default function Landing() {
           뭐 <span className="text-accent">만들지</span> 고민,
           <br className="sm:hidden" /> 여기서 끝내요.
         </h1>
-        <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted">
-          시켜 먹지 말고 직접. 상황만 고르면 조리 스텝마다 타임스탬프가 붙은
+        <p className="mt-3 max-w-2xl text-pretty text-[15px] leading-relaxed text-muted">
+          시켜 먹지 말고 직접 만들어요. 상황만 고르면 스텝마다 타임스탬프 붙은
           유튜브 요리 영상으로 이어주고,{" "}
-          <b className="text-good">사 먹을 때보다 평균 {formatWon(avgSave)}</b> 아껴요.
+          <b className="text-good">
+            사 먹을 때보다 평균 {formatWon(avgSave)} 아껴요.
+          </b>
         </p>
       </section>
 

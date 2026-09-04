@@ -36,6 +36,8 @@
     font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
     letter-spacing: -0.011em;
+    /* 한글은 단어(어절) 단위로만 줄바꿈 — "이어주\n고," 같은 어중 끊김 방지 */
+    word-break: keep-all;
   }
   ::selection {
     background: var(--color-accent);
