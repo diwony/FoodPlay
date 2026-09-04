@@ -62,12 +62,13 @@ export default function Landing() {
         <DailyHero />
         <div className="flex flex-col gap-4">
           <PopularTicker />
-          <SeasonalPicks />
           <div className="rounded-[var(--radius-card)] border border-line bg-surface p-5 shadow-[var(--shadow-card)]">
             <PersonaChips />
           </div>
         </div>
       </div>
+
+      <SeasonalPicks />
 
       <section className="grid gap-4 py-8 sm:grid-cols-2 lg:grid-cols-4">
         {MODES.map((m) => (
