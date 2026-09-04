@@ -45,10 +45,13 @@ function loadApiKey() {
 }
 const API_KEY = loadApiKey();
 const MODE = API_KEY ? "공식 API" : "innertube";
+// 공식 모드 기본 상한은 40 — 하루 10,000유닛 중 ~4,000 만 풀 수집에 쓰고
+// 나머지는 실시간 검색 프록시(workers/youtube-search)가 쓰도록 남겨둔다.
+// 풀만 빨리 키우고 싶으면 --max=90 처럼 올린다(그날 실시간은 그만큼 준다).
 const MAX_SEARCHES = maxArg
   ? Math.max(1, parseInt(maxArg.slice(6), 10) || 1)
   : API_KEY
-    ? 95
+    ? 40
     : Infinity;
 
 class QuotaError extends Error {}
