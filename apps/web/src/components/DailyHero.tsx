@@ -81,15 +81,23 @@ export default function DailyHero() {
         <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-accent">
           오늘은 이거 어때요?
         </p>
-        <span className="flex gap-1 pt-1">
+        <span className="-mr-1 -mt-1 flex gap-0.5">
           {picks.map((_, n) => (
-            <span
+            <button
               key={n}
-              className={
-                "h-1 rounded-full transition-all " +
-                (n === i ? "w-4 bg-accent" : "w-1 bg-line")
-              }
-            />
+              type="button"
+              onClick={() => setI(n)}
+              aria-label={`추천 ${n + 1}번 보기`}
+              aria-current={n === i}
+              className="group flex h-5 items-center px-0.5"
+            >
+              <span
+                className={
+                  "h-1 rounded-full transition-all group-hover:bg-accent " +
+                  (n === i ? "w-4 bg-accent" : "w-1.5 bg-line")
+                }
+              />
+            </button>
           ))}
         </span>
       </div>
