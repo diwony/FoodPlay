@@ -29,6 +29,11 @@
 
 1인 개인 프로젝트 — 기획 · 디자인 · 프론트엔드 · 데이터 파이프라인.
 
+## 프로젝트 소개서
+
+왜 만들었는지 · 서비스를 어떻게 설계했는지 · 기술 선택을 정리했습니다:
+[`docs/CASE-STUDY.md`](docs/CASE-STUDY.md) · [PDF](docs/FoodPlay-소개서.pdf)
+
 ## 바로 실행 (설치 불필요)
 
 **웹 데모: https://diwony.github.io/FoodPlay/**
