@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   FlatList,
   Keyboard,
+  PanResponder,
   Pressable,
   StyleSheet,
   Text,
@@ -46,6 +47,22 @@ export default function HomeScreen() {
     return () => clearInterval(t);
   }, [picks.length]);
   const pick = picks[pickIdx];
+
+  // 좌우로 스와이프하면 추천이 넘어간다(웹 DailyHero 와 같은 동작). 살짝
+  // 움직인 정도(10px 미만)는 그냥 탭으로 두고 Pressable 의 onPress 가 처리하게 둔다.
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => false,
+      onMoveShouldSetPanResponderCapture: (_evt, g) =>
+        Math.abs(g.dx) > 10 && Math.abs(g.dx) > Math.abs(g.dy),
+      onPanResponderRelease: (_evt, g) => {
+        if (Math.abs(g.dx) < 10) return;
+        setPickIdx((n) =>
+          g.dx < 0 ? (n + 1) % picks.length : (n - 1 + picks.length) % picks.length,
+        );
+      },
+    }),
+  ).current;
 
   const ingredients = useMemo(() => parseIngredients(raw), [raw]);
   // 재료가 있으면 재료 매칭, 없으면 (기분만 골라도) 둘러보기를 기분순으로.
@@ -128,6 +145,7 @@ export default function HomeScreen() {
 
             {pick && (
               <Pressable
+                {...panResponder.panHandlers}
                 onPress={() => setVibes(pick.vibes)}
                 style={({ pressed }) => [
                   styles.pickCard,
