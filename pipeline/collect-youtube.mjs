@@ -123,7 +123,12 @@ const MUKBANG_THEMES = [
 const KITS = [
   "밀푀유나베", "부대찌개", "마라탕", "감바스", "샤브샤브", "곱창전골",
   "파스타", "떡볶이", "순두부찌개", "김치찌개", "된장찌개", "야끼우동",
-  "짬뽕", "로제파스타", "스키야키", "어묵탕",
+  "짬뽕", "로제파스타", "스키야키", "어묵탕", "불닭볶음면", "우동",
+];
+// 밀키트에 넣어 푸짐하게/변형하는 흔한 재료. MealKit.tsx BOOSTERS 와 맞춘다.
+const KIT_ADDS = [
+  "치즈", "크림소스", "계란", "우유", "라면사리", "우동사리", "떡",
+  "만두", "숙주", "대파", "베이컨", "마요네즈",
 ];
 
 // 디저트·베이킹 (apps/web/src/pages/Dessert.tsx). "dessert" 태그가 기본,
@@ -172,14 +177,36 @@ const DESSERT_TREND = [
   ["소금빵", "소금빵 만들기"],
   ["개성주악", "개성주악 만들기"],
 ];
+// 케이크만이 아니라 아이스크림·주스·음료도. "dessert-cold" 태그.
+const DESSERT_COLD = [
+  ["아이스크림", "집에서 아이스크림 만들기"],
+  ["젤라또", "젤라또 만들기"],
+  ["소프트아이스크림", "수제 소프트아이스크림"],
+  ["생과일주스", "생과일 주스 만들기"],
+  ["스무디", "과일 스무디 만들기"],
+  ["밀크쉐이크", "밀크쉐이크 만들기"],
+  ["팥빙수", "팥빙수 만들기"],
+  ["과일빙수", "과일 빙수 만들기"],
+  ["에이드", "홈카페 에이드 만들기"],
+  ["수제청", "과일청 만들기"],
+  ["딸기라떼", "생딸기 라떼 만들기"],
+  ["아포가토", "아포가토 만들기"],
+  ["요거트볼", "그릭요거트 볼 만들기"],
+  ["과일화채", "화채 만들기"],
+];
 const DESSERT_ING = [
-  "박력분", "강력분", "버터", "생크림", "크림치즈", "우유", "초콜릿",
-  "코코아가루", "커피가루", "딸기", "바나나", "오레오", "견과류",
-  "마스카포네", "계란",
+  // 베이킹 재료
+  "박력분", "강력분", "버터", "생크림", "크림치즈", "마스카포네", "초콜릿",
+  "코코아가루", "커피가루", "견과류", "오레오",
+  // 냉장고·서랍에 흔한 것 — "집에 있는 재료로" 가 핵심
+  "우유", "계란", "설탕", "꿀", "요거트", "두유", "식빵", "시리얼",
+  "미숫가루", "얼음", "잼", "연유", "마시멜로", "젤라틴",
+  // 과일
+  "딸기", "바나나", "사과", "블루베리", "레몬", "귤", "포도", "냉동과일",
 ];
 const DESSERT_MUKBANG = [
   "디저트 먹방", "베이커리 먹방", "케이크 먹방", "빵 먹방", "마카롱 먹방",
-  "쿠키 먹방",
+  "쿠키 먹방", "아이스크림 먹방", "빙수 먹방",
 ];
 
 function buildQueries() {
@@ -219,11 +246,19 @@ function buildQueries() {
   // 밀키트 종류별 — 곁들임 반찬 + 그 밀키트 먹방. 종류 이름을 태그로 붙여
   // MealKit 화면에서 고른 종류로 거를 수 있게 한다.
   for (const k of KITS) {
-    q.push({ query: `${k} 곁들이는 반찬`, tags: [k, "side"] });
-    q.push({ query: `${k} 같이 먹는 반찬`, tags: [k, "side"] });
     q.push({ query: `${k} 밀키트`, tags: [k] });
     q.push({ query: `${k} 먹방`, tags: ["mukbang", k] });
+    // 핵심: 이미 있는 밀키트 + 집 재료 → 푸짐하게 / 다른 요리로 변형
+    q.push({ query: `${k} 활용 요리`, tags: [k] });
+    q.push({ query: `${k} 남은거 활용`, tags: [k] });
+    q.push({ query: `${k} 더 맛있게 먹는 법`, tags: [k] });
+    q.push({ query: `${k} 푸짐하게`, tags: [k] });
+    q.push({ query: `${k} 곁들이는 반찬`, tags: [k, "side"] });
   }
+  // 대표 조합 (불닭우동 + 크림소스 → 불닭크림우동 같은)
+  for (const k of ["불닭볶음면", "우동", "마라탕", "부대찌개", "짬뽕", "파스타"])
+    for (const a of ["치즈", "크림소스", "라면사리", "계란", "우유"])
+      q.push({ query: `${k} ${a}`, tags: [k, a] });
 
   // 디저트·베이킹
   for (const [tag, phrase] of DESSERT_FULL)
@@ -232,9 +267,12 @@ function buildQueries() {
     q.push({ query: phrase, tags: ["dessert", "baking-easy", tag] });
   for (const [tag, phrase] of DESSERT_TREND)
     q.push({ query: phrase, tags: ["dessert", tag] });
+  for (const [tag, phrase] of DESSERT_COLD)
+    q.push({ query: phrase, tags: ["dessert", "dessert-cold", tag] });
   for (const i of DESSERT_ING) {
     q.push({ query: `${i} 베이킹`, tags: ["dessert", "baking-full", i] });
     q.push({ query: `${i} 노오븐 디저트`, tags: ["dessert", "baking-easy", i] });
+    q.push({ query: `${i} 음료 디저트`, tags: ["dessert", "dessert-cold", i] });
   }
   for (const p of DESSERT_MUKBANG)
     q.push({ query: p, tags: ["dessert", "mukbang"] });
@@ -242,6 +280,8 @@ function buildQueries() {
   q.push({ query: "홈베이킹 초보 레시피", tags: ["dessert", "baking-full"] });
   q.push({ query: "에어프라이어 베이킹", tags: ["dessert", "baking-easy"] });
   q.push({ query: "노오븐 디저트 만들기", tags: ["dessert", "baking-easy"] });
+  q.push({ query: "집에서 만드는 음료", tags: ["dessert", "dessert-cold"] });
+  q.push({ query: "홈카페 음료 레시피", tags: ["dessert", "dessert-cold"] });
 
   return q;
 }

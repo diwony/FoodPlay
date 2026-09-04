@@ -5,7 +5,7 @@ import MukbangRail from "../components/MukbangRail";
 import AddChipInput from "../components/AddChipInput";
 import { useLocalList } from "../lib/useLocalList";
 
-type Level = "full" | "easy";
+type Level = "full" | "easy" | "cold";
 
 const LEVELS: { key: Level; label: string; desc: string; emoji: string }[] = [
   {
@@ -20,22 +20,43 @@ const LEVELS: { key: Level; label: string; desc: string; emoji: string }[] = [
     desc: "노오븐·전자레인지·에어프라이어. 푸딩·티라미수·크로플",
     emoji: "⚡",
   },
+  {
+    key: "cold",
+    label: "음료 · 아이스크림",
+    desc: "안 굽는 것. 아이스크림·주스·스무디·빙수·홈카페",
+    emoji: "🥤",
+  },
 ];
 
-/** 칩 라벨 = 유튜브 풀의 태그(파이프라인 DESSERT_ING 과 맞춤). */
+const LEVEL_TAG: Record<Level, string> = {
+  full: "baking-full",
+  easy: "baking-easy",
+  cold: "dessert-cold",
+};
+
+/** 칩 라벨 = 유튜브 풀의 태그(파이프라인 DESSERT_ING 과 맞춤).
+ *  베이킹 재료만이 아니라 냉장고·서랍에 흔한 것도 — "집에 있는 재료로"가 핵심. */
 const ING_GROUPS: { label: string; emoji: string; items: string[] }[] = [
-  { label: "가루", emoji: "🌾", items: ["박력분", "강력분", "코코아가루"] },
   {
-    label: "유제품 · 냉장",
-    emoji: "🧈",
-    items: ["버터", "생크림", "우유", "크림치즈", "마스카포네", "계란"],
+    label: "베이킹 가루 · 재료",
+    emoji: "🌾",
+    items: ["박력분", "강력분", "코코아가루", "젤라틴"],
   },
   {
-    label: "단맛 · 향",
-    emoji: "🍫",
-    items: ["초콜릿", "커피가루"],
+    label: "냉장고",
+    emoji: "🧊",
+    items: ["우유", "계란", "버터", "생크림", "크림치즈", "마스카포네", "요거트", "두유"],
   },
-  { label: "과일 · 토핑", emoji: "🍓", items: ["딸기", "바나나", "오레오", "견과류"] },
+  {
+    label: "서랍 · 팬트리",
+    emoji: "🍯",
+    items: ["설탕", "꿀", "초콜릿", "커피가루", "견과류", "오레오", "시리얼", "미숫가루", "식빵", "잼", "연유", "마시멜로"],
+  },
+  {
+    label: "과일 · 얼음",
+    emoji: "🍓",
+    items: ["딸기", "바나나", "사과", "블루베리", "레몬", "귤", "포도", "냉동과일", "얼음"],
+  },
 ];
 
 /** 요즘 뜨는 / 뜰 것 같은 디저트 — 재료가 아니라 디저트 이름으로 바로 찾기.
@@ -54,12 +75,9 @@ const TREND: { tag: string; label: string }[] = [
 
 export default function Dessert() {
   const [params] = useSearchParams();
+  const p = params.get("level");
   const initialLevel: Level | null =
-    params.get("level") === "easy"
-      ? "easy"
-      : params.get("level") === "full"
-        ? "full"
-        : null;
+    p === "easy" || p === "full" || p === "cold" ? p : null;
   const [level, setLevel] = useState<Level | null>(initialLevel);
   const [picked, setPicked] = useState<Set<string>>(new Set());
   const [trend, setTrend] = useState<string | null>(null);
@@ -84,25 +102,28 @@ export default function Dessert() {
   const presetItems = new Set(ING_GROUPS.flatMap((g) => g.items));
 
   const ingredients = trend ? [trend] : [...picked];
-  // 요즘 뜨는 디저트를 콕 집으면 난이도 필터는 무시(그 디저트 전부 보여줌).
-  // 난이도를 안 골랐으면(null) 본격·간단 다 보여준다.
-  const require =
-    trend || !level ? [] : [level === "full" ? "baking-full" : "baking-easy"];
+  // 요즘 뜨는 디저트를 콕 집으면 종류 필터는 무시(그 디저트 전부 보여줌).
+  // 종류를 안 골랐으면(null) 다 보여준다.
+  const require = trend || !level ? [] : [LEVEL_TAG[level]];
 
   const query = useMemo(() => {
     if (trend) return `${TREND.find((t) => t.tag === trend)?.label ?? trend} 만들기`;
     const base =
-      level === "full" ? "홈베이킹" : level === "easy" ? "노오븐 디저트" : "디저트";
+      level === "full"
+        ? "홈베이킹"
+        : level === "easy"
+          ? "노오븐 디저트"
+          : level === "cold"
+            ? "아이스크림 음료"
+            : "디저트";
     return picked.size > 0 ? `${[...picked].join(" ")} ${base}` : `${base} 레시피`;
   }, [trend, level, picked]);
 
   const heading = trend
-    ? `${TREND.find((t) => t.tag === trend)?.label} 영상`
-    : level === "full"
-      ? "본격 베이킹 영상"
-      : level === "easy"
-        ? "간단 베이킹 영상"
-        : "디저트 만드는 영상";
+    ? `${TREND.find((t) => t.tag === trend)?.label} 만드는 영상`
+    : level
+      ? `${LEVELS.find((l) => l.key === level)?.label} 영상`
+      : "디저트 만드는 영상";
 
   return (
     <main className="mx-auto max-w-5xl px-5">
@@ -111,8 +132,9 @@ export default function Dessert() {
           밥 다 먹었으면, 디저트?
         </h1>
         <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-muted">
-          <b className="text-ink">본격 / 간단</b>을 고르고, 집에 있는 베이킹 재료나{" "}
+          만드는 방식을 고르고, <b className="text-ink">집에 있는 재료</b>나{" "}
           <b className="text-ink">요즘 뜨는 디저트</b>를 누르면 만드는 영상을 모아줘요.
+          케이크만이 아니라 아이스크림·주스·음료까지.
         </p>
       </section>
 
@@ -124,7 +146,7 @@ export default function Dessert() {
               (선택 안 하면 둘 다 보여줘요)
             </span>
           </p>
-          <div className="mt-2.5 grid gap-2 sm:grid-cols-2">
+          <div className="mt-2.5 grid gap-2 sm:grid-cols-3">
             {LEVELS.map((l) => {
               const on = level === l.key;
               return (
@@ -161,7 +183,7 @@ export default function Dessert() {
 
         <div>
           <p className="text-[13px] font-bold text-muted">
-            집에 있는 베이킹 재료 <span className="font-medium text-faint">(선택)</span>
+            집에 있는 재료 <span className="font-medium text-faint">(냉장고·서랍 아무거나, 선택)</span>
           </p>
           {trend && (
             <p className="mt-1 text-[12px] text-faint">
@@ -254,7 +276,7 @@ export default function Dessert() {
                   })}
                 <AddChipInput
                   onAdd={addMine}
-                  placeholder="예) 연유, 젤라틴"
+                  placeholder="예) 연유, 한천, 인절미"
                   ariaLabel="베이킹 재료 직접 추가"
                 />
               </div>
@@ -294,20 +316,14 @@ export default function Dessert() {
         </div>
       </section>
 
-      <section className="py-10">
-        <h2 className="text-[19px] font-bold tracking-tight">{heading}</h2>
-        <p className="mt-1 text-[13px] text-muted">
-          유튜브에서 미리 모아둔 디저트·베이킹 영상이에요. 영상을 누르면 재생
-          화면으로 넘어가요.
-        </p>
-
+      <section className="pb-4">
         <YouTubeRail
-          title="만드는 영상"
+          title={heading}
           query={query}
           ingredients={ingredients}
           kind="dessert"
           require={require}
-          hint="난이도와 재료에 맞춰 걸러 보여줘요. 딱 맞는 게 없으면 검색 링크로."
+          hint="유튜브에서 미리 모아둔 디저트 영상이에요. 고른 방식·재료에 맞춰 거르고, 딱 맞는 게 없으면 검색 링크로."
         />
         <MukbangRail
           title="디저트 먹방"
