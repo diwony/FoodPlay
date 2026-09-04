@@ -78,7 +78,7 @@ export default function MealKit() {
         <h1 className="text-[28px] font-bold leading-tight tracking-tight sm:text-[34px]">
           밀키트, 뭐 더해서 먹어요?
         </h1>
-        <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-muted">
+        <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted">
           이미 있는 밀키트에 <b className="text-ink">집에 있는 재료</b>를 더해서 더
           푸짐하게, 또는 아예 다른 요리로. (예: 불닭우동 + 크림소스 →
           불닭크림우동)

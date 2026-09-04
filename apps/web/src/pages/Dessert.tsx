@@ -84,6 +84,7 @@ export default function Dessert() {
   const mine = useLocalList("foodplay.myBakingItems.v1", (s) =>
     s.trim().replace(/\s+/g, ""),
   );
+  const myTrends = useLocalList("foodplay.myDessertTrends.v1", (s) => s.trim());
 
   const toggleIng = (item: string) =>
     setPicked((cur) => {
@@ -120,7 +121,7 @@ export default function Dessert() {
   }, [trend, level, picked]);
 
   const heading = trend
-    ? `${TREND.find((t) => t.tag === trend)?.label} 만드는 영상`
+    ? `${TREND.find((t) => t.tag === trend)?.label ?? trend} 만드는 영상`
     : level
       ? `${LEVELS.find((l) => l.key === level)?.label} 영상`
       : "디저트 만드는 영상";
@@ -131,7 +132,7 @@ export default function Dessert() {
         <h1 className="text-[28px] font-bold leading-tight tracking-tight sm:text-[34px]">
           밥 다 먹었으면, 디저트?
         </h1>
-        <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-muted">
+        <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted">
           만드는 방식을 고르고, <b className="text-ink">집에 있는 재료</b>나{" "}
           <b className="text-ink">요즘 뜨는 디저트</b>를 누르면 만드는 영상을 모아줘요.
           케이크만이 아니라 아이스크림·주스·음료까지.
@@ -187,7 +188,7 @@ export default function Dessert() {
           </p>
           {trend && (
             <p className="mt-1 text-[12px] text-faint">
-              &lsquo;{TREND.find((t) => t.tag === trend)?.label}&rsquo;를 고르는 동안은
+              &lsquo;{TREND.find((t) => t.tag === trend)?.label ?? trend}&rsquo;를 고르는 동안은
               재료 필터가 잠깐 꺼져요.
             </p>
           )}
@@ -290,8 +291,9 @@ export default function Dessert() {
           <p className="text-[13px] font-bold text-muted">🔥 요즘 뜨는 디저트</p>
           <p className="mt-0.5 text-[11px] text-faint/80">
             SNS·유튜브에서 요즘 자주 보이는 것들. 누르면 바로 그 디저트 영상으로.
+            없으면 직접 적어요.
           </p>
-          <div className="mt-2 flex flex-wrap gap-1.5">
+          <div className="mt-2 flex flex-wrap items-center gap-1.5">
             {TREND.map((t) => {
               const on = trend === t.tag;
               return (
@@ -300,18 +302,63 @@ export default function Dessert() {
                   type="button"
                   onClick={() => setTrend(on ? null : t.tag)}
                   aria-pressed={on}
-                  className={
-                    "rounded-full border px-3 py-1.5 text-[13px] font-medium transition-colors " +
-                    (on
-                      ? "border-good bg-good text-white"
-                      : "border-line bg-surface text-ink hover:border-good/40")
-                  }
+                  className={trendChip(on)}
                 >
                   {on ? "✓ " : ""}
                   {t.label}
                 </button>
               );
             })}
+            {myTrends.items.map((t) => {
+              const on = trend === t;
+              return (
+                <span
+                  key={t}
+                  className={
+                    "inline-flex items-center gap-1 rounded-full border py-1.5 pl-3 pr-1.5 text-[13px] font-medium transition-colors " +
+                    (on
+                      ? "border-good bg-good text-white"
+                      : "border-line bg-surface text-ink")
+                  }
+                >
+                  <button
+                    type="button"
+                    onClick={() => setTrend(on ? null : t)}
+                    aria-pressed={on}
+                    className="outline-none"
+                  >
+                    {on ? "✓ " : ""}
+                    {t}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      myTrends.remove(t);
+                      if (trend === t) setTrend(null);
+                    }}
+                    aria-label={`${t} 삭제`}
+                    className={
+                      "grid h-4 w-4 place-items-center rounded-full text-[11px] leading-none transition-colors " +
+                      (on
+                        ? "bg-white/25 hover:bg-white/40"
+                        : "bg-line/70 text-muted hover:bg-line")
+                    }
+                  >
+                    ×
+                  </button>
+                </span>
+              );
+            })}
+            <AddChipInput
+              onAdd={(v) => {
+                const clean = v.trim();
+                if (!clean) return;
+                myTrends.add(clean);
+                setTrend(clean);
+              }}
+              placeholder="예) 약과 아이스크림"
+              ariaLabel="요즘 뜨는 디저트 직접 추가"
+            />
           </div>
         </div>
       </section>
@@ -334,5 +381,14 @@ export default function Dessert() {
         />
       </section>
     </main>
+  );
+}
+
+function trendChip(on: boolean) {
+  return (
+    "rounded-full border px-3 py-1.5 text-[13px] font-medium transition-colors " +
+    (on
+      ? "border-good bg-good text-white"
+      : "border-line bg-surface text-ink hover:border-good/40")
   );
 }
