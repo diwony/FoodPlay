@@ -103,6 +103,39 @@ export function parseChapters(description: string): Chapter[] {
   return out.length >= 2 ? out : [];
 }
 
+const CIRCLED = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳";
+
+/**
+ * 타임스탬프가 없는 영상이라도, 설명글에 번호 매긴 조리 순서
+ * ("1. 밀가루와 물을 섞는다", "2) 반죽을 냉장 6시간", "①…") 가 있으면 뽑아낸다.
+ * 시간 이동은 안 되지만 순서 목록으로는 보여줄 수 있다.
+ * 1부터 순차적으로 이어지는 묶음만 인정한다(광고·링크 목록 오탐 방지). 2개 미만이면 빈 배열.
+ */
+export function parseRecipeSteps(description: string): string[] {
+  const found: Array<{ n: number; text: string }> = [];
+  for (const raw of (description || "").split(/\r?\n/)) {
+    const line = raw.trim();
+    const m = line.match(
+      new RegExp(`^(?:\\[?(\\d{1,2})\\]?[.)]|([${CIRCLED}]))\\s*(.+)$`),
+    );
+    if (!m) continue;
+    const n = m[1] ? Number(m[1]) : CIRCLED.indexOf(m[2]!) + 1;
+    const text = m[3].replace(/https?:\/\/\S+/g, "").trim();
+    if (!text || text.length > 200) continue;
+    found.push({ n, text });
+  }
+
+  const seq: string[] = [];
+  let expect = 1;
+  for (const s of found) {
+    if (s.n === expect) {
+      seq.push(s.text);
+      expect += 1;
+    }
+  }
+  return seq.length >= 2 ? seq : [];
+}
+
 /**
  * 정적 풀 결과(`hits`) 위에 실시간 결과를 얹어 돌려준다.
  * - 이미 풀에 있거나 제외 목록에 있는 영상은 겹치지 않게 걸러낸다.

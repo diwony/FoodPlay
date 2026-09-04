@@ -4,6 +4,7 @@ import { useYouTube } from "../lib/useYouTube";
 import {
   liveVideoMeta,
   parseChapters,
+  parseRecipeSteps,
   type Chapter,
   type LiveVideoMeta,
 } from "../lib/youtubeLive";
@@ -26,8 +27,9 @@ const fmt = (s: number) => {
 
 /**
  * 유튜브 검색 결과에서 넘어온 영상을 앱 안에서 재생한다. 큐레이션 레시피처럼
- * 사람이 붙인 스텝 타임스탬프는 없지만, 영상 설명글에 챕터(타임스탬프)가 있으면
- * 뽑아서 눌러 이동할 수 있게 보여주고, 설명글도 함께 표시한다.
+ * 사람이 붙인 스텝 타임스탬프는 없지만, 영상 설명글에서 (1) 챕터(타임스탬프)가
+ * 있으면 눌러 이동할 수 있게, (2) 없으면 번호 매긴 조리 순서라도 뽑아서
+ * 보여준다. 디저트·베이킹 영상도 같은 화면을 쓴다. 설명글 전문도 함께 표시.
  */
 export default function Watch() {
   const { id = "" } = useParams();
@@ -58,6 +60,12 @@ export default function Watch() {
   const chapters: Chapter[] = useMemo(
     () => (meta ? parseChapters(meta.description) : []),
     [meta],
+  );
+  // 타임스탬프가 없으면 설명글의 번호 매긴 조리 순서라도 뽑아 쓴다.
+  const steps = useMemo(
+    () =>
+      meta && chapters.length === 0 ? parseRecipeSteps(meta.description) : [],
+    [meta, chapters.length],
   );
 
   if (!valid) {
@@ -139,11 +147,35 @@ export default function Watch() {
             ))}
           </ol>
         </section>
+      ) : steps.length > 0 ? (
+        <section className="mt-6">
+          <h2 className="text-[17px] font-bold tracking-tight text-ink">
+            조리 순서
+          </h2>
+          <p className="mb-3 mt-0.5 text-[13px] text-faint">
+            영상 설명글에 적힌 순서예요. 시간 표시가 없어 구간 이동은 안 되지만,
+            순서대로 따라 하면 돼요.
+          </p>
+          <ol className="grid gap-2">
+            {steps.map((t, i) => (
+              <li
+                key={i}
+                className="flex gap-3 rounded-xl border border-line bg-surface p-3.5"
+              >
+                <span className="h-fit shrink-0 rounded-lg bg-surface px-2 py-1 text-[12px] font-bold tabular text-faint ring-1 ring-line">
+                  {i + 1}
+                </span>
+                <p className="text-[15px] leading-relaxed">{t}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
       ) : (
         <div className="mt-6 rounded-[var(--radius-card)] border border-dashed border-line bg-surface/60 px-5 py-4">
           <p className="text-[13px] text-muted">
-            이 영상엔 구간 타임스탬프가 없어요. 큐레이션 레시피가 아니라 유튜브
-            검색에서 바로 가져온 영상이라, 조리 스텝은 영상을 직접 보며 확인하세요.
+            이 영상엔 구간 타임스탬프도, 설명글에 적힌 조리 순서도 없어요.
+            큐레이션 레시피가 아니라 유튜브 검색에서 바로 가져온 영상이라, 조리
+            스텝은 영상을 직접 보며 확인하세요.
           </p>
         </div>
       )}
