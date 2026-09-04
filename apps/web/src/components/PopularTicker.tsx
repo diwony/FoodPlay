@@ -49,7 +49,7 @@ export default function PopularTicker() {
       >
         <span className="flex shrink-0 items-center gap-1.5 text-[12px] font-bold text-accent">
           <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
-          지금 많이 보는 요리
+          실시간 인기 요리
         </span>
         <div className="fp-ticker min-w-0 flex-1 text-[14px]">
           <div
