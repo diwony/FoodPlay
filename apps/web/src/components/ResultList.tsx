@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import type { RecipeMatch } from "@foodplay/core";
 import RecipeCard from "./RecipeCard";
 import YouTubeRail from "./YouTubeRail";
+import MukbangRail from "./MukbangRail";
 
 interface Props {
   list: RecipeMatch[];
@@ -81,12 +82,18 @@ export default function ResultList({
       )}
 
       {youtubeQuery && (
-        <YouTubeRail
-          query={youtubeQuery}
-          ingredients={youtubeIngredients}
-          vibes={youtubeVibes}
-          exclude={youtubeExclude}
-        />
+        <>
+          <YouTubeRail
+            query={youtubeQuery}
+            ingredients={youtubeIngredients}
+            vibes={youtubeVibes}
+            exclude={youtubeExclude}
+          />
+          <MukbangRail
+            ingredients={youtubeIngredients}
+            vibes={youtubeVibes}
+          />
+        </>
       )}
     </section>
   );

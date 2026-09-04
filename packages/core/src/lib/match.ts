@@ -113,7 +113,7 @@ export function matchRecipes(
   const rank = (m: RecipeMatch) =>
     m.score + m.matchedVibes.length * 0.15 + viewSignal(m) * 0.1;
 
-  const ranked = matches
+  let ranked = matches
     .filter((m) => m.have.length > 0 && m.score >= minScore)
     .sort(
       (a, b) =>
@@ -123,11 +123,20 @@ export function matchRecipes(
         a.recipe.cookMinutes - b.recipe.cookMinutes,
     );
 
+  // 기분/상황을 골랐으면 결과가 눈에 띄게 바뀌어야 한다: 고른 기분에 맞는
+  // 레시피를 앞으로 당긴다(재료 매칭은 유지, 하드 필터는 하지 않아 결과가
+  // 사라지지 않는다). 맞는 게 하나도 없으면 순서 그대로 둔다.
+  if (wantedVibes.size > 0) {
+    const hit = ranked.filter((m) => m.matchedVibes.length > 0);
+    const rest = ranked.filter((m) => m.matchedVibes.length === 0);
+    if (hit.length > 0) ranked = [...hit, ...rest];
+  }
+
   // 같은 채널(예: 백종원)이 상단을 독식하지 않도록 번갈아 배치한다.
   return spreadByChannel(
     ranked,
     (m) => m.recipe.long.channel,
-    (m) => rank(m),
+    (m) => rank(m) + (m.matchedVibes.length > 0 ? 0.3 : 0),
   );
 }
 
@@ -158,8 +167,20 @@ export function browseRecipes(vibes: Vibe[] = []): RecipeMatch[] {
         a.recipe.cookMinutes - b.recipe.cookMinutes,
     );
 
+  // 기분을 골랐으면 그 기분에 맞는 레시피만 보여준다. 재료를 안 골라도
+  // "오늘 기분·상황"만으로 결과가 확 바뀌어야 하기 때문. 맞는 게 너무
+  // 적으면(3개 미만) 나머지도 뒤에 붙여 빈 화면을 피한다.
+  const scoped =
+    wanted.size > 0
+      ? (() => {
+          const hit = ranked.filter((m) => m.matchedVibes.length > 0);
+          const rest = ranked.filter((m) => m.matchedVibes.length === 0);
+          return hit.length >= 3 ? hit : [...hit, ...rest];
+        })()
+      : ranked;
+
   return spreadByChannel(
-    ranked,
+    scoped,
     (m) => m.recipe.long.channel,
     (m) => m.matchedVibes.length * 0.5 + viewSignal(m),
     0.35,

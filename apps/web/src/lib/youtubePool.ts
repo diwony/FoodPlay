@@ -41,6 +41,11 @@ export interface PoolQuery {
   limit: number;
   /** 이미 큐레이션에 있는 유튜브 ID — 중복 제거용 */
   exclude?: Set<string>;
+  /**
+   * "recipe"(기본): 먹방 영상을 뺀 요리 영상만.
+   * "mukbang": 먹방(`mukbang` 태그) 영상만 — 결과 옆 "같이 보는 먹방" 칸용.
+   */
+  kind?: "recipe" | "mukbang";
 }
 
 /**
@@ -50,9 +55,11 @@ export interface PoolQuery {
 export function searchPool(all: PoolVideo[], q: PoolQuery): PoolVideo[] {
   const ing = new Set(q.ingredients);
   const vibes = new Set(q.vibes);
+  const mukbang = q.kind === "mukbang";
 
   const scored = all
     .filter((v) => !q.exclude?.has(v.id))
+    .filter((v) => v.tags.includes("mukbang") === mukbang)
     .map((v) => {
       const ingHit = v.tags.filter((t) => ing.has(t)).length;
       const vibeHit = v.tags.filter((t) => vibes.has(t)).length;

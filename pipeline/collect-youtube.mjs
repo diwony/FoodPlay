@@ -89,6 +89,27 @@ const THEMES = [
   "밑반찬 만들기", "초간단 요리", "한식 레시피", "혼밥 레시피",
 ];
 
+// 레시피 결과 옆에 곁들여 보는 "먹방" 칸용. tag 에 "mukbang" 이 붙고,
+// 재료·기분 태그도 함께 붙어 고른 조건에 맞게 걸러진다.
+const MUKBANG_INGREDIENTS = [
+  "김치", "계란", "대파", "두부", "감자", "라면", "떡볶이떡", "돼지고기",
+  "소고기", "닭", "어묵", "참치캔", "스팸", "콩나물", "버섯", "청양고추",
+];
+const MUKBANG_VIBES = [
+  ["spicy", "매운 음식 먹방"],
+  ["warm", "국물 요리 먹방"],
+  ["hearty", "많이 먹는 먹방"],
+  ["convenience", "편의점 먹방"],
+  ["homey", "집밥 먹방"],
+  ["guests", "한상차림 먹방"],
+  ["quick", "간단한 한끼 먹방"],
+  ["light", "샐러드 먹방"],
+  ["side", "반찬 먹방"],
+];
+const MUKBANG_THEMES = [
+  "한식 먹방", "리얼사운드 먹방", "집밥 먹방", "야식 먹방",
+];
+
 function buildQueries() {
   const src = JSON.parse(readFileSync(new URL("pipeline/sources.json", ROOT), "utf8"));
   const db = JSON.parse(
@@ -110,6 +131,14 @@ function buildQueries() {
   }
   for (const [vibe, phrase] of VIBES) q.push({ query: phrase, tags: [vibe] });
   for (const t of THEMES) q.push({ query: t, tags: [] });
+
+  // 먹방 — "mukbang" 태그 + 재료/기분 태그
+  for (const i of MUKBANG_INGREDIENTS)
+    q.push({ query: `${i} 먹방`, tags: ["mukbang", i] });
+  for (const [vibe, phrase] of MUKBANG_VIBES)
+    q.push({ query: phrase, tags: ["mukbang", vibe] });
+  for (const t of MUKBANG_THEMES) q.push({ query: t, tags: ["mukbang"] });
+
   return q;
 }
 
