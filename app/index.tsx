@@ -12,22 +12,40 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import RecipeCard from "../src/components/RecipeCard";
 import {
   browseRecipes,
+  dailyPicks,
   INGREDIENT_GROUPS,
   matchRecipes,
   parseIngredients,
+  PERSONAS,
   QUICK_ADD_SET,
   VIBE_CHIPS,
   type Vibe,
 } from "@foodplay/core";
 import { CONTENT_MAX_WIDTH, colors, font, radius, spacing } from "../src/theme/theme";
 import { useMyIngredients } from "../src/lib/myIngredients";
+import { usePersona } from "../src/lib/usePersona";
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
+  const persona = usePersona();
   const [raw, setRaw] = useState("");
-  const [vibes, setVibes] = useState<Vibe[]>([]);
+  const [vibes, setVibes] = useState<Vibe[]>(persona.bias.vibes);
   const [draft, setDraft] = useState("");
   const myIngredients = useMyIngredients();
+
+  // "오늘은 이거 어때요?" — 접속마다 다른 계절 추천 (몇 초마다 회전)
+  const picks = useMemo(() => dailyPicks(), []);
+  const [pickIdx, setPickIdx] = useState(() =>
+    Math.floor(Math.random() * Math.max(1, picks.length)),
+  );
+  useEffect(() => {
+    const t = setInterval(
+      () => setPickIdx((n) => (n + 1) % picks.length),
+      4000,
+    );
+    return () => clearInterval(t);
+  }, [picks.length]);
+  const pick = picks[pickIdx];
 
   const ingredients = useMemo(() => parseIngredients(raw), [raw]);
   // 재료가 있으면 재료 매칭, 없으면 (기분만 골라도) 둘러보기를 기분순으로.
@@ -102,11 +120,65 @@ export default function HomeScreen() {
         }
         ListHeaderComponent={
           <View style={styles.header}>
-            <Text style={styles.h1}>냉장고에 뭐 있어요?</Text>
+            <Text style={styles.h1}>뭐 만들지 고민, 여기서 끝내요</Text>
             <Text style={styles.lead}>
-              가진 재료를 적으면 만들 수 있는 요리 영상을 찾아드려요. 재료 1개만
-              골라도 추천이 떠요.
+              시켜 먹지 말고 직접. 가진 재료를 적으면 만들 수 있는 요리 영상을
+              찾아드려요. 재료 없이 기분만 골라도 돼요.
             </Text>
+
+            {pick && (
+              <Pressable
+                onPress={() => setVibes(pick.vibes)}
+                style={({ pressed }) => [
+                  styles.pickCard,
+                  pressed && styles.pressed,
+                ]}
+                accessibilityRole="button"
+                accessibilityLabel={`오늘의 추천: ${pick.headline}`}
+              >
+                <Text style={styles.pickKicker}>오늘은 이거 어때요?</Text>
+                <Text style={styles.pickHeadline}>
+                  {pick.emoji} {pick.headline}
+                </Text>
+                <Text style={styles.pickSub}>{pick.sub}</Text>
+                <Text style={styles.pickCta}>이 느낌으로 찾기 →</Text>
+              </Pressable>
+            )}
+
+            <View style={styles.personaBlock}>
+              <Text style={styles.vibeTitle}>
+                어떤 분이세요?{" "}
+                {persona.meta ? `— ${persona.meta.blurb}` : "(선택)"}
+              </Text>
+              <View style={styles.quickWrap}>
+                {PERSONAS.map((p) => {
+                  const active = persona.persona === p.persona;
+                  return (
+                    <Pressable
+                      key={p.persona}
+                      onPress={() => {
+                        persona.set(p.persona);
+                        if (vibes.length === 0 && p.persona !== persona.persona) {
+                          setVibes(p.vibes);
+                        }
+                      }}
+                      style={[styles.persona, active && styles.personaActive]}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: active }}
+                    >
+                      <Text
+                        style={[
+                          styles.quickText,
+                          active && styles.quickTextActive,
+                        ]}
+                      >
+                        {p.emoji} {p.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
 
             <TextInput
               value={raw}
@@ -286,6 +358,38 @@ const styles = StyleSheet.create({
   header: { gap: spacing(3), marginBottom: spacing(1) },
   h1: { fontSize: font.h1, fontWeight: "800", color: colors.text },
   lead: { fontSize: font.body, color: colors.textMuted, lineHeight: 21 },
+  pickCard: {
+    gap: spacing(1),
+    padding: spacing(4),
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surfaceAlt,
+  },
+  pickKicker: {
+    fontSize: font.tiny,
+    fontWeight: "800",
+    color: colors.primary,
+    letterSpacing: 1,
+  },
+  pickHeadline: { fontSize: font.h2, fontWeight: "800", color: colors.text },
+  pickSub: { fontSize: font.small, color: colors.textMuted, lineHeight: 19 },
+  pickCta: {
+    marginTop: spacing(1),
+    fontSize: font.small,
+    fontWeight: "800",
+    color: colors.primary,
+  },
+  personaBlock: { gap: spacing(2) },
+  persona: {
+    paddingVertical: spacing(2),
+    paddingHorizontal: spacing(3),
+    borderRadius: radius.pill,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  personaActive: { backgroundColor: colors.primary, borderColor: colors.primary },
   input: {
     backgroundColor: colors.surface,
     borderWidth: 1,

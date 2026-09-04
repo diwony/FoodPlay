@@ -19,7 +19,13 @@ import RelatedVideos from "../../src/components/RelatedVideos";
 import YouTubePlayer, {
   type YouTubePlayerHandle,
 } from "../../src/components/YouTubePlayer";
-import { formatTimestamp, getRecipe, relatedRecipes } from "@foodplay/core";
+import {
+  estimateCost,
+  formatTimestamp,
+  formatWon,
+  getRecipe,
+  relatedRecipes,
+} from "@foodplay/core";
 import { CONTENT_MAX_WIDTH, colors, font, radius, spacing } from "../../src/theme/theme";
 
 export default function RecipeScreen() {
@@ -44,7 +50,7 @@ export default function RecipeScreen() {
   const dockedH = Math.round((dockedW * 9) / 16);
   const dockedLeft = (winWidth - dockedW) / 2;
 
-  const miniW = Math.min(Math.round(dockedW * 0.5), 190);
+  const miniW = Math.min(Math.round(dockedW * 0.72), 300);
   const miniH = Math.round((miniW * 9) / 16);
   const DOCK_TOP = PAD;
   const FLOAT_TOP = insets.top + spacing(2);
@@ -157,6 +163,22 @@ export default function RecipeScreen() {
           </Text>
 
           <MetaRow recipe={recipe} />
+
+          {(() => {
+            const cost = estimateCost(recipe);
+            if (cost.save <= 0) return null;
+            return (
+              <View style={styles.saveBox}>
+                <Text style={styles.saveTitle}>
+                  💸 {formatWon(cost.save)} 아껴요
+                </Text>
+                <Text style={styles.saveSub}>
+                  사 먹으면 약 {formatWon(cost.eatOut)} · 직접 만들면 재료값 약{" "}
+                  {formatWon(cost.make)} (1인분 기준 추정)
+                </Text>
+              </View>
+            );
+          })()}
 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>추가로 필요한 재료</Text>
@@ -320,6 +342,17 @@ const styles = StyleSheet.create({
   miniCloseText: { color: "#fff", fontSize: 12, fontWeight: "800" },
   title: { fontSize: font.h1, fontWeight: "800", color: colors.text, marginTop: spacing(1) },
   channel: { fontSize: font.small, color: colors.textMuted, marginTop: -spacing(1) },
+  saveBox: {
+    marginTop: spacing(2),
+    gap: spacing(1),
+    padding: spacing(3),
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.chipHave,
+    backgroundColor: colors.chipHave,
+  },
+  saveTitle: { fontSize: font.body, fontWeight: "800", color: colors.chipHaveText },
+  saveSub: { fontSize: font.small, color: colors.textMuted, lineHeight: 18 },
   section: { gap: spacing(2), marginTop: spacing(2) },
   sectionTitle: { fontSize: font.h2, fontWeight: "800", color: colors.text },
   hint: { fontSize: font.small, color: colors.textMuted },

@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { allRecipes, compactViews } from "@foodplay/core";
 import { loadPool, looksCookable, type PoolVideo } from "../lib/youtubePool";
 import { usePersona } from "../lib/usePersona";
+import YtThumb from "./YtThumb";
 
 /**
  * "이런 것도 있어요" — 인스타 돋보기 피드처럼 훑어보다 발견하는 칸.
@@ -10,13 +11,19 @@ import { usePersona } from "../lib/usePersona";
  * 섞어 보여준다. 접속마다 순서가 살짝 달라지고, 페르소나를 고르면 그쪽으로 기운다.
  */
 
-type Tile =
-  | { kind: "recipe"; id: string; title: string; views?: number; big: boolean }
-  | { kind: "video"; id: string; title: string; channel: string; views: number; big: boolean };
+interface Tile {
+  kind: "recipe" | "video";
+  /** 라우팅용 id (레시피 slug 또는 영상 id) */
+  key: string;
+  /** 썸네일용 유튜브 영상 id */
+  thumbId: string;
+  to: string;
+  title: string;
+  sub?: string;
+}
 
-const SHOWN_STEP = 18;
+const SHOWN_STEP = 16;
 
-/** 시드 기반 셔플 — 접속마다 조금씩 다르게, 하지만 렌더 중엔 안정적. */
 function shuffled<T>(arr: T[], seed: number): T[] {
   const a = [...arr];
   let s = seed;
@@ -47,10 +54,11 @@ export default function ExploreGrid() {
 
     const recipeTiles: Tile[] = allRecipes().map((r) => ({
       kind: "recipe",
-      id: r.id,
+      key: r.id,
+      thumbId: r.long.youtubeId,
+      to: `/recipe/${r.id}`,
       title: r.title,
-      views: r.long.views ?? undefined,
-      big: false,
+      sub: r.long.channel,
     }));
 
     const videoTiles: Tile[] = (pool ?? [])
@@ -64,36 +72,41 @@ export default function ExploreGrid() {
         v,
         vibeHit: [...wantVibes].filter((t) => v.tags.includes(t)).length,
       }))
-      // 페르소나에 맞는 태그가 있으면 앞으로, 그 다음 조회수
       .sort((a, b) => b.vibeHit - a.vibeHit || b.v.views - a.v.views)
-      .slice(0, 80)
+      .slice(0, 90)
       .map(({ v }) => ({
         kind: "video" as const,
-        id: v.id,
+        key: v.id,
+        thumbId: v.id,
+        to: `/yt/${v.id}`,
         title: v.title,
-        channel: v.channel,
-        views: v.views,
-        big: false,
+        sub: `${v.channel} · ▶ ${compactViews(v.views)}`,
       }));
 
-    // 레시피(스텝 O)를 앞쪽에 조금 섞고, 나머지는 영상으로 채운다.
-    const mixed = [
-      ...shuffled(recipeTiles, seed).slice(0, 8),
-      ...videoTiles,
-    ];
+    const mixed = [...shuffled(recipeTiles, seed).slice(0, 6), ...videoTiles];
     const deduped: Tile[] = [];
     const seen = new Set<string>();
     for (const t of shuffled(mixed, seed + 1)) {
-      if (seen.has(t.id)) continue;
-      seen.add(t.id);
+      if (seen.has(t.thumbId)) continue;
+      seen.add(t.thumbId);
       deduped.push(t);
     }
-    // 일정 간격마다 큰 타일 (돋보기 피드 느낌)
-    return deduped.map((t, n) => ({ ...t, big: n % 7 === 2 }));
+    return deduped;
   }, [pool, bias.vibes, seed]);
 
-  const visible = tiles.slice(0, shown);
-  const more = tiles.length - visible.length;
+  // 삭제·비공개된 영상(썸네일 404)은 목록에서 뺀다.
+  const [dead, setDead] = useState<Set<string>>(new Set());
+  const markDead = useCallback(
+    (id: string) => setDead((s) => new Set(s).add(id)),
+    [],
+  );
+
+  const live = useMemo(
+    () => tiles.filter((t) => !dead.has(t.thumbId)),
+    [tiles, dead],
+  );
+  const visible = live.slice(0, shown);
+  const more = live.length - visible.length;
 
   return (
     <section className="py-4">
@@ -103,51 +116,36 @@ export default function ExploreGrid() {
       </div>
 
       {pool === null && tiles.length === 0 ? (
-        <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, i) => (
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
-              className="aspect-square animate-pulse rounded-lg bg-line/40"
+              className="aspect-video animate-pulse rounded-lg bg-line/40"
             />
           ))}
         </div>
       ) : (
         <>
-          <div className="grid auto-rows-[1fr] grid-cols-2 gap-1.5 sm:grid-cols-3 md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-x-2 gap-y-3 sm:grid-cols-3 md:grid-cols-4">
             {visible.map((t) => (
-              <Link
-                key={`${t.kind}-${t.id}`}
-                to={t.kind === "recipe" ? `/recipe/${t.id}` : `/yt/${t.id}`}
-                className={
-                  "group relative overflow-hidden rounded-lg bg-accent-soft " +
-                  (t.big ? "col-span-2 row-span-2" : "")
-                }
-              >
-                <img
-                  src={`https://i.ytimg.com/vi/${t.id}/mqdefault.jpg`}
-                  alt=""
-                  loading="lazy"
-                  className="aspect-square h-full w-full scale-[1.35] object-cover transition-transform duration-300 group-hover:scale-[1.45]"
-                />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent p-2 pt-6">
-                  <p
-                    className={
-                      "font-semibold leading-tight text-white " +
-                      (t.big ? "text-[13px] line-clamp-2" : "text-[11px] line-clamp-2")
-                    }
-                  >
-                    {t.title}
-                  </p>
-                  {t.kind === "video" && (
-                    <p className="mt-0.5 text-[10px] text-white/70">
-                      {t.channel} · ▶ {compactViews(t.views)}
-                    </p>
+              <Link key={t.key} to={t.to} className="group block">
+                <div className="relative aspect-video overflow-hidden rounded-lg bg-accent-soft">
+                  <YtThumb
+                    id={t.thumbId}
+                    onDead={markDead}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  {t.kind === "recipe" && (
+                    <span className="absolute left-1.5 top-1.5 rounded bg-good/90 px-1.5 py-0.5 text-[9px] font-bold text-white">
+                      📖 스텝
+                    </span>
                   )}
                 </div>
-                {t.kind === "recipe" && (
-                  <span className="absolute left-1.5 top-1.5 rounded bg-good/90 px-1.5 py-0.5 text-[9px] font-bold text-white">
-                    📖 스텝
-                  </span>
+                <p className="mt-1 line-clamp-2 text-[12px] font-semibold leading-tight">
+                  {t.title}
+                </p>
+                {t.sub && (
+                  <p className="truncate text-[10px] text-faint">{t.sub}</p>
                 )}
               </Link>
             ))}
@@ -155,7 +153,7 @@ export default function ExploreGrid() {
           {more > 0 && (
             <button
               onClick={() => setShown((n) => n + SHOWN_STEP)}
-              className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-[var(--radius-card)] border border-line bg-surface py-3 text-[14px] font-semibold text-muted transition-colors hover:border-accent/40 hover:text-ink"
+              className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-[var(--radius-card)] border border-line bg-surface py-3 text-[14px] font-semibold text-muted transition-colors hover:border-accent/40 hover:text-ink"
             >
               <span className="text-[16px] leading-none text-accent">＋</span>
               더 보기

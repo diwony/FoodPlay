@@ -82,9 +82,15 @@
   top: 64px;
   right: 14px;
   z-index: 40;
-  width: min(62vw, 300px);
-  height: calc(min(62vw, 300px) * 9 / 16);
+  width: min(84vw, 384px);
+  height: calc(min(84vw, 384px) * 9 / 16);
   box-shadow: var(--shadow-float);
+}
+@media (min-width: 640px) {
+  .player.is-mini {
+    width: 384px;
+    height: 216px;
+  }
 }
 .yt-frame,
 .yt-frame iframe {

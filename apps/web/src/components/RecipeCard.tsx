@@ -147,12 +147,8 @@ function RecipeCardBase({ match, rank, browse = false, shopping = false }: Props
         )}
 
         {cost.save > 0 && (
-          <p className="mt-1.5 text-[12px] font-semibold text-good">
-            💸 사 먹으면 {formatWon(cost.eatOut)} → 만들면 {formatWon(cost.make)}
-            <span className="text-muted">
-              {" "}
-              ({formatWon(cost.save)} 아낌)
-            </span>
+          <p className="mt-1.5 text-[12px] font-bold text-good">
+            💸 {formatWon(cost.save)} 절약
           </p>
         )}
       </div>

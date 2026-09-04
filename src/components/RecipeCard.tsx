@@ -2,8 +2,10 @@ import { Link } from "expo-router";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import {
   compactViews,
+  estimateCost,
   formatCookTime,
   formatDifficulty,
+  formatWon,
   vibeLabel,
   type RecipeMatch,
 } from "@foodplay/core";
@@ -18,6 +20,8 @@ export default function RecipeCard({ match }: Props) {
   const { recipe, have, missing, score, matchedVibes } = match;
   // 재료 없이 기분만으로 온 결과는 매칭 점수가 없다(0).
   const browse = have.length === 0 && score === 0;
+  const cost = estimateCost(recipe);
+  const views = recipe.long.views ?? null;
 
   return (
     <Link href={`/recipe/${recipe.id}`} asChild>
@@ -50,9 +54,9 @@ export default function RecipeCard({ match }: Props) {
           <Text style={styles.sub}>
             {recipe.long.channel} · {formatCookTime(recipe.cookMinutes)} ·{" "}
             {formatDifficulty(recipe.difficulty)}
-            {recipe.long.views != null
-              ? ` · ▶ ${compactViews(recipe.long.views)}`
-              : ""}
+            {views != null && (
+              <Text style={styles.views}> · ▶ 조회수 {compactViews(views)}</Text>
+            )}
           </Text>
 
           <View style={styles.chips}>
@@ -80,6 +84,10 @@ export default function RecipeCard({ match }: Props) {
             <Text style={styles.vibeNote}>
               {matchedVibes.map((v) => `#${vibeLabel(v)}`).join("  ")}
             </Text>
+          )}
+
+          {cost.save > 0 && (
+            <Text style={styles.saveNote}>💸 {formatWon(cost.save)} 절약</Text>
           )}
         </View>
       </Pressable>
@@ -118,6 +126,13 @@ const styles = StyleSheet.create({
   body: { flex: 1, gap: spacing(1.5) },
   title: { fontSize: font.h2, fontWeight: "800", color: colors.text },
   sub: { fontSize: font.tiny, color: colors.textMuted },
+  views: { color: colors.primary, fontWeight: "800" },
+  saveNote: {
+    fontSize: font.small,
+    color: colors.chipHaveText,
+    fontWeight: "800",
+    marginTop: spacing(0.5),
+  },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: spacing(1.5), marginTop: spacing(1) },
   missingNote: { fontSize: font.small, color: colors.primary, fontWeight: "700", marginTop: spacing(1) },
   readyNote: { fontSize: font.small, color: colors.accent, fontWeight: "700", marginTop: spacing(1) },

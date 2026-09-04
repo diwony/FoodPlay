@@ -4,6 +4,7 @@ import { allRecipes, averageSaving, formatWon } from "@foodplay/core";
 import DailyHero from "../components/DailyHero";
 import PersonaChips from "../components/PersonaChips";
 import PopularTicker from "../components/PopularTicker";
+import TrendingRail from "../components/TrendingRail";
 import ExploreGrid from "../components/ExploreGrid";
 
 const MODES = [
@@ -43,16 +44,14 @@ export default function Landing() {
   return (
     <main className="mx-auto max-w-5xl px-5">
       <section className="pb-6 pt-10 sm:pt-14">
-        <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-accent">
-          냉장고 → 유튜브 레시피
-        </p>
-        <h1 className="mt-3 max-w-3xl text-[30px] font-bold leading-[1.12] sm:text-[42px]">
-          뭐 먹을지 고민,<br className="sm:hidden" /> 여기서 끝내요.
+        <h1 className="max-w-3xl text-[30px] font-bold leading-[1.12] sm:text-[42px]">
+          뭐 <span className="text-accent">만들지</span> 고민,
+          <br className="sm:hidden" /> 여기서 끝내요.
         </h1>
         <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted">
-          지금 상황만 고르면 조리 스텝마다 타임스탬프가 붙은 유튜브 요리 영상으로
-          바로 이어줘요. <b className="text-good">사 먹을 때보다 평균 {formatWon(avgSave)}</b>{" "}
-          아끼는 건 덤이고요.
+          시켜 먹지 말고 직접. 상황만 고르면 조리 스텝마다 타임스탬프가 붙은
+          유튜브 요리 영상으로 이어주고,{" "}
+          <b className="text-good">사 먹을 때보다 평균 {formatWon(avgSave)}</b> 아껴요.
         </p>
       </section>
 
@@ -89,6 +88,7 @@ export default function Landing() {
       </section>
 
       <div className="border-t border-line pt-2">
+        <TrendingRail />
         <ExploreGrid />
       </div>
     </main>
