@@ -24,6 +24,23 @@
   유튜브 결과**를 얹고 "실시간" 배지를 붙인다. 실시간은 API 키를 숨긴 서버리스
   프록시(Cloudflare Workers, 24h 캐시)를 거치며, 프록시가 없거나 할당량이 소진돼도
   1층 풀로 조용히 폴백해 화면이 비지 않는다. 요즘 뜨는 재료·디저트도 계속 수집해 넓힘
+- **레시피마다 "사 먹으면 얼마 vs 만들면 얼마"를 추정**해 절약 금액을 보여줌
+  (카드엔 "N원 절약" 한 줄, 상세엔 전체 내역). 재료 구성·계열·난이도 기반 데모 추정치
+- 홈은 검색 없이 **훑어보다 발견하는** 화면 —
+  ① **"오늘은 이거 어때요?"** 계절/절기 기반 추천 히어로. 접속마다(그리고 페르소나에
+  따라) 회전하고, 그 자리에서 바로 추천 영상을 재생(다른 화면으로 안 넘어감)
+  ② **"실시간 인기 요리"** — 특정 유튜버가 아니라 **메뉴 단위**로 집계한 인기 순위,
+  실검처럼 한 줄씩 넘어가고 호버·탭하면 전체 순위가 겹쳐서 뜸
+  ③ **"요즘 뜨는"** — 마라·로제·두바이 초콜릿처럼 급상승 중인 요리·디저트, 영상 풀
+  조회수로 랭킹하고 실시간 프록시가 있으면 갱신
+  ④ **"이번 달 제철"** 재료 칩 — 누르면 내가 저장해둔 재료와 합쳐 냉장고 모드로
+  ⑤ **"이런 것도 있어요"** — 영상 풀 + 큐레이션 레시피를 섞은 탐색 그리드, 방문마다 셔플
+- **"어떤 분이세요?"** — 자취생·1인가구·직장인·커플·주부·다이어터 중 고르면(기기 저장)
+  홈의 모드 카드 순서·"오늘은 이거 어때요?" 추천이 그 사람 맞춤으로 바뀜
+- `/yt/:id`(유튜브 검색 결과 재생 화면)는 **"냉장고에 이런 게 있어야 해요"** 재료
+  체크리스트를 보여줌 — 영상 설명글 + 자막(CC) + (수집 풀에 있는 영상이면) 수집 태그를
+  합쳐 뽑고, 내가 등록한 재료는 초록색으로 표시. 아래엔 **"이어서 볼 만한 영상"**
+- 가로로 넘기는 목록(요즘 뜨는·추천 영상)은 PC에서도 **마우스로 잡고 끌면 스크롤**됨
 - **웹**은 별도 React(Vite) 앱, **모바일 앱**은 Expo(React Native). 매칭·데이터
   로직은 `@foodplay/core` 패키지로 100% 공유
 
@@ -49,21 +66,24 @@
 | 모바일 앱 | **Expo + React Native 0.86 + Expo Router** (루트) |
 | 영상 | 웹: YouTube IFrame Player API + 네이버TV `tv.naver.com/embed` iframe / 앱: `react-native-youtube-iframe` (동일한 `seekTo`·`pause` 계약) |
 | 데이터 (1층) | 빌드 타임 큐레이션 (`packages/core/src/data/recipes.json`) + 유튜브 관련영상·먹방·디저트 풀 (`apps/web/public/youtube-pool.json`, 11,000+ 영상). 풀은 `pipeline/collect-youtube.mjs` 가 **공식 YouTube Data API v3** 로 수집(로컬, 키는 `.env`) |
-| 실시간 (2층) | `workers/youtube-search/` — API 키를 시크릿으로 숨긴 **Cloudflare Workers** 검색 프록시(24h KV 캐시). 앱은 풀 위에 실시간 결과를 얹고 "실시간" 배지를 붙이며, 프록시·할당량이 없으면 1층으로 폴백 |
+| 실시간 (2층) | `workers/youtube-search/` — API 키를 시크릿으로 숨긴 **Cloudflare Workers** 검색 프록시(24h KV 캐시). `/search`·`/video`·`/transcript`(자막, API 키 불필요) 세 엔드포인트. 앱은 풀 위에 실시간 결과를 얹고 "실시간" 배지를 붙이며, 프록시·할당량이 없으면 1층으로 폴백 |
 | 사용자 입력 저장 | 직접 추가한 재료·밀키트는 `localStorage` (기기별, 계정 없음) |
 
 ## 구조
 
 ```
-packages/core/     웹·앱 공유 순수 로직 — 재료 파싱 · 매칭/랭킹 · vibe · 예산 · 포맷 · recipes.json
+packages/core/     웹·앱 공유 순수 로직 — 재료 파싱 · 매칭/랭킹 · vibe · 예산/절약 추정 · 포맷 ·
+                   페르소나 · 계절 추천 · 오늘의 추천 시나리오 · 트렌드 목록 · 식재료 사전 · recipes.json
 apps/web/          Vite React 웹 (주력)
-  src/pages/       Landing(4모드) · Fridge · MealKit · Shop · Dessert · Recipe · Watch(/yt/:id)
-  src/components/  RecipeCard · ResultList · IngredientField · VibeField · YouTubeRail · MukbangRail · AddChipInput · …
-  src/lib/         useYouTube(IFrame) · useMiniPlayer(PiP) · youtubePool(1층) · youtubeLive(2층 실시간) · useLocalList · curated
+  src/pages/       Landing(발견 홈) · Fridge · MealKit · Shop · Dessert · Recipe · Watch(/yt/:id)
+  src/components/  RecipeCard · ResultList · DailyHero · PopularTicker · SeasonalPicks · TrendingRail ·
+                    ExploreGrid · PersonaChips · YtThumb · IngredientField · VibeField · …
+  src/lib/         useYouTube(IFrame) · useMiniPlayer(PiP) · useDragScroll(가로 레일 마우스 드래그) ·
+                    usePersona · youtubePool(1층) · youtubeLive(2층 실시간+자막) · trends · useLocalList
   public/          youtube-pool.json (관련 영상·먹방·디저트 풀)
 app/  src/  (루트)  Expo Router 모바일 앱 (+ RN-web 프리뷰)
 pipeline/          영상 큐레이션 · 댓글 · 유튜브 풀 수집(공식 Data API) 스크립트
-workers/           Cloudflare Workers — 실시간 유튜브 검색 프록시(키 은닉·캐시)
+workers/           Cloudflare Workers — 실시간 유튜브 검색·영상 상세·자막 프록시(키 은닉·캐시)
 ```
 
 ## 실행
