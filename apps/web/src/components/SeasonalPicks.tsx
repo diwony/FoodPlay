@@ -39,26 +39,24 @@ export default function SeasonalPicks() {
                       }
                     : undefined
                 }
-                className="flex items-center gap-2.5 rounded-lg p-1 hover:bg-bg"
+                className="flex h-11 items-center gap-2.5 rounded-lg p-1 hover:bg-bg"
               >
-                <div className="grid h-9 w-14 shrink-0 place-items-center overflow-hidden rounded-md bg-accent-soft text-[15px]">
+                <div className="relative grid h-9 w-14 shrink-0 place-items-center overflow-hidden rounded-md bg-accent-soft text-[16px]">
                   {it.video ? (
                     <YtThumb
                       id={it.video.id}
                       className="h-full w-full scale-[1.35] object-cover"
                     />
                   ) : (
-                    it.emoji
+                    <span aria-hidden>{it.emoji}</span>
                   )}
                 </div>
-                <span className="flex-1 truncate text-[12px] font-semibold">
-                  {it.emoji} {it.name}
+                <span className="min-w-0 flex-1 truncate text-[12px] font-semibold">
+                  <span aria-hidden>{it.emoji}</span> {it.name}
                 </span>
-                {it.video && (
-                  <span className="shrink-0 text-[11px] font-medium text-faint">
-                    ▶ {compactViews(it.video.views)}
-                  </span>
-                )}
+                <span className="shrink-0 text-[11px] font-medium text-faint">
+                  {it.video ? `▶ ${compactViews(it.video.views)}` : "영상 찾는 중"}
+                </span>
               </Link>
             </li>
           ) : (
