@@ -157,7 +157,7 @@ export default function Shop() {
       <ResultList
         list={list}
         variant="shopping"
-        heading={picked > 0 ? `오늘 저녁 후보 ${list.length}` : `이런 메뉴들이 있어요 · ${list.length}`}
+        heading={picked > 0 ? `오늘 저녁 후보` : `이런 메뉴들이 있어요`}
         meta={picked > 0 ? `조건 ${picked}` : undefined}
         note={
           list.length === 0 && cuisines.size > 0 ? (

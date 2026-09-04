@@ -110,10 +110,10 @@ export default function Fridge() {
           noCurated
             ? `유튜브에서 찾아봤어요`
             : hasIngredients
-              ? `만들 수 있는 요리 ${list.length}`
+              ? `만들 수 있는 요리`
               : vibes.length > 0
-                ? `이 기분엔 이런 요리 ${list.length}`
-                : `이런 요리들이 있어요 · ${list.length}`
+                ? `이 기분엔 이런 요리`
+                : `이런 요리들이 있어요`
         }
         meta={
           hasIngredients
@@ -126,10 +126,9 @@ export default function Fridge() {
           noCurated ? (
             <p className="rounded-xl border border-dashed border-line bg-surface/60 px-4 py-3 text-[13px] leading-relaxed text-muted">
               <b className="text-ink">{ingredients.join(", ")}</b> 로 만드는 큐레이션
-              레시피(스텝 타임스탬프)는 아직 준비 중이에요. 대신 아래{" "}
-              <b className="text-ink">유튜브에서 더 찾기</b>·
-              <b className="text-ink">같이 보는 먹방</b> 칸을 고른 재료에 맞춰
-              보여드릴게요. 그 사이 다른 요리도 둘러보세요.
+              레시피(스텝 타임스탬프)는 아직 준비 중이에요. 대신 같은 재료로 나온{" "}
+              <b className="text-ink">유튜브 영상</b>을 아래 목록에 모아뒀어요 —
+              영상 설명에 타임스탬프가 있으면 눌러서 구간 이동돼요.
             </p>
           ) : undefined
         }

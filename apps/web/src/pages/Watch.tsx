@@ -88,7 +88,7 @@ export default function Watch() {
       </div>
 
       <p className="mt-4 text-[11px] font-bold uppercase tracking-wider text-faint">
-        유튜브 검색 결과
+        같은 재료로 나온 유튜브 영상
       </p>
       <h1 className="mt-1 text-[22px] font-bold leading-tight tracking-tight">
         {title}
@@ -110,24 +110,31 @@ export default function Watch() {
         </div>
       ) : chapters.length > 0 ? (
         <section className="mt-6">
-          <h2 className="text-[13px] font-bold text-ink">
-            타임라인
-            <span className="ml-1.5 text-[12px] font-medium text-faint">
-              영상 설명 기준 · 눌러서 이동
-            </span>
+          <h2 className="text-[17px] font-bold tracking-tight text-ink">
+            조리 순서 · 타임라인
           </h2>
-          <ol className="mt-2 divide-y divide-line/70 overflow-hidden rounded-[var(--radius-card)] border border-line">
+          <p className="mb-3 mt-0.5 text-[13px] text-faint">
+            큐레이션 레시피처럼 사람이 붙인 스텝은 아니고, 영상 설명글의 구간
+            표시예요. 시간을 누르면 그 장면으로 이동해요.
+          </p>
+          <ol className="grid gap-2">
             {chapters.map((c, i) => (
-              <li key={i}>
+              <li
+                key={i}
+                className="flex gap-3 rounded-xl border border-line bg-surface p-3.5"
+              >
                 <button
                   onClick={() => seekTo(c.seconds)}
-                  className="flex w-full items-start gap-3 px-4 py-2.5 text-left transition-colors hover:bg-surface"
+                  className="h-fit shrink-0 rounded-lg bg-accent-soft px-2 py-1 text-[12px] font-bold tabular text-accent transition-colors hover:bg-accent hover:text-white"
                 >
-                  <span className="mt-px shrink-0 rounded bg-ink px-1.5 py-0.5 text-[11px] font-bold tabular-nums text-bg">
-                    {fmt(c.seconds)}
-                  </span>
-                  <span className="text-[13px] leading-snug">{c.label}</span>
+                  ▶ {fmt(c.seconds)}
                 </button>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-faint">
+                    Step {i + 1}
+                  </p>
+                  <p className="mt-0.5 text-[15px] leading-relaxed">{c.label}</p>
+                </div>
               </li>
             ))}
           </ol>
