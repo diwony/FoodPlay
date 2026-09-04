@@ -101,11 +101,14 @@ export default function MealKit() {
         heading={`곁들일 반찬 ${list.length}`}
         note={
           <p className="text-[13px] text-muted">
-            {kit ? `${kit}에` : "밀키트에"} 곁들이기 좋은 빠른 반찬이에요. 아래
-            유튜브에서 더 찾을 수도 있어요.
+            {kit ? `${kit}에` : "밀키트에"} 곁들이기 좋은 빠른 반찬이에요.
+            {kit
+              ? " 아래 유튜브·먹방 칸은 고른 밀키트에 맞춰 보여드려요."
+              : " 밀키트 종류를 고르면 그에 맞는 영상으로 바뀌어요."}
           </p>
         }
         youtubeQuery={youtubeQuery}
+        youtubeIngredients={kit ? [kit] : []}
         youtubeVibes={["side"]}
         youtubeExclude={CURATED_YT_IDS}
       />

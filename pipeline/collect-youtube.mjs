@@ -72,6 +72,14 @@ const ING = [
   "가지", "브로콜리", "시금치", "무",
 ];
 
+// 큐레이션 레시피엔 없지만 요즘 유튜브에서 많이 찾는 재료. 칩으로도 노출된다
+// (packages/core/src/lib/quickAdd.ts 의 "요즘 뜨는" 그룹과 맞춰 둔다).
+const TREND_ING = [
+  "분모자", "두부면", "곤약", "쫄면", "대패삼겹살", "우삼겹", "냉동만두",
+  "숙주", "청경채", "팽이버섯", "라면사리", "차돌박이", "훈제오리", "가래떡",
+  "떡국떡", "알배추", "명란", "부라타치즈", "리코타치즈", "베이컨", "소시지",
+];
+
 const VIBES = [
   ["convenience", "편의점 요리 꿀조합"],
   ["side", "밀키트에 곁들이는 반찬"],
@@ -110,6 +118,13 @@ const MUKBANG_THEMES = [
   "한식 먹방", "리얼사운드 먹방", "집밥 먹방", "야식 먹방",
 ];
 
+// 밀키트 종류 — apps/web/src/pages/MealKit.tsx 의 KITS 와 맞춰 둔다.
+// 종류를 고르면 그 종류에 맞는 곁들임 반찬·먹방 영상이 나오도록 태그를 붙인다.
+const KITS = [
+  "밀푀유나베", "부대찌개", "마라탕", "감바스", "샤브샤브", "곱창전골",
+  "파스타", "떡볶이",
+];
+
 function buildQueries() {
   const src = JSON.parse(readFileSync(new URL("pipeline/sources.json", ROOT), "utf8"));
   const db = JSON.parse(
@@ -123,6 +138,11 @@ function buildQueries() {
   for (const i of ING) {
     q.push({ query: `${i} 요리`, tags: [i] });
     q.push({ query: `${i} 레시피 만들기`, tags: [i] });
+  }
+  for (const i of TREND_ING) {
+    q.push({ query: `${i} 요리`, tags: [i] });
+    q.push({ query: `${i} 레시피`, tags: [i] });
+    q.push({ query: `${i} 먹방`, tags: ["mukbang", i] });
   }
   for (const s of src.sources) {
     const tags = coreByDish[s.id] ?? [];
@@ -138,6 +158,15 @@ function buildQueries() {
   for (const [vibe, phrase] of MUKBANG_VIBES)
     q.push({ query: phrase, tags: ["mukbang", vibe] });
   for (const t of MUKBANG_THEMES) q.push({ query: t, tags: ["mukbang"] });
+
+  // 밀키트 종류별 — 곁들임 반찬 + 그 밀키트 먹방. 종류 이름을 태그로 붙여
+  // MealKit 화면에서 고른 종류로 거를 수 있게 한다.
+  for (const k of KITS) {
+    q.push({ query: `${k} 곁들이는 반찬`, tags: [k, "side"] });
+    q.push({ query: `${k} 같이 먹는 반찬`, tags: [k, "side"] });
+    q.push({ query: `${k} 밀키트`, tags: [k] });
+    q.push({ query: `${k} 먹방`, tags: ["mukbang", k] });
+  }
 
   return q;
 }

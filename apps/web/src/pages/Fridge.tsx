@@ -39,13 +39,16 @@ export default function Fridge() {
   const manualSet = useMemo(() => new Set(manualVibes), [manualVibes]);
 
   // 재료가 있으면 재료 매칭, 없으면 (기분만 골라도) 둘러보기를 기분순으로.
-  const list = useMemo(
-    () =>
-      ingredients.length > 0
-        ? matchRecipes(ingredients, { vibes })
-        : browseRecipes(vibes),
+  const matched = useMemo(
+    () => (ingredients.length > 0 ? matchRecipes(ingredients, { vibes }) : []),
     [ingredients, vibes],
   );
+  const browse = useMemo(() => browseRecipes(vibes), [vibes]);
+  // "요즘 뜨는" 재료처럼 큐레이션 레시피가 아직 없는 재료를 골랐을 때:
+  // 빈 화면 대신 둘러보기로 목록을 채우고, 유튜브·먹방 칸은 그대로 고른
+  // 재료로 걸러 보여준다.
+  const noCurated = ingredients.length > 0 && matched.length === 0;
+  const list = ingredients.length > 0 && !noCurated ? matched : browse;
 
   const toggleIngredient = useCallback((item: string) => {
     setRaw((cur) => {
@@ -102,13 +105,15 @@ export default function Fridge() {
 
       <ResultList
         list={list}
-        variant={hasIngredients ? "match" : "browse"}
+        variant={hasIngredients && !noCurated ? "match" : "browse"}
         heading={
-          hasIngredients
-            ? `만들 수 있는 요리 ${list.length}`
-            : vibes.length > 0
-              ? `이 기분엔 이런 요리 ${list.length}`
-              : `이런 요리들이 있어요 · ${list.length}`
+          noCurated
+            ? `유튜브에서 찾아봤어요`
+            : hasIngredients
+              ? `만들 수 있는 요리 ${list.length}`
+              : vibes.length > 0
+                ? `이 기분엔 이런 요리 ${list.length}`
+                : `이런 요리들이 있어요 · ${list.length}`
         }
         meta={
           hasIngredients
@@ -116,6 +121,17 @@ export default function Fridge() {
             : vibes.length > 0
               ? `기분 ${vibes.length}`
               : undefined
+        }
+        note={
+          noCurated ? (
+            <p className="rounded-xl border border-dashed border-line bg-surface/60 px-4 py-3 text-[13px] leading-relaxed text-muted">
+              <b className="text-ink">{ingredients.join(", ")}</b> 로 만드는 큐레이션
+              레시피(스텝 타임스탬프)는 아직 준비 중이에요. 대신 아래{" "}
+              <b className="text-ink">유튜브에서 더 찾기</b>·
+              <b className="text-ink">같이 보는 먹방</b> 칸을 고른 재료에 맞춰
+              보여드릴게요. 그 사이 다른 요리도 둘러보세요.
+            </p>
+          ) : undefined
         }
         emptyText="매칭되는 레시피가 없어요. 재료를 더하거나 빼고, 아래에서 유튜브도 볼 수 있어요."
         youtubeQuery={youtubeQuery}
