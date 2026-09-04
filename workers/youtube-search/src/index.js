@@ -68,7 +68,8 @@ export default {
           });
         return json(out);
       } catch (e) {
-        return json({ error: String(e) });
+        console.error("video:", e);
+        return json({ error: "internal error" });
       }
     }
 
@@ -149,7 +150,8 @@ export default {
 
       return json({ videos });
     } catch (e) {
-      return json({ videos: [], error: String(e) });
+      console.error("search:", e);
+      return json({ videos: [], error: "internal error" });
     }
   },
 };
@@ -171,11 +173,15 @@ async function rateLimited(req, env) {
 }
 
 function json(obj, status = 200) {
+  // 오류·할당량·rate limit 응답은 엣지/브라우저에 캐시되면 안 된다
+  // (복구된 뒤에도 낡은 실패가 1시간 동안 나가는 걸 막는다).
+  const noCache =
+    status >= 400 || obj?.error || obj?.quota || obj?.rateLimited;
   return new Response(JSON.stringify(obj), {
     status,
     headers: {
       "Content-Type": "application/json",
-      "Cache-Control": "public, max-age=3600",
+      "Cache-Control": noCache ? "no-store" : "public, max-age=3600",
       ...CORS,
     },
   });
