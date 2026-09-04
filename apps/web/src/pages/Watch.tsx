@@ -4,6 +4,7 @@ import { useYouTube } from "../lib/useYouTube";
 import {
   liveVideoMeta,
   parseChapters,
+  parseIngredientBlock,
   parseRecipeSteps,
   type Chapter,
   type LiveVideoMeta,
@@ -27,9 +28,10 @@ const fmt = (s: number) => {
 
 /**
  * 유튜브 검색 결과에서 넘어온 영상을 앱 안에서 재생한다. 큐레이션 레시피처럼
- * 사람이 붙인 스텝 타임스탬프는 없지만, 영상 설명글에서 (1) 챕터(타임스탬프)가
- * 있으면 눌러 이동할 수 있게, (2) 없으면 번호 매긴 조리 순서라도 뽑아서
- * 보여준다. 디저트·베이킹 영상도 같은 화면을 쓴다. 설명글 전문도 함께 표시.
+ * 사람이 붙인 스텝 타임스탬프는 없지만, 영상 설명글에서 최대한 뽑아 보여준다:
+ * (1) 챕터(타임스탬프) 있으면 눌러 이동, (2) 없으면 번호 매긴 조리 순서,
+ * (3) 그것도 없으면 "재료" 블록이라도. 디저트·베이킹 영상도 같은 화면을 쓴다.
+ * 설명글 전문도 함께 표시. (일부 채널은 조리 과정을 영상 자막에만 담는다.)
  */
 export default function Watch() {
   const { id = "" } = useParams();
@@ -66,6 +68,11 @@ export default function Watch() {
     () =>
       meta && chapters.length === 0 ? parseRecipeSteps(meta.description) : [],
     [meta, chapters.length],
+  );
+  // 스텝도 없으면 최소한 "재료" 목록이라도.
+  const ingredients = useMemo(
+    () => (meta ? parseIngredientBlock(meta.description) : []),
+    [meta],
   );
 
   if (!valid) {
@@ -106,6 +113,35 @@ export default function Watch() {
         {meta && meta.views > 0 && ` · ▶ ${compactViews(meta.views)}`}
       </p>
 
+      {/* 재료 (영상 설명글의 "재료" 블록) */}
+      {!loading && ingredients.length > 0 && (
+        <section className="mt-6">
+          <h2 className="text-[17px] font-bold tracking-tight text-ink">재료</h2>
+          <p className="mb-3 mt-0.5 text-[13px] text-faint">
+            영상 설명글에 적힌 재료예요.
+          </p>
+          <ul className="grid gap-1.5">
+            {ingredients.map((line, i) =>
+              /\d|약간|적당|조금|한\s?줌/.test(line) ? (
+                <li
+                  key={i}
+                  className="rounded-xl border border-line bg-surface px-3.5 py-2 text-[14px] leading-relaxed"
+                >
+                  {line}
+                </li>
+              ) : (
+                <li
+                  key={i}
+                  className="pt-2 text-[12px] font-bold uppercase tracking-wider text-faint"
+                >
+                  {line}
+                </li>
+              ),
+            )}
+          </ul>
+        </section>
+      )}
+
       {/* 타임라인 (영상 설명글에서 뽑은 챕터) */}
       {loading ? (
         <div className="mt-6 space-y-2">
@@ -122,8 +158,7 @@ export default function Watch() {
             조리 순서 · 타임라인
           </h2>
           <p className="mb-3 mt-0.5 text-[13px] text-faint">
-            큐레이션 레시피처럼 사람이 붙인 스텝은 아니고, 영상 설명글의 구간
-            표시예요. 시간을 누르면 그 장면으로 이동해요.
+            영상 설명글의 구간 표시예요. 시간을 누르면 그 장면으로 이동해요.
           </p>
           <ol className="grid gap-2">
             {chapters.map((c, i) => (
@@ -153,8 +188,7 @@ export default function Watch() {
             조리 순서
           </h2>
           <p className="mb-3 mt-0.5 text-[13px] text-faint">
-            영상 설명글에 적힌 순서예요. 시간 표시가 없어 구간 이동은 안 되지만,
-            순서대로 따라 하면 돼요.
+            영상 설명글에 적힌 순서예요.
           </p>
           <ol className="grid gap-2">
             {steps.map((t, i) => (
@@ -173,9 +207,9 @@ export default function Watch() {
       ) : (
         <div className="mt-6 rounded-[var(--radius-card)] border border-dashed border-line bg-surface/60 px-5 py-4">
           <p className="text-[13px] text-muted">
-            이 영상엔 구간 타임스탬프도, 설명글에 적힌 조리 순서도 없어요.
-            큐레이션 레시피가 아니라 유튜브 검색에서 바로 가져온 영상이라, 조리
-            스텝은 영상을 직접 보며 확인하세요.
+            {ingredients.length > 0
+              ? "이 영상은 조리 과정을 설명글 대신 영상 자막(CC)에 담았어요. 유튜브에서 자막을 켜고 위 재료로 따라 해 보세요."
+              : "이 영상엔 설명글에 조리 순서·타임스탬프가 없어요. 큐레이션 레시피가 아니라 유튜브 검색에서 바로 가져온 영상이라, 조리 과정은 영상을 직접 보며 확인하세요."}
           </p>
         </div>
       )}

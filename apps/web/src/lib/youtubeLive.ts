@@ -136,6 +136,58 @@ export function parseRecipeSteps(description: string): string[] {
   return seq.length >= 2 ? seq : [];
 }
 
+/** 줄 앞머리 장식(`::`, `●`, `[`, `-`, 공백 등) */
+const LEAD = /^[\s:：·●▪◆*\-—[\]#]+/;
+/**
+ * "재료" 섹션 헤더인지. 앞머리 장식을 떼고 "재료"로 시작하며, 그 뒤가
+ * 끝/구두점/괄호/숫자여야 한다("재료를 계량합니다" 같은 산문 줄 제외).
+ * (한글 뒤에서는 `\b` 가 안 먹혀서 직접 검사한다.)
+ */
+function isIngredientHeader(line: string): boolean {
+  const s = line.replace(LEAD, "");
+  return /^재\s?료\s*($|[:：()[\]{}0-9]|\/)/.test(s);
+}
+/** 설명글 후반 상용구·링크 — 여기서부터는 레시피 아님 */
+const BOILER =
+  /(구독|좋아요|알림설정|인스타|instagram|blog|youtube\.com|^https?:|문의|협찬|비즈니스|e-?mail|이메일|@)/i;
+/** 다음 섹션 헤더 (`::만들기`, `[만드는 법]` 등) — 재료 블록의 끝 */
+const NEXT_SECTION =
+  /^[\s:：·●▪◆*\-—[\]#]*\[?(만들기|만드는\s?법|레시피|조리법|조리\s?순서|과정|순서|팁|주의)/;
+
+/**
+ * 설명글에서 "재료" 블록을 통째로 뽑아낸다. 타임스탬프·번호 스텝이 없는
+ * 디저트·카페 영상도 대개 `::재료 … ` 목록은 적어두기 때문에, 최소한 재료라도
+ * 화면에 보여줄 수 있다. 소제목("- 딸기 콩포트", "(베이스)")은 그대로 둔다.
+ * 재료로 보이는 줄이 2개 미만이면 빈 배열.
+ */
+export function parseIngredientBlock(description: string): string[] {
+  const lines = (description || "").split(/\r?\n/);
+  const start = lines.findIndex((l) => isIngredientHeader(l.trim()));
+  if (start === -1) return [];
+
+  const out: string[] = [];
+  let blanks = 0;
+  for (let i = start + 1; i < lines.length && out.length < 30; i++) {
+    const line = lines[i].trim();
+    if (!line) {
+      // 빈 줄 하나는 소제목 구분일 수 있어 넘어가되, 둘 연속이면 블록 끝.
+      if (++blanks >= 2 && out.length > 0) break;
+      continue;
+    }
+    blanks = 0;
+    if (/^(::|：：|\[)/.test(line)) break; // 다음 `::` 섹션 마커 → 재료 끝
+    if (NEXT_SECTION.test(line)) break;
+    if (BOILER.test(line)) break;
+    if (line.length > 80) break; // 재료 줄이 이렇게 길 리 없다 → 산문 시작
+    out.push(line.replace(/^[-•·▪]\s*/, "").trim());
+  }
+  // 실제 재료(숫자·단위 g/ml/개/T/큰술 등)가 하나라도 있어야 인정
+  const looksLikeIngredients = out.filter((l) =>
+    /\d|약간|적당|조금|한\s?줌/.test(l),
+  ).length;
+  return out.length >= 2 && looksLikeIngredients >= 1 ? out : [];
+}
+
 /**
  * 정적 풀 결과(`hits`) 위에 실시간 결과를 얹어 돌려준다.
  * - 이미 풀에 있거나 제외 목록에 있는 영상은 겹치지 않게 걸러낸다.
