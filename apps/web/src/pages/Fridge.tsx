@@ -95,7 +95,10 @@ export default function Fridge() {
   // 빈 화면 대신 둘러보기로 목록을 채우고, 유튜브·먹방 칸은 그대로 고른
   // 재료로 걸러 보여준다.
   const noCurated = ingredients.length > 0 && matched.length === 0;
-  const list = ingredients.length > 0 && !noCurated ? matched : browse;
+  // 큐레이션 매칭이 없으면(noCurated) 상관없는 인기 레시피를 채워 넣지 않는다
+  // — 아래 note 가 "유튜브 영상을 대신 모아뒀다"고 말하는데 정작 위에 엉뚱한
+  // 레시피 카드가 잔뜩 뜨면 앞뒤가 안 맞는다. 그럴 땐 유튜브 결과만 보여준다.
+  const list = ingredients.length === 0 ? browse : noCurated ? [] : matched;
 
   const toggleIngredient = useCallback((item: string) => {
     setRaw((cur) => {

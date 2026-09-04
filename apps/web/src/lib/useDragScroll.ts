@@ -51,12 +51,22 @@ export function useDragScroll<T extends HTMLElement>() {
     // 스크롤이 안 된다. 이 레일 안에서는 이미지 드래그를 아예 막는다.
     const onDragStart = (e: DragEvent) => e.preventDefault();
 
+    // 일반 마우스 휠(세로)은 가로 스크롤 컨테이너를 못 움직인다 — 세로 휠량을
+    // 가로 스크롤로 옮겨준다. 트랙패드의 실제 가로 제스처(deltaX 가 이미 큰
+    // 경우)는 브라우저 기본 동작 그대로 둔다.
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+      el.scrollLeft += e.deltaY;
+      e.preventDefault();
+    };
+
     el.addEventListener("pointerdown", onPointerDown);
     el.addEventListener("pointermove", onPointerMove);
     el.addEventListener("pointerup", endDrag);
     el.addEventListener("pointercancel", endDrag);
     el.addEventListener("click", onClickCapture, true);
     el.addEventListener("dragstart", onDragStart);
+    el.addEventListener("wheel", onWheel, { passive: false });
 
     return () => {
       el.removeEventListener("pointerdown", onPointerDown);
@@ -65,6 +75,7 @@ export function useDragScroll<T extends HTMLElement>() {
       el.removeEventListener("pointercancel", endDrag);
       el.removeEventListener("click", onClickCapture, true);
       el.removeEventListener("dragstart", onDragStart);
+      el.removeEventListener("wheel", onWheel);
     };
   }, []);
 

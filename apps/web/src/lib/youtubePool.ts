@@ -98,7 +98,14 @@ export function searchPool(all: PoolVideo[], q: PoolQuery): PoolVideo[] {
     // 일반 요리 칸: 제목에 조리 신호가 있는 것만. (먹방·디저트 칸은 통과)
     .filter((v) => wantMukbang || wantDessert || looksCookable(v.title))
     .map((v) => {
-      const ingHit = v.tags.filter((t) => ing.has(t)).length;
+      const tagHit = v.tags.filter((t) => ing.has(t)).length;
+      // 태그 사전에 없는 재료(제철 재료처럼 recipes.json·INGREDIENT_GROUPS 밖의
+      // 말)는 태그로는 못 잡는다. 제목에 그 재료 이름이 실제로 들어있으면
+      // "상관없는 영상"이 아니라 진짜 관련 영상이므로 같이 히트로 친다.
+      const titleHit = [...ing].filter(
+        (i) => i.length >= 2 && v.title.includes(i),
+      ).length;
+      const ingHit = tagHit + titleHit;
       const vibeHit = v.tags.filter((t) => vibes.has(t)).length;
       return { v, ingHit, vibeHit };
     });
