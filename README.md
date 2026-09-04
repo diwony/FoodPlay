@@ -5,8 +5,6 @@
 
 1인 개인 프로젝트 — 기획 · 디자인 · 프론트엔드 · 데이터 파이프라인.
 
-<img src="docs/screenshots/landing-home.jpg" alt="FoodPlay 홈 화면" width="820" />
-
 **웹 데모: https://diwony.github.io/FoodPlay/**
 &nbsp;·&nbsp; 프로젝트 소개서: [`docs/CASE-STUDY.md`](docs/CASE-STUDY.md) · [PDF](docs/FoodPlay-소개서.pdf)
 
