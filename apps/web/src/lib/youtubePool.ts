@@ -81,11 +81,12 @@ export function searchPool(all: PoolVideo[], q: PoolQuery): PoolVideo[] {
   let pool: typeof scored;
   if (ing.size > 0) {
     pool = scored.filter((s) => s.ingHit > 0);
-    // 고른 재료가 풀에 없으면(직접 입력한 재료 등) 빈 화면 대신:
-    // 기분 태그 → 그마저 없으면 같은 종류의 인기 영상으로 채운다.
+    // 고른 재료가 풀에 없으면(직접 입력한 밀키트·재료 등) 기분 태그로 폴백.
+    // 그마저 없으면 **빈 배열로 둔다** — 재료와 상관없는 인기 영상을 "이 재료로
+    // 나온 요리"처럼 보여주면 안 되므로. 호출부(YouTubeRail 등)가 "유튜브에서
+    // 직접 검색" 안내를 대신 띄운다.
     if (pool.length === 0 && vibes.size > 0)
       pool = scored.filter((s) => s.vibeHit > 0);
-    if (pool.length === 0) pool = scored;
   } else if (vibes.size > 0) {
     pool = scored.filter((s) => s.vibeHit > 0);
     if (pool.length === 0) pool = scored;
