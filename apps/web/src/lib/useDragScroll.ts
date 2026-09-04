@@ -46,12 +46,17 @@ export function useDragScroll<T extends HTMLElement>() {
         moved = false;
       }
     };
+    // <img> 는 기본적으로 브라우저 자체 드래그(고스트 이미지)가 걸려 있어서,
+    // 썸네일 위에서 끌기 시작하면 그 네이티브 드래그가 pointermove 를 먹어버려
+    // 스크롤이 안 된다. 이 레일 안에서는 이미지 드래그를 아예 막는다.
+    const onDragStart = (e: DragEvent) => e.preventDefault();
 
     el.addEventListener("pointerdown", onPointerDown);
     el.addEventListener("pointermove", onPointerMove);
     el.addEventListener("pointerup", endDrag);
     el.addEventListener("pointercancel", endDrag);
     el.addEventListener("click", onClickCapture, true);
+    el.addEventListener("dragstart", onDragStart);
 
     return () => {
       el.removeEventListener("pointerdown", onPointerDown);
@@ -59,6 +64,7 @@ export function useDragScroll<T extends HTMLElement>() {
       el.removeEventListener("pointerup", endDrag);
       el.removeEventListener("pointercancel", endDrag);
       el.removeEventListener("click", onClickCapture, true);
+      el.removeEventListener("dragstart", onDragStart);
     };
   }, []);
 
