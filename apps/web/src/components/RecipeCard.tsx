@@ -4,8 +4,10 @@ import {
   BUDGET_LABEL,
   compactViews,
   estimateBudget,
+  estimateCost,
   formatCookTime,
   formatDifficulty,
+  formatWon,
   servesLabel,
   shoppingItems,
   vibeLabel,
@@ -25,6 +27,9 @@ function RecipeCardBase({ match, rank, browse = false, shopping = false }: Props
   const { recipe, have, missing, score, matchedVibes } = match;
   const pct = Math.round(score * 100);
   const buy = shopping ? shoppingItems(recipe) : [];
+  const cost = estimateCost(recipe);
+  const views = recipe.long.views ?? null;
+  const hot = views != null && views >= 1_000_000;
 
   return (
     <Link
@@ -51,6 +56,11 @@ function RecipeCardBase({ match, rank, browse = false, shopping = false }: Props
             {rank <= 3 ? `TOP ${rank}` : `${pct}%`}
           </span>
         )}
+        {browse && hot && (
+          <span className="absolute left-1.5 top-1.5 rounded-md bg-accent/90 px-1.5 py-0.5 text-[10px] font-bold text-white">
+            🔥 인기
+          </span>
+        )}
         {shopping && rank <= 3 && (
           <span className="absolute left-1.5 top-1.5 rounded-md bg-good/90 px-1.5 py-0.5 text-[10px] font-bold text-white">
             추천 {rank}
@@ -66,8 +76,13 @@ function RecipeCardBase({ match, rank, browse = false, shopping = false }: Props
           {recipe.long.channel} · {formatCookTime(recipe.cookMinutes)} ·{" "}
           {formatDifficulty(recipe.difficulty)}
           {recipe.serves && <> · {servesLabel(recipe.serves, true)}</>}
-          {recipe.long.views != null && (
-            <> · ▶ {compactViews(recipe.long.views)}</>
+          {views != null && (
+            <>
+              {" · "}
+              <span className="font-bold text-accent">
+                ▶ 조회수 {compactViews(views)}
+              </span>
+            </>
           )}
         </p>
 
@@ -129,6 +144,16 @@ function RecipeCardBase({ match, rank, browse = false, shopping = false }: Props
               )}
             </p>
           </>
+        )}
+
+        {cost.save > 0 && (
+          <p className="mt-1.5 text-[12px] font-semibold text-good">
+            💸 사 먹으면 {formatWon(cost.eatOut)} → 만들면 {formatWon(cost.make)}
+            <span className="text-muted">
+              {" "}
+              ({formatWon(cost.save)} 아낌)
+            </span>
+          </p>
         )}
       </div>
     </Link>

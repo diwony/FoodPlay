@@ -2,10 +2,12 @@ import { useRef, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import {
   cuisineLabel,
+  estimateCost,
   formatCookTime,
   formatDifficulty,
   formatServes,
   formatTimestamp,
+  formatWon,
   getRecipe,
   relatedRecipes,
   shortEmbedUrl,
@@ -53,6 +55,7 @@ export default function Recipe() {
   }
 
   const related = relatedRecipes(recipe.id);
+  const cost = estimateCost(recipe);
   const activeChannel = useShort ? recipe.short!.channel : recipe.long.channel;
   const isNaver = useShort && recipe.short!.provider === "naver";
   const watchUrl = useShort
@@ -155,6 +158,18 @@ export default function Recipe() {
           </span>
         ))}
       </div>
+
+      {cost.save > 0 && (
+        <div className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-xl border border-good/25 bg-good-soft px-4 py-3">
+          <span className="text-[15px] font-bold text-good">
+            💸 {formatWon(cost.save)} 아껴요
+          </span>
+          <span className="text-[13px] text-muted">
+            사 먹으면 약 {formatWon(cost.eatOut)} · 직접 만들면 재료값 약{" "}
+            {formatWon(cost.make)} (1인분 기준 추정)
+          </span>
+        </div>
+      )}
 
       <section className="mt-8">
         <h2 className="mb-2 text-[17px] font-bold tracking-tight">필요한 추가 재료</h2>

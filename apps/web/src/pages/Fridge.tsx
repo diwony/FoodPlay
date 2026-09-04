@@ -1,4 +1,5 @@
 import { useCallback, useDeferredValue, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import {
   browseRecipes,
   matchRecipes,
@@ -11,12 +12,40 @@ import IngredientField from "../components/IngredientField";
 import VibeField from "../components/VibeField";
 import ResultList from "../components/ResultList";
 import { useMyIngredients } from "../lib/useMyIngredients";
+import { usePersona } from "../lib/usePersona";
 import { CURATED_YT_IDS } from "../lib/curated";
 
+const VIBE_VALUES = new Set<Vibe>([
+  "quick",
+  "hearty",
+  "warm",
+  "spicy",
+  "guests",
+  "homey",
+  "light",
+  "convenience",
+  "side",
+]);
+
 export default function Fridge() {
+  const location = useLocation();
+  const { bias } = usePersona();
+
+  // 홈의 "오늘 이거 어때요?" 에서 넘어왔으면 그 기분을, 아니면 페르소나 기본 기분을
+  // 시작값으로 깐다. 사용자가 칩을 만지면 그때부터 사용자 선택이 이긴다.
+  const seedVibes = useMemo<Vibe[]>(() => {
+    const fromNav = (location.state as { vibes?: unknown } | null)?.vibes;
+    const navVibes = Array.isArray(fromNav)
+      ? fromNav.filter((v): v is Vibe => VIBE_VALUES.has(v as Vibe))
+      : [];
+    return navVibes.length > 0 ? navVibes : bias.vibes;
+    // 마운트 시 한 번만 — 이후 페르소나를 바꿔도 화면을 흔들지 않는다.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const [raw, setRaw] = useState("");
   const [vibeText, setVibeText] = useState("");
-  const [manualVibes, setManualVibes] = useState<Vibe[]>([]);
+  const [manualVibes, setManualVibes] = useState<Vibe[]>(seedVibes);
   const myIngredients = useMyIngredients();
 
   const deferredRaw = useDeferredValue(raw);

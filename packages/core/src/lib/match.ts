@@ -109,9 +109,10 @@ export function matchRecipes(
     };
   });
 
-  // 재료 충족도가 1순위, 기분 가산점이 2순위, 조회수는 동점을 가르는 보조 신호.
+  // 재료 충족도가 1순위, 기분 가산점이 2순위, 조회수는 그 다음 — 비슷한 후보
+  // 사이에서는 "많이 본 영상"을 확실히 위로 올린다.
   const rank = (m: RecipeMatch) =>
-    m.score + m.matchedVibes.length * 0.15 + viewSignal(m) * 0.1;
+    m.score + m.matchedVibes.length * 0.15 + viewSignal(m) * 0.3;
 
   let ranked = matches
     .filter((m) => m.have.length > 0 && m.score >= minScore)
@@ -142,6 +143,16 @@ export function matchRecipes(
 
 export function getRecipe(id: string): Recipe | undefined {
   return database.recipes.find((r) => r.id === id);
+}
+
+/**
+ * 조회수 상위 레시피 — 홈의 "지금 인기" 순위(실검처럼 넘어가는 목록)용.
+ * 조회수가 없는 항목은 뒤로 민다.
+ */
+export function popularRecipes(limit = 10): Recipe[] {
+  return [...database.recipes]
+    .sort((a, b) => (b.long.views ?? 0) - (a.long.views ?? 0))
+    .slice(0, limit);
 }
 
 export function allRecipes(): Recipe[] {

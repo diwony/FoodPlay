@@ -1,4 +1,10 @@
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
+import { allRecipes, averageSaving, formatWon } from "@foodplay/core";
+import DailyHero from "../components/DailyHero";
+import PersonaChips from "../components/PersonaChips";
+import PopularTicker from "../components/PopularTicker";
+import ExploreGrid from "../components/ExploreGrid";
 
 const MODES = [
   {
@@ -32,22 +38,35 @@ const MODES = [
 ];
 
 export default function Landing() {
+  const avgSave = useMemo(() => averageSaving(allRecipes()), []);
+
   return (
     <main className="mx-auto max-w-5xl px-5">
-      <section className="pb-10 pt-14 sm:pt-20">
+      <section className="pb-6 pt-10 sm:pt-14">
         <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-accent">
           냉장고 → 유튜브 레시피
         </p>
-        <h1 className="mt-3 max-w-3xl text-[34px] font-bold leading-[1.12] sm:text-[46px]">
+        <h1 className="mt-3 max-w-3xl text-[30px] font-bold leading-[1.12] sm:text-[42px]">
           뭐 먹을지 고민,<br className="sm:hidden" /> 여기서 끝내요.
         </h1>
-        <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-muted">
-          냉장고 재료든 밀키트든 장보기든, 지금 상황만 고르면 조리 스텝마다
-          타임스탬프가 붙은 유튜브 요리 영상으로 바로 이어줘요.
+        <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted">
+          지금 상황만 고르면 조리 스텝마다 타임스탬프가 붙은 유튜브 요리 영상으로
+          바로 이어줘요. <b className="text-good">사 먹을 때보다 평균 {formatWon(avgSave)}</b>{" "}
+          아끼는 건 덤이고요.
         </p>
       </section>
 
-      <section className="grid gap-4 pb-16 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 pb-4 lg:grid-cols-[1.5fr_1fr]">
+        <DailyHero />
+        <div className="flex flex-col justify-between gap-4">
+          <PopularTicker />
+          <div className="rounded-[var(--radius-card)] border border-line bg-surface p-5 shadow-[var(--shadow-card)]">
+            <PersonaChips />
+          </div>
+        </div>
+      </div>
+
+      <section className="grid gap-4 py-8 sm:grid-cols-2 lg:grid-cols-4">
         {MODES.map((m) => (
           <Link
             key={m.to}
@@ -68,6 +87,10 @@ export default function Landing() {
           </Link>
         ))}
       </section>
+
+      <div className="border-t border-line pt-2">
+        <ExploreGrid />
+      </div>
     </main>
   );
 }
