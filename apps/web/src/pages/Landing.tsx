@@ -49,20 +49,21 @@ export default function Landing() {
           뭐 <span className="text-accent">만들지</span> 고민,
           <br className="sm:hidden" /> 여기서 끝내요.
         </h1>
-        <p className="mt-3 max-w-2xl text-pretty text-[15px] leading-relaxed text-muted">
-          시켜 먹지 말고 직접 만들어요. 상황만 고르면 스텝마다 타임스탬프 붙은
-          유튜브 요리 영상으로 이어줘요.{" "}
-          <b className="inline-block whitespace-nowrap text-good">
+        <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted">
+          시켜 먹지 말고 직접 만들어요. 조리 스텝마다 타임스탬프 붙은 유튜브
+          영상으로 이어줘요.
+          <br />
+          <b className="text-good">
             사 먹을 때보다 평균 {formatWon(avgSave)} 아껴요.
           </b>
         </p>
       </section>
 
-      <div className="grid items-start gap-4 pb-4 lg:grid-cols-[1.5fr_1fr]">
+      <div className="grid gap-4 pb-4 lg:grid-cols-[1.5fr_1fr]">
         <DailyHero />
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col justify-between gap-4">
           <PopularTicker />
-          <div className="rounded-[var(--radius-card)] border border-line bg-surface p-5 shadow-[var(--shadow-card)]">
+          <div className="flex flex-1 flex-col justify-center rounded-[var(--radius-card)] border border-line bg-surface p-5 shadow-[var(--shadow-card)]">
             <PersonaChips />
           </div>
         </div>
