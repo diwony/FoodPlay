@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { compactViews, dailyPicks, type DailyPick } from "@foodplay/core";
 import {
@@ -72,6 +72,24 @@ export default function DailyHero() {
     [],
   );
 
+  // 모바일: 좌우로 스와이프하면 추천이 넘어간다(점 탭·자동 회전과 같은 동작).
+  const touchStartX = useRef<number | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    setPaused(true);
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const start = touchStartX.current;
+    touchStartX.current = null;
+    setPaused(false);
+    if (start == null) return;
+    const dx = e.changedTouches[0].clientX - start;
+    if (Math.abs(dx) < 40) return; // 그냥 탭 — 무시
+    setI((n) =>
+      dx < 0 ? (n + 1) % picks.length : (n - 1 + picks.length) % picks.length,
+    );
+  };
+
   // 이 추천에 맞는 영상: 검색어 토큰이 제목에 있는 것 우선, 없으면 기분 태그로.
   const videos = useMemo<PoolVideo[]>(() => {
     if (!pool) return [];
@@ -101,6 +119,8 @@ export default function DailyHero() {
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
     >
       <div className="flex items-start justify-between gap-3">
         <p className="flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.14em] text-accent">

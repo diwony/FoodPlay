@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useYouTube } from "../lib/useYouTube";
+import { useMiniPlayer } from "../lib/useMiniPlayer";
 import {
   liveTranscript,
   liveVideoMeta,
@@ -49,7 +50,9 @@ export default function Watch() {
   const { id = "" } = useParams();
   const { state } = useLocation() as { state: NavState | null };
   const hostRef = useRef<HTMLDivElement>(null);
-  const { seekTo } = useYouTube(hostRef, id);
+  const { seekTo, pause } = useYouTube(hostRef, id);
+  // 큐레이션 레시피(/recipe/:id)와 똑같이: 스크롤하면 우상단 미니 플레이어로.
+  const { slotRef, mini, expand } = useMiniPlayer();
 
   const valid = /^[\w-]{11}$/.test(id);
 
@@ -173,11 +176,27 @@ export default function Watch() {
 
   return (
     <main className="mx-auto max-w-2xl px-5 pb-20">
-      <div className="player-slot mt-5">
-        <div className="player">
+      <div ref={slotRef} className="player-slot mt-5">
+        <div className={"player" + (mini ? " is-mini" : "")}>
           <div className="yt-frame">
             <div ref={hostRef} />
           </div>
+          {mini && (
+            <>
+              <button
+                onClick={expand}
+                aria-label="영상 펼치기"
+                className="absolute inset-0"
+              />
+              <button
+                onClick={pause}
+                aria-label="미니 영상 닫기"
+                className="absolute right-1 top-1 z-10 grid h-6 w-6 place-items-center rounded-full bg-black/60 text-[11px] font-bold text-white"
+              >
+                ✕
+              </button>
+            </>
+          )}
         </div>
       </div>
 
@@ -276,7 +295,10 @@ export default function Watch() {
                 className="flex gap-3 rounded-xl border border-line bg-surface p-3.5"
               >
                 <button
-                  onClick={() => seekTo(c.seconds)}
+                  onClick={() => {
+                    seekTo(c.seconds);
+                    if (mini) expand();
+                  }}
                   className="h-fit shrink-0 rounded-lg bg-accent-soft px-2 py-1 text-[12px] font-bold tabular text-accent transition-colors hover:bg-accent hover:text-white"
                 >
                   ▶ {fmt(c.seconds)}
