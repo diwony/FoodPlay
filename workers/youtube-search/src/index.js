@@ -39,6 +39,7 @@ export default {
         if (hit) return json({ ...hit, cached: true });
       }
       if (!env.YT_API_KEY) return json({ error: "no key configured" });
+      if (await rateLimited(req, env)) return json({ rateLimited: true }, 429);
 
       try {
         const v = new URL(`${YT}/videos`);
@@ -87,6 +88,9 @@ export default {
     }
 
     if (!env.YT_API_KEY) return json({ videos: [], error: "no key configured" });
+    // 캐시 미스라 실제로 YouTube 를 부를 참이면 IP 상한을 확인한다.
+    if (await rateLimited(req, env))
+      return json({ videos: [], rateLimited: true });
 
     try {
       const s = new URL(`${YT}/search`);
@@ -149,6 +153,22 @@ export default {
     }
   },
 };
+
+/**
+ * IP 당 호출 상한 (wrangler.toml 의 RATE_LIMITER 바인딩). 바인딩이 없으면
+ * (예: 옛 배포) 그냥 통과시킨다. 캐시 미스로 YouTube 를 실제 호출하기 직전에만
+ * 부르므로 캐시된 응답은 상한에 카운트되지 않는다.
+ */
+async function rateLimited(req, env) {
+  if (!env.RATE_LIMITER) return false;
+  const ip = req.headers.get("CF-Connecting-IP") || "anon";
+  try {
+    const { success } = await env.RATE_LIMITER.limit({ key: ip });
+    return !success;
+  } catch {
+    return false;
+  }
+}
 
 function json(obj, status = 200) {
   return new Response(JSON.stringify(obj), {

@@ -44,6 +44,18 @@ npm run dev                        # http://localhost:8787/search?q=김치찌개
 
 오류·할당량 소진 시에도 `200` + `videos: []` 로 응답한다(앱이 폴백하도록).
 
+## 남용 방어 (Rate Limiting)
+
+`wrangler.toml` 의 `[[unsafe.bindings]]` `RATE_LIMITER` — Cloudflare 무료 내장
+기능이고 시크릿·추가 비용이 없다. **캐시에 없어서 YouTube 를 실제로 호출할
+때만** 카운트하며, 한 IP 가 60초에 20회를 넘기면 그 IP 만 잠깐 빈 결과
+(`rateLimited: true`)를 받는다. 목적은 봇이 서로 다른 검색어로 하루 할당량
+(10,000유닛, `search.list` 는 1회 100유닛)을 태우는 걸 막는 것.
+
+`*.workers.dev` 도메인이라 대시보드 WAF Rate Limiting 규칙은 적용되지 않으므로
+이 방식(코드 내 바인딩)을 쓴다. 값 조정은 `wrangler.toml` 의 `limit`/`period`
+(`period` 는 10 또는 60만 허용) 를 고치고 `npx wrangler deploy`.
+
 ## 키는 어디에도 커밋되지 않는다
 
 - 운영: `wrangler secret` (Cloudflare 에만 저장)

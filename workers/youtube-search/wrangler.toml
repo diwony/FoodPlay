@@ -12,3 +12,12 @@ id = ""
 # API 키는 이 파일에 넣지 않는다. 배포 후 1회:
 #   npx wrangler secret put YT_API_KEY
 # (로컬 개발은 .dev.vars 파일 — gitignore 됨)
+
+# 무료 내장 Rate Limiting. 캐시에 없어서 YouTube 를 실제로 부를 때만 카운트한다.
+# IP 하나가 60초에 20회 초과로 새 검색을 날리면 그 IP만 잠깐 빈 결과를 받는다
+# (봇이 서로 다른 검색어로 하루 할당량을 태우는 걸 막는 목적). 시크릿·비용 없음.
+[[unsafe.bindings]]
+name = "RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "1001"
+simple = { limit = 20, period = 60 }
