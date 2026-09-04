@@ -201,6 +201,10 @@ async function innertubeSearch(query) {
   return out;
 }
 
+// 요리 콘텐츠가 아닌 게 명백한 제목 — 뮤직비디오·노래·웹툰·예능·예고편 등.
+// 검색어에 딸려와도 풀에 넣지 않는다. (앱 youtubePool.ts 의 NOT_FOOD_RE 와 맞춤)
+const NOT_FOOD = /뮤직비디오|뮤비|\bM\/?V\b|\bMV\b|lyric|가사집|공식.{0,6}(뮤|MV)|웹툰|만화영화|애니메이션|\[애니|예고편|트레일러|무한도전|놀면\s?뭐하니|런닝맨|라디오\s?스타|^[가-힣]{1,4}송$|주제가|\bOST\b/i;
+
 const ING = [
   "계란", "김치", "대파", "양파", "두부", "감자", "당근", "애호박", "양배추",
   "부추", "미역", "콩나물", "어묵", "참치캔", "떡볶이떡", "버섯", "돼지고기",
@@ -481,6 +485,7 @@ async function main() {
           : await innertubeSearch(query);
       searches++;
       for (const it of items) {
+        if (NOT_FOOD.test(it.title)) continue;
         const cur = pool.get(it.id);
         if (cur) {
           tags.forEach((t) => cur.tags.add(t));

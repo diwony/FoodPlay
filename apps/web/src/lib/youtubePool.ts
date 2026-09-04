@@ -19,6 +19,29 @@ interface Pool {
   videos: PoolVideo[];
 }
 
+/**
+ * 요리 콘텐츠가 아닌 게 명백한 제목 — 뮤직비디오·노래·웹툰·예능·리뷰 등.
+ * 어느 칸에도(먹방 포함) 넣지 않는다. 수집 파이프라인이 "마라탕 밀키트" 같은
+ * 검색어로 긁을 때 딸려온 것들.
+ */
+const NOT_FOOD_RE =
+  /뮤직비디오|뮤비|\bM\/?V\b|\bMV\b|lyric|가사집|공식.{0,6}(뮤|MV)|웹툰|만화영화|애니메이션|\[애니|예고편|트레일러|무한도전|놀면\s?뭐하니|런닝맨|라디오\s?스타|^[가-힣]{1,4}송$|주제가|\bOST\b/i;
+
+/**
+ * "이렇게 만들어 먹어요"·레시피 칸에 넣을 자격 — 제목에 조리 신호가 있어야.
+ * (먹방·디저트 칸엔 적용 안 함.)
+ */
+const COOKABLE_RE =
+  /만들|만든|만드는|레시피|recipe|끓이|볶|부치|굽|구이|튀기|조리|손질|썰|데치|삶|무침|절임|담그|비법|비결|황금|내는\s?법|맛\s?내는|만드는?\s?법|따라\s?하기|따라하기|집밥|반찬|요리(?!\s?사|왕|연구소)/i;
+
+/** 레시피 칸에서 빼야 하는 제목 — 먹방·예능·후기·근황 등. */
+const NOT_RECIPE_RE =
+  /먹방|mukbang|asmr|이팅|리얼\s?사운드|eating\s?show|리뷰|후기|근황|브이로그|vlog|언박싱|챌린지|challenge|밀키트\s?출시|가게의?\s?비밀|사장이?\s?(밝히|알려)/i;
+
+/** 일반 요리(레시피) 칸에 어울리는 영상인지. */
+export const looksCookable = (title: string) =>
+  COOKABLE_RE.test(title) && !NOT_RECIPE_RE.test(title);
+
 let cache: Promise<PoolVideo[]> | null = null;
 
 export function loadPool(): Promise<PoolVideo[]> {
@@ -26,7 +49,7 @@ export function loadPool(): Promise<PoolVideo[]> {
   const url = `${import.meta.env.BASE_URL}youtube-pool.json`;
   cache = fetch(url)
     .then((r) => (r.ok ? (r.json() as Promise<Pool>) : { videos: [] as PoolVideo[] }))
-    .then((p) => p.videos ?? [])
+    .then((p) => (p.videos ?? []).filter((v) => !NOT_FOOD_RE.test(v.title)))
     .catch(() => []);
   return cache;
 }
@@ -72,6 +95,8 @@ export function searchPool(all: PoolVideo[], q: PoolQuery): PoolVideo[] {
         v.tags.includes("dessert") === wantDessert &&
         require.every((t) => v.tags.includes(t)),
     )
+    // 일반 요리 칸: 제목에 조리 신호가 있는 것만. (먹방·디저트 칸은 통과)
+    .filter((v) => wantMukbang || wantDessert || looksCookable(v.title))
     .map((v) => {
       const ingHit = v.tags.filter((t) => ing.has(t)).length;
       const vibeHit = v.tags.filter((t) => vibes.has(t)).length;
