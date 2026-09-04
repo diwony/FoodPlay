@@ -16,6 +16,9 @@ export type Persona =
   | "homemaker"
   | "diet";
 
+/** 홈의 4가지 시작 모드 키 (경로에서 앞부분만) */
+export type ModeKey = "fridge" | "mealkit" | "shop" | "dessert";
+
 export interface PersonaMeta {
   persona: Persona;
   emoji: string;
@@ -26,6 +29,8 @@ export interface PersonaMeta {
   vibes: Vibe[];
   /** 기본 인분 */
   serves: Serves;
+  /** 이 페르소나에게 보여줄 시작 모드 우선순위(앞이 먼저) */
+  modes: ModeKey[];
 }
 
 export const PERSONAS: PersonaMeta[] = [
@@ -36,6 +41,7 @@ export const PERSONAS: PersonaMeta[] = [
     blurb: "10분 안에, 설거지 적게",
     vibes: ["quick", "convenience"],
     serves: "solo",
+    modes: ["fridge", "mealkit", "shop", "dessert"],
   },
   {
     persona: "solo",
@@ -44,6 +50,7 @@ export const PERSONAS: PersonaMeta[] = [
     blurb: "한 끼 딱 알맞게",
     vibes: ["convenience", "light"],
     serves: "solo",
+    modes: ["fridge", "shop", "dessert", "mealkit"],
   },
   {
     persona: "worker",
@@ -52,6 +59,7 @@ export const PERSONAS: PersonaMeta[] = [
     blurb: "퇴근하고 후딱, 든든하게",
     vibes: ["quick", "hearty"],
     serves: "solo",
+    modes: ["mealkit", "fridge", "shop", "dessert"],
   },
   {
     persona: "couple",
@@ -60,6 +68,7 @@ export const PERSONAS: PersonaMeta[] = [
     blurb: "둘이 먹기 좋은",
     vibes: ["homey", "guests"],
     serves: "couple",
+    modes: ["shop", "fridge", "mealkit", "dessert"],
   },
   {
     persona: "homemaker",
@@ -68,6 +77,7 @@ export const PERSONAS: PersonaMeta[] = [
     blurb: "가족 반찬 · 한상 차림",
     vibes: ["homey", "hearty"],
     serves: "family",
+    modes: ["shop", "fridge", "dessert", "mealkit"],
   },
   {
     persona: "diet",
@@ -76,6 +86,7 @@ export const PERSONAS: PersonaMeta[] = [
     blurb: "가볍고 담백하게",
     vibes: ["light"],
     serves: "solo",
+    modes: ["fridge", "shop", "dessert", "mealkit"],
   },
 ];
 

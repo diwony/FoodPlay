@@ -7,7 +7,17 @@ import {
   searchPool,
   type PoolVideo,
 } from "../lib/youtubePool";
+import { usePersona } from "../lib/usePersona";
 import YtThumb from "./YtThumb";
+
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 /**
  * 홈 히어로 — "오늘은 이거 어때요?".
@@ -17,15 +27,30 @@ import YtThumb from "./YtThumb";
 export default function DailyHero() {
   const navigate = useNavigate();
   const [pool, setPool] = useState<PoolVideo[] | null>(null);
+  const { bias, meta: persona } = usePersona();
+  const wantedVibes = bias.vibes.join(",");
 
+  // 페르소나를 골랐으면 그 기분에 맞는 추천을 앞으로 당긴다(완전히 걷어내진
+  // 않고 순서만) — "자취생" 이면 간단·편의 위주가 먼저 뜨는 식.
   const picks = useMemo<DailyPick[]>(() => {
     const all = dailyPicks();
-    const start = Math.floor(Math.random() * all.length);
-    return [...all.slice(start), ...all.slice(0, start)];
-  }, []);
+    const wanted = new Set(bias.vibes);
+    if (wanted.size === 0) return shuffle(all);
+    const matched = all.filter((p) => p.vibes.some((v) => wanted.has(v)));
+    const rest = all.filter((p) => !p.vibes.some((v) => wanted.has(v)));
+    return matched.length > 0
+      ? [...shuffle(matched), ...shuffle(rest)]
+      : shuffle(rest);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wantedVibes]);
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
   const pick = picks[i];
+
+  // 페르소나가 바뀌면 그 사람 맞춤 추천부터 다시 보여준다.
+  useEffect(() => {
+    setI(0);
+  }, [wantedVibes]);
 
   useEffect(() => {
     let alive = true;
@@ -78,8 +103,13 @@ export default function DailyHero() {
       onBlurCapture={() => setPaused(false)}
     >
       <div className="flex items-start justify-between gap-3">
-        <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-accent">
+        <p className="flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.14em] text-accent">
           오늘은 이거 어때요?
+          {persona && (
+            <span className="rounded-full bg-ink/85 px-1.5 py-0.5 text-[9px] font-bold normal-case tracking-normal text-white">
+              {persona.emoji} {persona.label} 맞춤
+            </span>
+          )}
         </p>
         <span className="-mr-1 -mt-1 flex gap-0.5">
           {picks.map((_, n) => (

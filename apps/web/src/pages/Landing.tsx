@@ -1,15 +1,17 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import { allRecipes, averageSaving, formatWon } from "@foodplay/core";
+import { allRecipes, averageSaving, formatWon, type ModeKey } from "@foodplay/core";
 import DailyHero from "../components/DailyHero";
 import PersonaChips from "../components/PersonaChips";
 import PopularTicker from "../components/PopularTicker";
 import SeasonalPicks from "../components/SeasonalPicks";
 import TrendingRail from "../components/TrendingRail";
 import ExploreGrid from "../components/ExploreGrid";
+import { usePersona } from "../lib/usePersona";
 
-const MODES = [
+const MODES: { key: ModeKey; to: string; emoji: string; title: string; desc: string; cta: string }[] = [
   {
+    key: "fridge",
     to: "/fridge",
     emoji: "🥬",
     title: "냉장고 재료로 만들기",
@@ -17,13 +19,15 @@ const MODES = [
     cta: "재료 고르기",
   },
   {
+    key: "mealkit",
     to: "/mealkit",
     emoji: "🍜",
     title: "밀키트 푸짐하게 보충",
-    desc: "냉동실 밀키트는 그대로, 곁들일 반찬 한 접시와 더 넣을 재료를 영상으로.",
+    desc: "냉동실 밀키트는 그대로, 곁들일 반찬 한 접시와 더 넣을 재료를 영상으로 찾아줘요.",
     cta: "밀키트 고르기",
   },
   {
+    key: "shop",
     to: "/shop",
     emoji: "🛒",
     title: "장보기 추천",
@@ -31,6 +35,7 @@ const MODES = [
     cta: "조건 고르기",
   },
   {
+    key: "dessert",
     to: "/dessert",
     emoji: "🧁",
     title: "디저트 · 베이킹",
@@ -41,6 +46,16 @@ const MODES = [
 
 export default function Landing() {
   const avgSave = useMemo(() => averageSaving(allRecipes()), []);
+  const { meta: persona } = usePersona();
+
+  // 페르소나를 골랐으면 그 사람에게 맞는 순서로 모드를 앞세운다.
+  const modes = useMemo(() => {
+    if (!persona) return MODES;
+    const order = persona.modes;
+    return [...MODES].sort(
+      (a, b) => order.indexOf(a.key) - order.indexOf(b.key),
+    );
+  }, [persona]);
 
   return (
     <main className="mx-auto max-w-5xl px-5">
@@ -71,12 +86,17 @@ export default function Landing() {
       </div>
 
       <section className="grid gap-4 py-8 sm:grid-cols-2 lg:grid-cols-4">
-        {MODES.map((m) => (
+        {modes.map((m, i) => (
           <Link
             key={m.to}
             to={m.to}
-            className="group flex flex-col rounded-[var(--radius-card)] border border-line bg-surface p-6 shadow-[var(--shadow-card)] transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_2px_4px_rgba(23,20,15,.05),0_20px_44px_-16px_rgba(23,20,15,.24)]"
+            className="group relative flex flex-col rounded-[var(--radius-card)] border border-line bg-surface p-6 shadow-[var(--shadow-card)] transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_2px_4px_rgba(23,20,15,.05),0_20px_44px_-16px_rgba(23,20,15,.24)]"
           >
+            {persona && i === 0 && (
+              <span className="absolute -top-2 left-5 rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-white">
+                {persona.emoji} {persona.label} 추천
+              </span>
+            )}
             <span className="text-[32px] leading-none">{m.emoji}</span>
             <h2 className="mt-4 text-[18px] font-bold tracking-tight">{m.title}</h2>
             <p className="mt-2 flex-1 text-[13px] leading-relaxed text-muted">

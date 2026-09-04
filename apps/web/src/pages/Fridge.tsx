@@ -43,10 +43,28 @@ export default function Fridge() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [raw, setRaw] = useState("");
+  const myIngredients = useMyIngredients();
+
+  // 제철 재료 칩 등에서 "이 재료로" 넘어왔으면, 내가 저장해둔 재료와 합쳐서
+  // 시작한다 — "이 재료 + 내 냉장고에 있는 것"으로 바로 결과가 뜨게.
+  const seedRaw = useMemo(() => {
+    const fromNav = (location.state as { ingredients?: unknown } | null)
+      ?.ingredients;
+    const navIngredients = Array.isArray(fromNav)
+      ? fromNav.filter(
+          (v): v is string => typeof v === "string" && v.trim().length > 0,
+        )
+      : [];
+    if (navIngredients.length === 0) return "";
+    return Array.from(
+      new Set([...navIngredients, ...myIngredients.items]),
+    ).join(", ");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [raw, setRaw] = useState(seedRaw);
   const [vibeText, setVibeText] = useState("");
   const [manualVibes, setManualVibes] = useState<Vibe[]>(seedVibes);
-  const myIngredients = useMyIngredients();
 
   const deferredRaw = useDeferredValue(raw);
   const deferredVibeText = useDeferredValue(vibeText);

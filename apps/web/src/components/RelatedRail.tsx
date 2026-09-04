@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { formatCookTime, type Recipe, type VideoFormat } from "@foodplay/core";
+import { useDragScroll } from "../lib/useDragScroll";
 
 interface Props {
   recipes: Recipe[];
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export default function RelatedRail({ recipes, format = "long" }: Props) {
+  const dragRef = useDragScroll<HTMLDivElement>();
   if (recipes.length === 0) return null;
   const short = format === "short";
 
@@ -16,7 +18,10 @@ export default function RelatedRail({ recipes, format = "long" }: Props) {
       <h2 className="mb-3 text-[17px] font-bold tracking-tight">
         {short ? "추천 쇼츠" : "추천 영상"}
       </h2>
-      <div className="no-scrollbar -mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-1">
+      <div
+        ref={dragRef}
+        className="no-scrollbar -mx-5 flex cursor-grab select-none snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-1"
+      >
         {recipes.map((r) => {
           const asShort = short && !!r.short;
           const isNaver = asShort && r.short!.provider === "naver";

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { compactViews } from "@foodplay/core";
 import { rankTrends, type RankedTrend } from "../lib/trends";
+import { useDragScroll } from "../lib/useDragScroll";
 import YtThumb from "./YtThumb";
 
 /**
@@ -9,6 +10,7 @@ import YtThumb from "./YtThumb";
  * 영상 풀 조회수로 뽑고, 프록시가 있으면 실시간 유튜브로 갱신해 "실시간" 배지를 단다.
  */
 export default function TrendingRail() {
+  const dragRef = useDragScroll<HTMLDivElement>();
   const [trends, setTrends] = useState<RankedTrend[] | null>(null);
 
   useEffect(() => {
@@ -59,7 +61,10 @@ export default function TrendingRail() {
           ))}
         </div>
       ) : (
-        <div className="no-scrollbar -mx-1 flex gap-3 overflow-x-auto px-1 pb-1">
+        <div
+          ref={dragRef}
+          className="no-scrollbar -mx-1 flex cursor-grab select-none gap-3 overflow-x-auto px-1 pb-1"
+        >
           {live.map((t) => {
             const top = t.videos[0];
             return (
