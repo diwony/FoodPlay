@@ -73,6 +73,25 @@ export function liveVideoMeta(id: string): Promise<LiveVideoMeta | null> {
   return p;
 }
 
+const transcriptCache = new Map<string, Promise<string>>();
+
+/**
+ * 영상 자막(CC) 텍스트. 프록시(/transcript)가 innertube 로 가져온다.
+ * 프록시 없음·자막 없음·실패는 전부 빈 문자열.
+ */
+export function liveTranscript(id: string): Promise<string> {
+  if (!PROXY || !/^[\w-]{11}$/.test(id)) return Promise.resolve("");
+  let p = transcriptCache.get(id);
+  if (!p) {
+    p = fetch(`${PROXY}/transcript?id=${encodeURIComponent(id)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: { text?: string } | null) => d?.text ?? "")
+      .catch(() => "");
+    transcriptCache.set(id, p);
+  }
+  return p;
+}
+
 export interface Chapter {
   seconds: number;
   label: string;

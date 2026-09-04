@@ -8,6 +8,7 @@ export { default as recipeDatabase } from "./src/data/recipes.json";
 
 export * from "./src/lib/ingredients";
 export * from "./src/lib/quickAdd";
+export * from "./src/lib/foodVocab";
 export * from "./src/lib/budget";
 export * from "./src/lib/pricing";
 export * from "./src/lib/match";

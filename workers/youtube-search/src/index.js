@@ -93,6 +93,77 @@ export default {
       }
     }
 
+    // 영상 자막(CC) 텍스트 — /yt/:id 화면에서 "필요한 재료" 를 뽑을 때 설명글에
+    // 재료가 없으면 자막에서 찾는다. innertube player → caption track → timedtext.
+    // API 키 불필요. 실패·자막 없음이면 빈 텍스트.
+    if (url.pathname === "/transcript") {
+      const id = (url.searchParams.get("id") || "").trim();
+      if (!/^[\w-]{11}$/.test(id)) return json({ error: "bad id" }, 400, cors);
+
+      const cacheKey = `t:${id}`;
+      if (env.CACHE) {
+        const hit = await env.CACHE.get(cacheKey, "json");
+        if (hit) return json({ ...hit, cached: true }, 200, cors);
+      }
+      if (await rateLimited(req, env))
+        return json({ text: "", rateLimited: true }, 200, cors);
+
+      try {
+        const IK = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"; // 공개 웹 클라이언트 키
+        const pr = await fetch(
+          "https://www.youtube.com/youtubei/v1/player?key=" + IK,
+          {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+              context: {
+                client: {
+                  clientName: "WEB",
+                  clientVersion: "2.20240101.00.00",
+                  hl: "ko",
+                  gl: "KR",
+                },
+              },
+              videoId: id,
+            }),
+          },
+        );
+        if (!pr.ok) return json({ text: "" }, 200, cors);
+        const pj = await pr.json();
+        const tracks =
+          pj?.captions?.playerCaptionsTracklistRenderer?.captionTracks || [];
+        if (!tracks.length)
+          return json({ text: "", noCaptions: true }, 200, cors);
+
+        const track =
+          tracks.find((t) => (t.languageCode || "").startsWith("ko")) ||
+          tracks[0];
+        let base = track.baseUrl || "";
+        if (!base) return json({ text: "" }, 200, cors);
+        if (!/[?&]fmt=/.test(base)) base += "&fmt=json3";
+
+        const tr = await fetch(base);
+        if (!tr.ok) return json({ text: "" }, 200, cors);
+        const tj = await tr.json();
+        const text = (tj.events || [])
+          .flatMap((e) => (e.segs || []).map((s) => s.utf8 || ""))
+          .join("")
+          .replace(/\s+/g, " ")
+          .trim()
+          .slice(0, 20000);
+
+        const out = { id, text, lang: track.languageCode || "" };
+        if (env.CACHE)
+          await env.CACHE.put(cacheKey, JSON.stringify(out), {
+            expirationTtl: CACHE_TTL,
+          });
+        return json(out, 200, cors);
+      } catch (e) {
+        console.error("transcript:", e);
+        return json({ text: "", error: "internal error" }, 200, cors);
+      }
+    }
+
     if (url.pathname !== "/search") return json({ error: "not found" }, 404, cors);
 
     const q = (url.searchParams.get("q") || "").trim().slice(0, 80);

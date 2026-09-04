@@ -42,7 +42,15 @@ npm run dev                        # http://localhost:8787/search?q=김치찌개
 `GET /search?q=<검색어>&max=<1~20>` →
 `{ videos: [{ id, title, channel, views }], cached?: true, quota?: true }`
 
-오류·할당량 소진 시에도 `200` + `videos: []` 로 응답한다(앱이 폴백하도록).
+`GET /video?id=<11자>` →
+`{ id, title, channel, description, publishedAt, views }`
+
+`GET /transcript?id=<11자>` → `{ id, text, lang }` — 영상 자막(CC) 텍스트.
+YouTube Data API 키가 없어도 동작한다(innertube `player` 엔드포인트 사용).
+`/yt/:id` 화면이 설명글에 재료가 안 적혀 있어도 자막에서 재료를 찾아내는 데 쓴다.
+자막이 없거나 실패하면 `{ text: "" }`.
+
+오류·할당량 소진 시에도 `200` + 빈 결과로 응답한다(앱이 폴백하도록).
 
 ## 남용 방어 (Rate Limiting)
 

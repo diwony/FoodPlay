@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useYouTube } from "../lib/useYouTube";
 import {
+  liveTranscript,
   liveVideoMeta,
   parseChapters,
   parseIngredientBlock,
@@ -15,7 +16,8 @@ import {
   searchPool,
   type PoolVideo,
 } from "../lib/youtubePool";
-import { compactViews } from "@foodplay/core";
+import { compactViews, findIngredients, normalizeIngredient } from "@foodplay/core";
+import { useMyIngredients } from "../lib/useMyIngredients";
 import YtThumb from "../components/YtThumb";
 
 interface NavState {
@@ -115,11 +117,42 @@ export default function Watch() {
       meta && chapters.length === 0 ? parseRecipeSteps(meta.description) : [],
     [meta, chapters.length],
   );
-  // 스텝도 없으면 최소한 "재료" 목록이라도.
-  const ingredients = useMemo(
+  // 스텝도 없으면 최소한 "재료" 목록이라도 (설명글의 "::재료" 블록, 계량 포함).
+  const ingredientBlock = useMemo(
     () => (meta ? parseIngredientBlock(meta.description) : []),
     [meta],
   );
+
+  // 자막(CC) — 설명글에 재료가 안 적혀 있어도 말로 언급했으면 잡아낸다.
+  const [transcript, setTranscript] = useState("");
+  useEffect(() => {
+    if (!valid) return;
+    let alive = true;
+    liveTranscript(id).then((t) => alive && setTranscript(t));
+    return () => {
+      alive = false;
+    };
+  }, [id, valid]);
+
+  // 이 영상이 미리 모아둔 풀에 있으면, 수집 때 붙은 재료 태그도 더한다.
+  const poolIngredientTags = useMemo(() => {
+    const self = pool?.find((v) => v.id === id);
+    return self ? self.tags.filter((t) => /[가-힣]/.test(t)) : [];
+  }, [pool, id]);
+
+  // "냉장고에 있어야 할 재료" — 설명글 + 자막 + 풀 태그를 합쳐 뽑는다.
+  const myIngredients = useMyIngredients();
+  const needIngredients = useMemo(() => {
+    const text = `${meta?.description ?? ""}\n${transcript}`;
+    const fromText = findIngredients(text, { limit: 18 }).map((f) => f.name);
+    const names = Array.from(
+      new Set([...poolIngredientTags.map(normalizeIngredient), ...fromText]),
+    );
+    return names
+      .map((name) => ({ name, have: myIngredients.has(name) }))
+      .sort((a, b) => Number(b.have) - Number(a.have))
+      .slice(0, 16);
+  }, [meta?.description, transcript, poolIngredientTags, myIngredients]);
 
   if (!valid) {
     return (
@@ -159,15 +192,45 @@ export default function Watch() {
         {meta && meta.views > 0 && ` · ▶ ${compactViews(meta.views)}`}
       </p>
 
-      {/* 재료 (영상 설명글의 "재료" 블록) */}
-      {!loading && ingredients.length > 0 && (
+      {/* 냉장고에 있어야 할 재료 — 설명글 + 자막 + (풀에 있으면) 수집 태그를 합쳐 뽑는다 */}
+      {needIngredients.length > 0 && (
         <section className="mt-6">
-          <h2 className="text-[17px] font-bold tracking-tight text-ink">재료</h2>
+          <h2 className="text-[17px] font-bold tracking-tight text-ink">
+            냉장고에 이런 게 있어야 해요
+          </h2>
           <p className="mb-3 mt-0.5 text-[13px] text-faint">
-            영상 설명글에 적힌 재료예요.
+            영상 설명·자막에서 뽑았어요. 초록색은 내가 등록한 재료예요.
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {needIngredients.map(({ name, have }) => (
+              <span
+                key={name}
+                className={
+                  "rounded-full px-2.5 py-1 text-[13px] font-semibold " +
+                  (have
+                    ? "bg-good-soft text-good"
+                    : "bg-surface text-muted ring-1 ring-line")
+                }
+              >
+                {have ? "✓ " : ""}
+                {name}
+              </span>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 재료 (영상 설명글의 "::재료" 블록 — 정확한 계량이 있으면 그대로 보여준다) */}
+      {!loading && ingredientBlock.length > 0 && (
+        <section className="mt-6">
+          <h2 className="text-[17px] font-bold tracking-tight text-ink">
+            정확한 계량
+          </h2>
+          <p className="mb-3 mt-0.5 text-[13px] text-faint">
+            영상 설명글에 적힌 그대로예요.
           </p>
           <ul className="grid gap-1.5">
-            {ingredients.map((line, i) =>
+            {ingredientBlock.map((line, i) =>
               /\d|약간|적당|조금|한\s?줌/.test(line) ? (
                 <li
                   key={i}
@@ -253,9 +316,9 @@ export default function Watch() {
       ) : (
         <div className="mt-6 rounded-[var(--radius-card)] border border-dashed border-line bg-surface/60 px-5 py-4">
           <p className="text-[13px] text-muted">
-            {ingredients.length > 0
-              ? "이 영상은 조리 과정을 설명글 대신 영상 자막(CC)에 담았어요. 유튜브에서 자막을 켜고 위 재료로 따라 해 보세요."
-              : "이 영상엔 설명글에 조리 순서·타임스탬프가 없어요. 큐레이션 레시피가 아니라 유튜브 검색에서 바로 가져온 영상이라, 조리 과정은 영상을 직접 보며 확인하세요."}
+            {needIngredients.length > 0
+              ? "이 영상엔 스텝별 타임스탬프가 없어요. 위 재료 체크리스트를 참고해서 영상을 보며 따라 해 보세요."
+              : "이 영상엔 설명글·자막에 조리 순서·재료가 뚜렷하지 않아요. 큐레이션 레시피가 아니라 유튜브 검색에서 바로 가져온 영상이라, 조리 과정은 영상을 직접 보며 확인하세요."}
           </p>
         </div>
       )}
