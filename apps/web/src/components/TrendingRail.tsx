@@ -66,6 +66,11 @@ export default function TrendingRail() {
               <Link
                 key={t.name}
                 to={top ? `/yt/${top.id}` : "/dessert"}
+                state={
+                  top
+                    ? { title: top.title, channel: top.channel, query: t.query }
+                    : undefined
+                }
                 className="group w-[168px] shrink-0"
               >
                 <div className="relative aspect-video overflow-hidden rounded-xl bg-accent-soft">

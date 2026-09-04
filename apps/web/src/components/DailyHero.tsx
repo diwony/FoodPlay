@@ -24,6 +24,7 @@ export default function DailyHero() {
     return [...all.slice(start), ...all.slice(0, start)];
   }, []);
   const [i, setI] = useState(0);
+  const [paused, setPaused] = useState(false);
   const pick = picks[i];
 
   useEffect(() => {
@@ -35,9 +36,10 @@ export default function DailyHero() {
   }, []);
 
   useEffect(() => {
+    if (paused) return;
     const t = setInterval(() => setI((n) => (n + 1) % picks.length), 4000);
     return () => clearInterval(t);
-  }, [picks.length]);
+  }, [picks.length, paused]);
 
   const [dead, setDead] = useState<Set<string>>(new Set());
   const markDead = useCallback(
@@ -68,7 +70,13 @@ export default function DailyHero() {
   }, [pool, pick, dead]);
 
   return (
-    <div className="relative overflow-hidden rounded-[var(--radius-card)] border border-line bg-gradient-to-br from-accent-soft to-surface p-5 shadow-[var(--shadow-card)] sm:p-6">
+    <div
+      className="relative overflow-hidden rounded-[var(--radius-card)] border border-line bg-gradient-to-br from-accent-soft to-surface p-5 shadow-[var(--shadow-card)] sm:p-6"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={() => setPaused(false)}
+    >
       <div className="flex items-start justify-between gap-3">
         <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-accent">
           오늘은 이거 어때요?
@@ -106,6 +114,12 @@ export default function DailyHero() {
             <Link
               key={v.id}
               to={`/yt/${v.id}`}
+              state={{
+                title: v.title,
+                channel: v.channel,
+                query: pick.query,
+                vibes: pick.vibes,
+              }}
               className="group block overflow-hidden rounded-lg bg-surface"
             >
               <div className="relative aspect-video overflow-hidden bg-accent-soft">
@@ -131,14 +145,34 @@ export default function DailyHero() {
         )}
       </div>
 
-      <button
-        type="button"
-        onClick={() => navigate("/fridge", { state: { vibes: pick.vibes } })}
-        className="mt-3 inline-flex items-center gap-1 text-[13px] font-semibold text-accent"
-      >
-        이 느낌으로 더 찾기 (재료도 추가)
-        <span>→</span>
-      </button>
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+        <button
+          type="button"
+          onClick={() => {
+            const top = videos[0];
+            if (top)
+              navigate(`/yt/${top.id}`, {
+                state: {
+                  title: top.title,
+                  channel: top.channel,
+                  query: pick.query,
+                  vibes: pick.vibes,
+                },
+              });
+          }}
+          disabled={videos.length === 0}
+          className="inline-flex items-center gap-1 text-[13px] font-semibold text-accent disabled:opacity-40"
+        >
+          바로 재생 <span>→</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => navigate("/fridge", { state: { vibes: pick.vibes } })}
+          className="inline-flex items-center gap-1 text-[13px] font-medium text-muted hover:text-ink"
+        >
+          재료 골라서 찾기
+        </button>
+      </div>
     </div>
   );
 }

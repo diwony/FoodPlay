@@ -74,32 +74,35 @@ export default function PopularTicker() {
         <span className="shrink-0 text-[11px] text-faint">{open ? "▲" : "▼"}</span>
       </button>
 
+      {/* 예전 네이버 실검처럼: 칸을 밀지 않고 위에 잠깐 떠서 겹친다 */}
       {open && (
-        <ol className="mt-2 border-t border-line pt-2">
-          {list.map((t, n) => (
-            <li key={t.name}>
-              <Link
-                to={href(t)}
-                className="flex items-center gap-2.5 rounded-lg px-1.5 py-1.5 text-[13px] hover:bg-bg"
-              >
-                <span className="w-4 shrink-0 text-center font-bold tabular text-accent">
-                  {n + 1}
-                </span>
-                <span className="flex-1 truncate font-semibold">
-                  {t.emoji} {t.name}
-                  {t.rising && (
-                    <span className="ml-1.5 rounded bg-accent-soft px-1 py-0.5 text-[10px] font-bold text-accent">
-                      상승
-                    </span>
-                  )}
-                </span>
-                <span className="shrink-0 text-[11px] font-medium text-faint">
-                  ▶ {compactViews(t.headlineViews)}
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ol>
+        <div className="absolute left-0 right-0 top-full z-30 mt-1 rounded-[var(--radius-card)] border border-line bg-surface p-2 shadow-[var(--shadow-float)]">
+          <ol>
+            {list.map((t, n) => (
+              <li key={t.name}>
+                <Link
+                  to={href(t)}
+                  className="flex items-center gap-2.5 rounded-lg px-1.5 py-1.5 text-[13px] hover:bg-bg"
+                >
+                  <span className="w-4 shrink-0 text-center font-bold tabular text-accent">
+                    {n + 1}
+                  </span>
+                  <span className="flex-1 truncate font-semibold">
+                    {t.emoji} {t.name}
+                    {t.rising && (
+                      <span className="ml-1.5 rounded bg-accent-soft px-1 py-0.5 text-[10px] font-bold text-accent">
+                        상승
+                      </span>
+                    )}
+                  </span>
+                  <span className="shrink-0 text-[11px] font-medium text-faint">
+                    ▶ {compactViews(t.headlineViews)}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ol>
+        </div>
       )}
     </div>
   );

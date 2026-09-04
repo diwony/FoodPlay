@@ -9,12 +9,22 @@ import {
   type Chapter,
   type LiveVideoMeta,
 } from "../lib/youtubeLive";
+import {
+  loadPool,
+  looksCookable,
+  searchPool,
+  type PoolVideo,
+} from "../lib/youtubePool";
 import { compactViews } from "@foodplay/core";
+import YtThumb from "../components/YtThumb";
 
 interface NavState {
   title?: string;
   channel?: string;
   thumbnail?: string;
+  /** 홈 추천 등에서 넘어왔을 때: 이 검색어/기분과 관련된 영상을 아래에 보여준다 */
+  query?: string;
+  vibes?: string[];
 }
 
 const fmt = (s: number) => {
@@ -58,6 +68,42 @@ export default function Watch() {
       alive = false;
     };
   }, [id, valid]);
+
+  // 관련 영상 — 미리 모아둔 풀에서. 홈에서 넘어왔으면 그 검색어/기분으로,
+  // 아니면 이 영상이 풀에 있으면 그 태그로.
+  const [pool, setPool] = useState<PoolVideo[] | null>(null);
+  useEffect(() => {
+    let alive = true;
+    loadPool().then((p) => alive && setPool(p));
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const related = useMemo<PoolVideo[]>(() => {
+    if (!pool) return [];
+    const self = pool.find((v) => v.id === id);
+    const tokens = (state?.query ?? "")
+      .split(/\s+/)
+      .filter((w) => w.length >= 2);
+    const byTitle = tokens.length
+      ? pool
+          .filter(
+            (v) =>
+              v.id !== id &&
+              tokens.some((w) => v.title.includes(w)) &&
+              looksCookable(v.title),
+          )
+          .sort((a, b) => b.views - a.views)
+      : [];
+    const byTag = searchPool(pool, {
+      ingredients: self?.tags.filter((t) => /[가-힣]/.test(t)) ?? [],
+      vibes: state?.vibes ?? self?.tags.filter((t) => !/[가-힣]/.test(t)) ?? [],
+      limit: 12,
+      exclude: new Set([id, ...byTitle.map((v) => v.id)]),
+    });
+    return [...byTitle, ...byTag].slice(0, 8);
+  }, [pool, id, state?.query, state?.vibes]);
 
   const chapters: Chapter[] = useMemo(
     () => (meta ? parseChapters(meta.description) : []),
@@ -243,11 +289,43 @@ export default function Watch() {
         유튜브에서 보기 ↗
       </a>
 
+      {related.length > 0 && (
+        <section className="mt-10">
+          <h2 className="mb-3 text-[17px] font-bold tracking-tight text-ink">
+            이어서 볼 만한 영상
+          </h2>
+          <div className="grid grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-3">
+            {related.map((v) => (
+              <Link
+                key={v.id}
+                to={`/yt/${v.id}`}
+                state={{ title: v.title, channel: v.channel, query: state?.query, vibes: state?.vibes }}
+                className="group block"
+              >
+                <div className="relative aspect-video overflow-hidden rounded-lg bg-accent-soft">
+                  <YtThumb
+                    id={v.id}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+                <p className="mt-1 line-clamp-2 text-[12px] font-semibold leading-tight">
+                  {v.title}
+                </p>
+                <p className="truncate text-[10px] text-faint">
+                  {v.channel}
+                  {v.views > 0 && ` · ▶ ${compactViews(v.views)}`}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       <Link
         to="/"
-        className="mt-3 block text-center text-[13px] font-medium text-muted hover:text-ink"
+        className="mt-8 block text-center text-[13px] font-medium text-muted hover:text-ink"
       >
-        ← 재료 다시 고르기
+        ← 처음으로
       </Link>
     </main>
   );
