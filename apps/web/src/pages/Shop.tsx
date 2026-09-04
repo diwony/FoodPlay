@@ -76,7 +76,7 @@ export default function Shop() {
         <h1 className="text-[28px] font-bold leading-tight tracking-tight sm:text-[34px]">
           오늘 장 봐서 뭐 해먹지?
         </h1>
-        <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-muted">
+        <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted">
           예산·날씨·땡기는 맛을 고르면 오늘 저녁을 정해주고, 카드마다{" "}
           <b className="text-ink">장 볼 목록</b>을 뽑아줘요.
         </p>

@@ -27,6 +27,50 @@ export default {
     if (req.method === "OPTIONS") return new Response(null, { headers: CORS });
 
     const url = new URL(req.url);
+
+    // 영상 하나의 상세(제목·채널·설명) — /yt/:id 화면에서 설명·타임스탬프 파싱용.
+    if (url.pathname === "/video") {
+      const id = (url.searchParams.get("id") || "").trim();
+      if (!/^[\w-]{11}$/.test(id)) return json({ error: "bad id" }, 400);
+
+      const cacheKey = `v:${id}`;
+      if (env.CACHE) {
+        const hit = await env.CACHE.get(cacheKey, "json");
+        if (hit) return json({ ...hit, cached: true });
+      }
+      if (!env.YT_API_KEY) return json({ error: "no key configured" });
+
+      try {
+        const v = new URL(`${YT}/videos`);
+        v.searchParams.set("key", env.YT_API_KEY);
+        v.searchParams.set("part", "snippet,statistics");
+        v.searchParams.set("id", id);
+        const vr = await fetch(v);
+        if (!vr.ok) {
+          const b = await vr.json().catch(() => ({}));
+          const reason = b?.error?.errors?.[0]?.reason || "";
+          return json({ quota: /quota|rateLimit|dailyLimit/i.test(reason) });
+        }
+        const it = (await vr.json()).items?.[0];
+        if (!it) return json({ error: "not found" }, 404);
+        const out = {
+          id,
+          title: decodeEntities(it.snippet?.title || ""),
+          channel: it.snippet?.channelTitle || "",
+          description: it.snippet?.description || "",
+          publishedAt: it.snippet?.publishedAt || "",
+          views: Number(it.statistics?.viewCount || 0),
+        };
+        if (env.CACHE)
+          await env.CACHE.put(cacheKey, JSON.stringify(out), {
+            expirationTtl: CACHE_TTL,
+          });
+        return json(out);
+      } catch (e) {
+        return json({ error: String(e) });
+      }
+    }
+
     if (url.pathname !== "/search") return json({ error: "not found" }, 404);
 
     const q = (url.searchParams.get("q") || "").trim().slice(0, 80);

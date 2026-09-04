@@ -77,7 +77,7 @@ export default function Fridge() {
         <h1 className="text-[28px] font-bold leading-tight tracking-tight sm:text-[34px]">
           냉장고에 뭐 있어요?
         </h1>
-        <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-muted">
+        <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted">
           가진 재료를 고르면 만들 수 있는 요리 영상을 찾아줘요. 재료 없이{" "}
           <b className="text-ink">오늘 기분·상황만 골라도</b> 추천이 떠요.
         </p>

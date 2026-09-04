@@ -18,9 +18,11 @@
   있음(기기별 저장) — "가진 재료로 만든다"가 핵심이라 목록에 없는 것도 넣는다
 - 재료·기분·밀키트 종류를 고르면 **결과 레시피와 유튜브 영상이 실제로 좁혀짐**.
   기분·상황은 칩 선택 + 자유 입력("비 와서 으슬으슬해" → 키워드 자동 인식)
-- 결과 아래 **"유튜브에서 더 찾기"** + **"같이 보는 먹방"** 칸이 미리 수집한
-  3,600+ 관련 영상을 조회수 순으로 보여줌 — 런타임에 외부 API 를 안 부른다.
-  요즘 뜨는 재료(분모자·두부면·곤약 등)·디저트도 계속 수집해 넓힘
+- 결과 아래 **"유튜브에서 더 찾기"** + **"같이 보는 먹방"** 칸이 **2층**으로 뜸 —
+  ① 미리 수집한 11,000+ 관련 영상 풀(조회수 순) 위에 ② 검색 순간의 **실시간
+  유튜브 결과**를 얹고 "실시간" 배지를 붙인다. 실시간은 API 키를 숨긴 서버리스
+  프록시(Cloudflare Workers, 24h 캐시)를 거치며, 프록시가 없거나 할당량이 소진돼도
+  1층 풀로 조용히 폴백해 화면이 비지 않는다. 요즘 뜨는 재료·디저트도 계속 수집해 넓힘
 - **웹**은 별도 React(Vite) 앱, **모바일 앱**은 Expo(React Native). 매칭·데이터
   로직은 `@foodplay/core` 패키지로 100% 공유
 
@@ -40,7 +42,8 @@
 | 웹 | **Vite + React 19 + React Router + Tailwind v4** (`apps/web`) |
 | 모바일 앱 | **Expo + React Native 0.86 + Expo Router** (루트) |
 | 영상 | 웹: YouTube IFrame Player API + 네이버TV `tv.naver.com/embed` iframe / 앱: `react-native-youtube-iframe` (동일한 `seekTo`·`pause` 계약) |
-| 데이터 | 빌드 타임 큐레이션 (`packages/core/src/data/recipes.json`) + 유튜브 관련영상·먹방·디저트 풀 (`apps/web/public/youtube-pool.json`, 3,600+ 영상) |
+| 데이터 (1층) | 빌드 타임 큐레이션 (`packages/core/src/data/recipes.json`) + 유튜브 관련영상·먹방·디저트 풀 (`apps/web/public/youtube-pool.json`, 11,000+ 영상). 풀은 `pipeline/collect-youtube.mjs` 가 **공식 YouTube Data API v3** 로 수집(로컬, 키는 `.env`) |
+| 실시간 (2층) | `workers/youtube-search/` — API 키를 시크릿으로 숨긴 **Cloudflare Workers** 검색 프록시(24h KV 캐시). 앱은 풀 위에 실시간 결과를 얹고 "실시간" 배지를 붙이며, 프록시·할당량이 없으면 1층으로 폴백 |
 | 사용자 입력 저장 | 직접 추가한 재료·밀키트는 `localStorage` (기기별, 계정 없음) |
 
 ## 구조
@@ -50,10 +53,11 @@ packages/core/     웹·앱 공유 순수 로직 — 재료 파싱 · 매칭/랭
 apps/web/          Vite React 웹 (주력)
   src/pages/       Landing(4모드) · Fridge · MealKit · Shop · Dessert · Recipe · Watch(/yt/:id)
   src/components/  RecipeCard · ResultList · IngredientField · VibeField · YouTubeRail · MukbangRail · AddChipInput · …
-  src/lib/         useYouTube(IFrame) · useMiniPlayer(PiP) · youtubePool · useLocalList · curated
+  src/lib/         useYouTube(IFrame) · useMiniPlayer(PiP) · youtubePool(1층) · youtubeLive(2층 실시간) · useLocalList · curated
   public/          youtube-pool.json (관련 영상·먹방·디저트 풀)
 app/  src/  (루트)  Expo Router 모바일 앱 (+ RN-web 프리뷰)
-pipeline/          영상 큐레이션 · 댓글 · 유튜브 풀 수집 스크립트
+pipeline/          영상 큐레이션 · 댓글 · 유튜브 풀 수집(공식 Data API) 스크립트
+workers/           Cloudflare Workers — 실시간 유튜브 검색 프록시(키 은닉·캐시)
 ```
 
 ## 실행

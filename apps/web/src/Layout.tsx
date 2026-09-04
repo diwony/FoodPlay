@@ -35,7 +35,9 @@ export default function Layout() {
 
       <footer className="mx-auto max-w-5xl px-5 py-16">
         <p className="text-[12px] leading-relaxed text-faint">
-          FoodPlay — 개인 프로젝트. 레시피 영상·댓글은 유튜브의 공개 콘텐츠이며
+          © {new Date().getFullYear()} FoodPlay (diwony) · 개인 포트폴리오
+          프로젝트. All rights reserved — 사전 서면 허가 없이 무단 복제·재배포·
+          상업적 이용을 금합니다. 레시피 영상·댓글은 유튜브의 공개 콘텐츠이며
           각 채널에 저작권이 있습니다. 큐레이션 데이터는 빌드 타임에 생성됩니다.
         </p>
       </footer>

@@ -46,6 +46,63 @@ export function liveSearch(query: string, max = 12): Promise<PoolVideo[]> {
   return p;
 }
 
+export interface LiveVideoMeta {
+  id: string;
+  title: string;
+  channel: string;
+  description: string;
+  publishedAt: string;
+  views: number;
+}
+
+const metaCache = new Map<string, Promise<LiveVideoMeta | null>>();
+
+/** 영상 하나의 상세(제목·채널·설명). 프록시 없으면 null. */
+export function liveVideoMeta(id: string): Promise<LiveVideoMeta | null> {
+  if (!PROXY || !/^[\w-]{11}$/.test(id)) return Promise.resolve(null);
+  let p = metaCache.get(id);
+  if (!p) {
+    p = fetch(`${PROXY}/video?id=${encodeURIComponent(id)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: (LiveVideoMeta & { error?: string }) | null) =>
+        d && !d.error && d.title ? d : null,
+      )
+      .catch(() => null);
+    metaCache.set(id, p);
+  }
+  return p;
+}
+
+export interface Chapter {
+  seconds: number;
+  label: string;
+}
+
+/**
+ * 유튜브 영상 설명글에서 타임스탬프 목록(챕터)을 뽑아낸다.
+ * "0:00 인트로", "[1:23] 양념", "12:34 - 마무리" 같은 줄을 인식한다.
+ * 2개 미만이면 챕터로 안 친다(빈 배열).
+ */
+export function parseChapters(description: string): Chapter[] {
+  const out: Chapter[] = [];
+  for (const raw of (description || "").split(/\r?\n/)) {
+    const line = raw.trim();
+    const m = line.match(/(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+    if (!m) continue;
+    const [h, mm, ss] =
+      m[3] != null ? [+m[1], +m[2], +m[3]] : [0, +m[1], +m[2]];
+    const seconds = h * 3600 + mm * 60 + ss;
+    let label = line
+      .replace(m[0], "")
+      .replace(/^[\s\-–—:.)\]}·|►▶*]+/, "")
+      .replace(/[\s\-–—:.([{·|]+$/, "")
+      .trim();
+    if (!label || label.length > 90) label = label.slice(0, 90) || "구간";
+    out.push({ seconds, label });
+  }
+  return out.length >= 2 ? out : [];
+}
+
 /**
  * 정적 풀 결과(`hits`) 위에 실시간 결과를 얹어 돌려준다.
  * - 이미 풀에 있거나 제외 목록에 있는 영상은 겹치지 않게 걸러낸다.

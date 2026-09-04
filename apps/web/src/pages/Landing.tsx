@@ -38,12 +38,10 @@ export default function Landing() {
         <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-accent">
           냉장고 → 유튜브 레시피
         </p>
-        <h1 className="mt-3 max-w-2xl text-[34px] font-bold leading-[1.12] sm:text-[46px]">
-          오늘 뭐 먹지,
-          <br />
-          어디서부터 정할까요?
+        <h1 className="mt-3 max-w-3xl text-[34px] font-bold leading-[1.12] sm:text-[46px]">
+          오늘 뭐 먹지,<br className="sm:hidden" /> 어디서부터 정할까요?
         </h1>
-        <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-muted">
+        <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-muted">
           조리 스텝마다 타임스탬프가 붙은 유튜브 요리 영상을 상황에 맞게 골라줘요.
           시작점을 하나 고르세요.
         </p>
