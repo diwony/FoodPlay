@@ -57,6 +57,8 @@ chatbot/**/dist/
 
 # pipeline fetch cache
 pipeline/comments/
+# collect-youtube.mjs 공식 API 모드 진행 위치 (로컬 상태)
+pipeline/.youtube-progress.json
 
 # vite
 apps/web/dist/

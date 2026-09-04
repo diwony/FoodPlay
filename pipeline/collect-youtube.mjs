@@ -1,33 +1,144 @@
 /**
- * 유튜브 관련 영상을 미리 최대한 많이 긁어와 정적 풀로 만든다.
- * (Data API 키 불필요 — fetch-comments 와 같은 공개 innertube 사용)
+ * 유튜브 요리·먹방·디저트 영상을 미리 긁어 정적 풀로 만든다.
+ * 배포된 앱은 이 풀 파일만 읽고 런타임에 유튜브를 안 부른다.
  *
- *   node pipeline/collect-youtube.mjs            # 기존 풀에 이어서 수집(병합)
- *   node pipeline/collect-youtube.mjs --fresh    # 처음부터 다시
+ * 수집 통로는 두 가지 — 키가 있으면 공식, 없으면 비공식으로 자동 폴백:
+ *   • 공식  YouTube Data API v3 (search.list + videos.list)
+ *       pipeline/.env 에  YT_API_KEY=AIza...   (또는 환경변수 YT_API_KEY)
+ *       무료 하루 10,000유닛, search.list 는 100유닛/회 → 하루 약 95검색.
+ *       전체 쿼리는 그보다 많으니 진행 위치를 pipeline/.youtube-progress.json
+ *       에 저장하고, 매일 돌리면 남은 지점부터 이어서 풀이 커진다.
+ *       403 quotaExceeded 면 그때까지분을 저장하고 깔끔히 멈춘다.
+ *   • 비공식 innertube 검색 (키 불필요, fetch-comments 와 같은 엔드포인트)
+ *       키가 없으면 이 통로를 쓴다. 비공식이라 스키마가 바뀌면 깨질 수 있다.
  *
- * 결과: apps/web/public/youtube-pool.json  (배포 시 정적 파일로 서빙)
- * 앱의 "유튜브에서 더 찾기" 칸은 런타임에 유튜브를 안 부르고 이 풀만 읽는다.
- * 정기적으로 다시 돌리면 풀이 계속 커진다("계속 수집").
+ *   node pipeline/collect-youtube.mjs              # 남은 지점부터 이어서(병합)
+ *   node pipeline/collect-youtube.mjs --max=120    # 이번 실행 검색 상한(공식 모드)
+ *   node pipeline/collect-youtube.mjs --fresh      # 풀·진행상태 초기화
  *
- * 주의: 비공식 엔드포인트다. 스키마가 바뀌면 파싱이 깨질 수 있다.
+ * 결과: apps/web/public/youtube-pool.json
  */
 
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 
 const ROOT = new URL("..", import.meta.url);
 const OUT = new URL("apps/web/public/youtube-pool.json", ROOT);
-const fresh = process.argv.includes("--fresh");
+const PROGRESS = new URL("pipeline/.youtube-progress.json", ROOT);
 
+const argv = process.argv.slice(2);
+const fresh = argv.includes("--fresh");
+const maxArg = argv.find((a) => a.startsWith("--max="));
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// --- 공식 API 키 로드 (있으면 공식 모드, 없으면 innertube 폴백) --------------
+function loadApiKey() {
+  if (process.env.YT_API_KEY) return process.env.YT_API_KEY.trim();
+  const envUrl = new URL("pipeline/.env", ROOT);
+  if (existsSync(envUrl)) {
+    for (const line of readFileSync(envUrl, "utf8").split(/\r?\n/)) {
+      const m = line.match(/^\s*YT_API_KEY\s*=\s*(.+?)\s*$/);
+      if (m) return m[1].replace(/^["']|["']$/g, "").trim();
+    }
+  }
+  return null;
+}
+const API_KEY = loadApiKey();
+const MODE = API_KEY ? "공식 API" : "innertube";
+const MAX_SEARCHES = maxArg
+  ? Math.max(1, parseInt(maxArg.slice(6), 10) || 1)
+  : API_KEY
+    ? 95
+    : Infinity;
+
+class QuotaError extends Error {}
+
+function decodeEntities(s) {
+  return String(s)
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(+n));
+}
+
+// --- 공식 YouTube Data API v3 ----------------------------------------------
+async function apiSearch(query, tries = 3) {
+  const url = new URL("https://www.googleapis.com/youtube/v3/search");
+  url.searchParams.set("key", API_KEY);
+  url.searchParams.set("part", "snippet");
+  url.searchParams.set("type", "video");
+  url.searchParams.set("q", query);
+  url.searchParams.set("maxResults", "50");
+  url.searchParams.set("regionCode", "KR");
+  url.searchParams.set("relevanceLanguage", "ko");
+  url.searchParams.set("videoEmbeddable", "true"); // 앱은 iframe 으로 재생
+  for (let i = 0; i < tries; i++) {
+    const res = await fetch(url);
+    if (res.ok) {
+      const json = await res.json();
+      return (json.items ?? [])
+        .filter((it) => it.id?.videoId && it.snippet?.title)
+        .map((it) => ({
+          id: it.id.videoId,
+          title: decodeEntities(it.snippet.title),
+          channel: it.snippet.channelTitle ?? "",
+          views: 0, // videos.list 로 따로 채운다
+        }));
+    }
+    const body = await res.json().catch(() => ({}));
+    const reason = body?.error?.errors?.[0]?.reason ?? "";
+    // 하루 할당량 소진 — 오늘은 더 못 한다. 저장 후 중단.
+    if (res.status === 403 && /quotaExceeded|dailyLimitExceeded/i.test(reason))
+      throw new QuotaError(reason);
+    // 순간 요청이 몰림 — 100초쯤 쉬면 풀린다. 몇 번 더 시도한다.
+    if (res.status === 429 || /rateLimitExceeded|userRateLimitExceeded/i.test(reason)) {
+      if (i === tries - 1) throw new QuotaError(reason || "rateLimitExceeded");
+      process.stdout.write(`\r… 요청 한도 — ${45 * (i + 1)}초 대기 후 재시도\n`);
+      await sleep(45_000 * (i + 1));
+      continue;
+    }
+    if (res.status === 403) throw new Error(`403 ${reason || "forbidden"}`);
+    if (i === tries - 1) throw new Error(`${res.status} ${reason}`);
+    await sleep(700 * (i + 1));
+  }
+}
+
+/** videos.list?part=statistics — 1유닛/회, id 50개씩. 새 영상 조회수를 채운다. */
+async function apiFillViews(ids, pool) {
+  for (let i = 0; i < ids.length; i += 50) {
+    const batch = ids.slice(i, i + 50);
+    const url = new URL("https://www.googleapis.com/youtube/v3/videos");
+    url.searchParams.set("key", API_KEY);
+    url.searchParams.set("part", "statistics");
+    url.searchParams.set("id", batch.join(","));
+    const res = await fetch(url);
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      const reason = body?.error?.errors?.[0]?.reason ?? "";
+      if (res.status === 403 && /quota|dailyLimit/i.test(reason))
+        throw new QuotaError(reason);
+      return; // 통계 실패는 치명적이지 않다 — 조회수 0 으로 둔다
+    }
+    const json = await res.json();
+    for (const it of json.items ?? []) {
+      const v = pool.get(it.id);
+      if (v) v.views = Number(it.statistics?.viewCount ?? 0);
+    }
+    await sleep(120);
+  }
+}
+
+// --- 비공식 innertube (키가 없을 때 폴백) ----------------------------------
 const INNERTUBE_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
 const CONTEXT = {
   client: { clientName: "WEB", clientVersion: "2.20240101.00.00", hl: "ko", gl: "KR" },
 };
-// 검색 필터 params: 타입=동영상. (base64 of `\x12\x02\x10\x01`)
-const VIDEO_ONLY = "EgIQAQ%3D%3D";
+const VIDEO_ONLY = "EgIQAQ%3D%3D"; // 검색 필터 params: 타입=동영상
 
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-async function searchOnce(query, tries = 3) {
+async function innertubeRaw(query, tries = 3) {
   for (let i = 0; i < tries; i++) {
     try {
       const res = await fetch(
@@ -63,6 +174,28 @@ function parseViews(text) {
   if (m[2] === "만") return Math.round(n * 10_000);
   if (m[2] === "천") return Math.round(n * 1_000);
   return Math.round(n);
+}
+
+async function innertubeSearch(query) {
+  const json = await innertubeRaw(query);
+  const out = [];
+  let n = 0;
+  for (const v of walkVideoRenderers(json)) {
+    if (n >= 12) break;
+    n++;
+    const id = v.videoId;
+    const title = (v.title?.runs ?? []).map((r) => r.text).join("");
+    if (!id || !title) continue;
+    const channel =
+      v.ownerText?.runs?.[0]?.text ?? v.longBylineText?.runs?.[0]?.text ?? "";
+    out.push({
+      id,
+      title,
+      channel,
+      views: parseViews(v.viewCountText?.simpleText),
+    });
+  }
+  return out;
 }
 
 const ING = [
@@ -286,51 +419,7 @@ function buildQueries() {
   return q;
 }
 
-async function main() {
-  const pool = new Map();
-  if (!fresh && existsSync(OUT)) {
-    for (const v of JSON.parse(readFileSync(OUT, "utf8")).videos) {
-      pool.set(v.id, { ...v, tags: new Set(v.tags) });
-    }
-    console.log(`기존 풀 ${pool.size}개에 이어서 수집`);
-  }
-
-  const queries = buildQueries();
-  let added = 0;
-  for (let i = 0; i < queries.length; i++) {
-    const { query, tags } = queries[i];
-    try {
-      const json = await searchOnce(query);
-      let n = 0;
-      for (const v of walkVideoRenderers(json)) {
-        if (n >= 12) break;
-        n++;
-        const id = v.videoId;
-        const title = (v.title?.runs ?? []).map((r) => r.text).join("");
-        const channel =
-          v.ownerText?.runs?.[0]?.text ??
-          v.longBylineText?.runs?.[0]?.text ??
-          "";
-        const views = parseViews(v.viewCountText?.simpleText);
-        if (!id || !title) continue;
-        const cur = pool.get(id);
-        if (cur) {
-          tags.forEach((t) => cur.tags.add(t));
-          if (views > cur.views) cur.views = views;
-        } else {
-          pool.set(id, { id, title, channel, views, tags: new Set(tags) });
-          added++;
-        }
-      }
-      process.stdout.write(
-        `\r[${i + 1}/${queries.length}] "${query}" → 풀 ${pool.size}   `,
-      );
-    } catch (e) {
-      process.stdout.write(`\r! "${query}" 실패: ${e.message}\n`);
-    }
-    await sleep(250);
-  }
-
+function savePool(pool) {
   const videos = [...pool.values()]
     .map((v) => ({
       id: v.id,
@@ -340,13 +429,115 @@ async function main() {
       tags: [...v.tags].sort(),
     }))
     .sort((a, b) => b.views - a.views);
-
   writeFileSync(
     OUT,
-    JSON.stringify({ collectedAt: new Date().toISOString().slice(0, 10), videos }, null, 1) +
-      "\n",
+    JSON.stringify(
+      { collectedAt: new Date().toISOString().slice(0, 10), videos },
+      null,
+      1,
+    ) + "\n",
   );
-  console.log(`\n📝 ${videos.length}개 영상 (이번에 +${added})`);
+  return videos.length;
+}
+
+async function main() {
+  const pool = new Map();
+  if (!fresh && existsSync(OUT)) {
+    for (const v of JSON.parse(readFileSync(OUT, "utf8")).videos)
+      pool.set(v.id, { ...v, tags: new Set(v.tags) });
+    console.log(`기존 풀 ${pool.size}개에 이어서 수집`);
+  }
+
+  const queries = buildQueries();
+
+  // 공식 API 모드는 쿼터 때문에 하루에 다 못 돈다 → 진행 위치를 기억한다.
+  let start = 0;
+  if (MODE === "공식 API" && !fresh && existsSync(PROGRESS))
+    start = JSON.parse(readFileSync(PROGRESS, "utf8")).next ?? 0;
+  if (start >= queries.length) {
+    start = 0;
+    console.log("쿼리 한 바퀴 완료 — 처음부터 다시 돌며 갱신");
+  }
+
+  console.log(
+    `[${MODE}] 쿼리 ${start + 1}/${queries.length} 부터` +
+      (MAX_SEARCHES !== Infinity ? `, 이번 실행 최대 ${MAX_SEARCHES}검색` : ""),
+  );
+
+  const newIds = [];
+  let searches = 0;
+  let quotaHit = false;
+  let i = start;
+  for (; i < queries.length && searches < MAX_SEARCHES; i++) {
+    const { query, tags } = queries[i];
+    try {
+      const items =
+        MODE === "공식 API"
+          ? await apiSearch(query)
+          : await innertubeSearch(query);
+      searches++;
+      for (const it of items) {
+        const cur = pool.get(it.id);
+        if (cur) {
+          tags.forEach((t) => cur.tags.add(t));
+          if (it.views > cur.views) cur.views = it.views;
+        } else {
+          pool.set(it.id, { ...it, tags: new Set(tags) });
+          newIds.push(it.id);
+        }
+      }
+      process.stdout.write(
+        `\r[${i + 1}/${queries.length}] "${query}" → 풀 ${pool.size}   `,
+      );
+    } catch (e) {
+      if (e instanceof QuotaError) {
+        quotaHit = true;
+        process.stdout.write(`\r⚠ 쿼터 소진 (${e.message}) — 저장 후 중단\n`);
+        break;
+      }
+      process.stdout.write(`\r! "${query}" 실패: ${e.message}\n`);
+    }
+    await sleep(MODE === "공식 API" ? 150 : 250);
+  }
+
+  // 공식 모드: 새로 담은 영상 조회수 채우기 (innertube 는 검색에서 바로 옴)
+  if (MODE === "공식 API" && newIds.length) {
+    console.log(`\n새 영상 ${newIds.length}개 조회수 조회...`);
+    try {
+      await apiFillViews(newIds, pool);
+    } catch (e) {
+      console.log(`조회수 조회 중단: ${e.message} (조회수 0 으로 둠)`);
+    }
+  }
+
+  const total = savePool(pool);
+
+  if (MODE === "공식 API") {
+    writeFileSync(
+      PROGRESS,
+      JSON.stringify(
+        {
+          next: i >= queries.length ? 0 : i,
+          total: queries.length,
+          updatedAt: new Date().toISOString(),
+        },
+        null,
+        2,
+      ) + "\n",
+    );
+  }
+
+  console.log(
+    `\n📝 ${total}개 영상 (이번에 +${newIds.length}), 검색 ${searches}회` +
+      (MODE === "공식 API" ? ` ≈ ${searches * 100} 유닛` : ""),
+  );
+  if (MODE === "공식 API") {
+    if (quotaHit)
+      console.log("내일 다시 실행하면 멈춘 지점부터 이어서 수집합니다.");
+    else if (i < queries.length)
+      console.log(`다음 실행은 ${i + 1}/${queries.length} 번째 쿼리부터.`);
+    else console.log("전체 쿼리 완주 — 다음 실행은 처음부터 갱신합니다.");
+  }
 }
 
 main();
