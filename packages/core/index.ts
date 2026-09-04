@@ -18,3 +18,4 @@ export * from "./src/lib/menuKinds";
 export * from "./src/lib/persona";
 export * from "./src/lib/suggest";
 export * from "./src/lib/trends";
+export * from "./src/lib/seasonal";

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import {
   cuisineLabel,
@@ -16,7 +16,6 @@ import {
 } from "@foodplay/core";
 import { useMiniPlayer } from "../lib/useMiniPlayer";
 import { useYouTube } from "../lib/useYouTube";
-import { pushRecentRecipe } from "../lib/useRecentRecipes";
 import RelatedRail from "../components/RelatedRail";
 import ReceptionBlock from "../components/ReceptionBlock";
 import BlogRail from "../components/BlogRail";
@@ -26,10 +25,6 @@ export default function Recipe() {
   const [searchParams] = useSearchParams();
   const recipe = getRecipe(id);
   const hostRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (recipe) pushRecentRecipe(recipe.id);
-  }, [recipe]);
 
   const [fmt, setFmt] = useState<VideoFormat>(
     searchParams.get("v") === "short" ? "short" : "long",

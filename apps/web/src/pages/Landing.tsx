@@ -4,7 +4,7 @@ import { allRecipes, averageSaving, formatWon } from "@foodplay/core";
 import DailyHero from "../components/DailyHero";
 import PersonaChips from "../components/PersonaChips";
 import PopularTicker from "../components/PopularTicker";
-import SavingsWallet from "../components/SavingsWallet";
+import SeasonalPicks from "../components/SeasonalPicks";
 import TrendingRail from "../components/TrendingRail";
 import ExploreGrid from "../components/ExploreGrid";
 
@@ -58,11 +58,11 @@ export default function Landing() {
         </p>
       </section>
 
-      <div className="grid gap-4 pb-4 lg:grid-cols-[1.5fr_1fr]">
+      <div className="grid items-start gap-4 pb-4 lg:grid-cols-[1.5fr_1fr]">
         <DailyHero />
         <div className="flex flex-col gap-4">
           <PopularTicker />
-          <SavingsWallet />
+          <SeasonalPicks />
           <div className="rounded-[var(--radius-card)] border border-line bg-surface p-5 shadow-[var(--shadow-card)]">
             <PersonaChips />
           </div>
