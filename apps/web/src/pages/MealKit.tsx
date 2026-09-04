@@ -211,6 +211,7 @@ export default function MealKit() {
               title={`${kit} 먹방`}
               hint={`${kit} 먹는 영상도 같이.`}
               ingredients={[kit]}
+              query={`${kit} 먹방`}
             />
           </>
         )}

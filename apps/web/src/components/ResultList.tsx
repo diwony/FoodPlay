@@ -92,6 +92,7 @@ export default function ResultList({
           <MukbangRail
             ingredients={youtubeIngredients}
             vibes={youtubeVibes}
+            query={`${youtubeQuery} 먹방`}
           />
         </>
       )}

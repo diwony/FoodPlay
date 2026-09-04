@@ -1,0 +1,14 @@
+name = "foodplay-yt-search"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# 같은 검색을 24시간 재사용해 API 할당량을 아끼는 캐시.
+# 배포 전 1회:  npx wrangler kv namespace create CACHE
+# 명령이 출력하는 id 를 아래 id = "" 에 채운다.
+[[kv_namespaces]]
+binding = "CACHE"
+id = ""
+
+# API 키는 이 파일에 넣지 않는다. 배포 후 1회:
+#   npx wrangler secret put YT_API_KEY
+# (로컬 개발은 .dev.vars 파일 — gitignore 됨)

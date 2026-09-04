@@ -330,6 +330,7 @@ export default function Dessert() {
           hint="달달하게 같이 보는 디저트 먹방이에요."
           ingredients={ingredients}
           kind="dessert-mukbang"
+          query={`${query} 먹방`}
         />
       </section>
     </main>

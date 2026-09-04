@@ -1,0 +1,13 @@
+{
+  "name": "foodplay-yt-search",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FoodPlay 실시간 유튜브 검색 프록시 (Cloudflare Workers) — API 키를 시크릿으로 숨긴다",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}

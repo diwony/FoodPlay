@@ -6,6 +6,7 @@ import {
   type PoolQuery,
   type PoolVideo,
 } from "../lib/youtubePool";
+import { useLiveMerge } from "../lib/youtubeLive";
 import { compactViews } from "@foodplay/core";
 
 interface Props {
@@ -21,6 +22,8 @@ interface Props {
   kind?: PoolQuery["kind"];
   /** 반드시 있어야 하는 태그 */
   require?: string[];
+  /** 실시간 검색어 override. 없으면 재료 + "먹방" 으로 만든다. */
+  query?: string;
 }
 
 const STEP = 6;
@@ -37,6 +40,7 @@ export default function MukbangRail({
   hint = "요리하는 김에 곁들여 볼, 고른 재료·기분에 맞는 먹방 영상이에요.",
   kind = "mukbang",
   require,
+  query,
 }: Props) {
   const [pool, setPool] = useState<PoolVideo[] | null>(null);
   const [shown, setShown] = useState(STEP);
@@ -74,20 +78,27 @@ export default function MukbangRail({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool, depKey]);
 
+  const liveQuery =
+    query ??
+    [...ingredients, kind === "dessert-mukbang" ? "디저트 먹방" : "먹방"]
+      .join(" ")
+      .trim();
+  const { merged, liveIds } = useLiveMerge(liveQuery, hits);
+
   useEffect(() => setShown(STEP), [depKey]);
 
-  if (pool !== null && hits.length === 0) return null;
+  if (pool !== null && merged.length === 0) return null;
 
-  const visible = hits.slice(0, shown);
+  const visible = merged.slice(0, shown);
 
   return (
     <section className="mt-10 border-t border-line pt-8">
       <div className="flex items-baseline justify-between gap-3">
         <h2 className="text-[19px] font-bold tracking-tight">
           {title}
-          {hits.length > 0 && (
+          {merged.length > 0 && (
             <span className="ml-2 text-[13px] font-semibold text-faint">
-              {hits.length}+
+              {merged.length}+
             </span>
           )}
         </h2>
@@ -118,12 +129,19 @@ export default function MukbangRail({
                   }}
                   className="group"
                 >
-                  <img
-                    src={`https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`}
-                    alt=""
-                    loading="lazy"
-                    className="aspect-video w-full rounded-xl border border-line object-cover"
-                  />
+                  <div className="relative">
+                    <img
+                      src={`https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`}
+                      alt=""
+                      loading="lazy"
+                      className="aspect-video w-full rounded-xl border border-line object-cover"
+                    />
+                    {liveIds.has(v.id) && (
+                      <span className="absolute left-1.5 top-1.5 rounded-md bg-good/90 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                        실시간
+                      </span>
+                    )}
+                  </div>
                   <p className="mt-1.5 line-clamp-2 text-[13px] font-semibold leading-snug group-hover:text-good">
                     {v.title}
                   </p>
@@ -134,13 +152,13 @@ export default function MukbangRail({
                 </Link>
               ))}
             </div>
-            {shown < hits.length && (
+            {shown < merged.length && (
               <button
                 onClick={() => setShown((n) => n + STEP)}
                 className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-[var(--radius-card)] border border-line bg-surface py-3.5 text-[14px] font-semibold text-muted transition-colors hover:border-good/40 hover:text-ink"
               >
                 <span className="text-[16px] leading-none text-good">＋</span>
-                더보기 {Math.min(STEP, hits.length - shown)}개
+                더보기 {Math.min(STEP, merged.length - shown)}개
               </button>
             )}
           </>

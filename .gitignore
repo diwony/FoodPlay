@@ -41,6 +41,9 @@ docs/app-preview.md
 !.env.example
 apps/web/.env
 apps/web/.env.production
+# Cloudflare Workers 로컬 시크릿·빌드 산물
+.dev.vars
+.wrangler/
 
 # chatbot 실험 폴더 (별도 작업물 — 비밀키·빌드 산물 커밋 방지)
 chatbot/**/.env

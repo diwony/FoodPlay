@@ -1,0 +1,51 @@
+# foodplay-yt-search — 실시간 유튜브 검색 프록시
+
+FoodPlay 앱은 GitHub Pages 정적 사이트라 API 키를 가질 수 없다. 이 Cloudflare
+Worker 가 키를 **시크릿으로** 들고 대신 YouTube Data API v3 를 호출하며, 결과를
+KV 에 24시간 캐시해 무료 할당량(하루 10,000유닛)을 아낀다.
+
+앱의 "유튜브에서 더 찾기" / "같이 보는 먹방" 칸은 이 Worker 가 있으면 미리 모아둔
+정적 풀(1층) **위에** 실시간 결과를 얹고, 없거나 할당량이 소진되면 조용히 1층만
+보여준다.
+
+## 배포 (한 번만)
+
+```bash
+cd workers/youtube-search
+npm install
+npx wrangler login                       # Cloudflare 계정 연결 (무료)
+
+npx wrangler kv namespace create CACHE   # 출력된 id 를 wrangler.toml 의 id="" 에 채운다
+npx wrangler secret put YT_API_KEY       # 프롬프트에 YouTube Data API 키 붙여넣기
+
+npx wrangler deploy                      # 배포 → https://foodplay-yt-search.<서브도메인>.workers.dev
+```
+
+배포가 알려준 URL 을 앱에 연결한다 — `apps/web/.env` (gitignore 됨):
+
+```
+VITE_YT_PROXY_URL=https://foodplay-yt-search.<서브도메인>.workers.dev
+```
+
+그다음 웹을 다시 빌드·배포하면(`bash scripts/deploy-web.sh`) 실시간 칸이 켜진다.
+`VITE_YT_PROXY_URL` 이 없으면 앱은 아무 일 없이 1층(정적 풀)만 쓴다.
+
+## 로컬 개발
+
+```bash
+cp .dev.vars.example .dev.vars     # .dev.vars 에 키 넣기 (gitignore)
+npm run dev                        # http://localhost:8787/search?q=김치찌개
+```
+
+## 엔드포인트
+
+`GET /search?q=<검색어>&max=<1~20>` →
+`{ videos: [{ id, title, channel, views }], cached?: true, quota?: true }`
+
+오류·할당량 소진 시에도 `200` + `videos: []` 로 응답한다(앱이 폴백하도록).
+
+## 키는 어디에도 커밋되지 않는다
+
+- 운영: `wrangler secret` (Cloudflare 에만 저장)
+- 로컬: `.dev.vars` (gitignore)
+- `wrangler.toml` 에는 키가 없다
