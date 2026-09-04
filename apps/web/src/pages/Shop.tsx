@@ -9,11 +9,17 @@ import {
   BUDGET_LABEL,
   browseRecipes,
   CRAVING_VIBES,
+  CUISINES,
+  cuisineLabel,
   estimateBudget,
+  SERVES_ALL,
+  servesLabel,
   vibeLabel,
   WEATHER_CHIPS,
   weatherVibes,
   type Budget,
+  type Cuisine,
+  type Serves,
   type Vibe,
   type Weather,
 } from "@foodplay/core";
@@ -26,6 +32,8 @@ export default function Shop() {
   const [weather, setWeather] = useState<Weather | null>(null);
   const [budgets, setBudgets] = useState<Set<Budget>>(new Set());
   const [cravings, setCravings] = useState<Set<Vibe>>(new Set());
+  const [serves, setServes] = useState<Set<Serves>>(new Set());
+  const [cuisines, setCuisines] = useState<Set<Cuisine>>(new Set());
 
   function toggle<T>(setFn: Dispatch<SetStateAction<Set<T>>>, v: T) {
     setFn((cur) => {
@@ -46,21 +54,29 @@ export default function Shop() {
     if (budgets.size > 0) {
       out = out.filter((m) => budgets.has(estimateBudget(m.recipe)));
     }
+    if (serves.size > 0) {
+      out = out.filter((m) => m.recipe.serves && serves.has(m.recipe.serves));
+    }
+    if (cuisines.size > 0) {
+      out = out.filter((m) => m.recipe.cuisine && cuisines.has(m.recipe.cuisine));
+    }
     return out;
-  }, [weather, budgets, cravings]);
+  }, [weather, budgets, cravings, serves, cuisines]);
 
   const picked =
-    (weather ? 1 : 0) + budgets.size + cravings.size;
+    (weather ? 1 : 0) + budgets.size + cravings.size + serves.size + cuisines.size;
 
   const youtubeQuery = useMemo(() => {
     const bits = [
+      ...Array.from(cuisines).map((c) => cuisineLabel(c, true)),
       weather ? WEATHER_CHIPS.find((w) => w.weather === weather)?.label : null,
       ...Array.from(cravings).map(vibeLabel),
+      ...Array.from(serves).map((s) => servesLabel(s, true)),
     ].filter(Boolean);
     return bits.length > 0
       ? `${bits.join(" ")} 집밥 레시피`
       : "장보기 저녁 메뉴 추천";
-  }, [weather, cravings]);
+  }, [weather, cravings, serves, cuisines]);
 
   const youtubeVibes = useMemo(
     () =>
@@ -116,6 +132,26 @@ export default function Shop() {
             </Chip>
           ))}
         </Field>
+
+        <div className="h-px bg-line" />
+
+        <Field label="누구랑 · 몇 인분">
+          {SERVES_ALL.map((s) => (
+            <Chip key={s} on={serves.has(s)} onClick={() => toggle(setServes, s)}>
+              {servesLabel(s)}
+            </Chip>
+          ))}
+        </Field>
+
+        <div className="h-px bg-line" />
+
+        <Field label="요리 분류">
+          {CUISINES.map((c) => (
+            <Chip key={c} on={cuisines.has(c)} onClick={() => toggle(setCuisines, c)}>
+              {cuisineLabel(c)}
+            </Chip>
+          ))}
+        </Field>
       </section>
 
       <ResultList
@@ -123,7 +159,18 @@ export default function Shop() {
         variant="shopping"
         heading={picked > 0 ? `오늘 저녁 후보 ${list.length}` : `이런 메뉴들이 있어요 · ${list.length}`}
         meta={picked > 0 ? `조건 ${picked}` : undefined}
-        emptyText="조건이 너무 좁아요. 예산이나 맛을 줄여 보세요."
+        note={
+          list.length === 0 && cuisines.size > 0 ? (
+            <p className="rounded-xl border border-dashed border-line bg-surface/60 px-4 py-3 text-[13px] leading-relaxed text-muted">
+              큐레이션 레시피는 아직 한식 위주예요.{" "}
+              <b className="text-ink">
+                {Array.from(cuisines).map((c) => cuisineLabel(c, true)).join("·")}
+              </b>{" "}
+              레시피는 아래 <b className="text-ink">유튜브</b>에서 찾아드릴게요.
+            </p>
+          ) : undefined
+        }
+        emptyText="조건이 너무 좁아요. 예산·인분·분류를 줄여 보세요."
         youtubeQuery={youtubeQuery}
         youtubeVibes={youtubeVibes}
         youtubeExclude={CURATED_YT_IDS}

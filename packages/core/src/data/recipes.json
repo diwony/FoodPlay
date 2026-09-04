@@ -8,6 +8,7 @@
       "cookMinutes": 15,
       "difficulty": "easy",
       "serves": "solo",
+      "cuisine": "korean",
       "coreIngredients": [
         "밥",
         "김치",
@@ -95,6 +96,7 @@
       "cookMinutes": 10,
       "difficulty": "easy",
       "serves": "family",
+      "cuisine": "korean",
       "coreIngredients": [
         "계란",
         "대파",
@@ -180,6 +182,7 @@
       "cookMinutes": 25,
       "difficulty": "medium",
       "serves": "family",
+      "cuisine": "korean",
       "coreIngredients": [
         "소고기",
         "된장",
@@ -273,6 +276,7 @@
       "cookMinutes": 20,
       "difficulty": "medium",
       "serves": "party",
+      "cuisine": "korean",
       "coreIngredients": [
         "돼지고기",
         "양파",
@@ -351,6 +355,7 @@
       "cookMinutes": 15,
       "difficulty": "easy",
       "serves": "family",
+      "cuisine": "korean",
       "coreIngredients": [
         "감자",
         "양파",
@@ -416,6 +421,7 @@
       "cookMinutes": 10,
       "difficulty": "easy",
       "serves": "family",
+      "cuisine": "korean",
       "coreIngredients": [
         "어묵",
         "양파",
@@ -477,6 +483,7 @@
       "cookMinutes": 15,
       "difficulty": "easy",
       "serves": "family",
+      "cuisine": "korean",
       "coreIngredients": [
         "콩나물",
         "대파"
@@ -531,6 +538,7 @@
       "cookMinutes": 12,
       "difficulty": "easy",
       "serves": "family",
+      "cuisine": "korean",
       "coreIngredients": [
         "어묵",
         "양파",
@@ -599,6 +607,7 @@
       "cookMinutes": 5,
       "difficulty": "easy",
       "serves": "solo",
+      "cuisine": "korean",
       "coreIngredients": [
         "밥",
         "계란",
@@ -667,6 +676,7 @@
       "cookMinutes": 15,
       "difficulty": "easy",
       "serves": "family",
+      "cuisine": "korean",
       "coreIngredients": [
         "김치",
         "참치캔",
@@ -756,6 +766,7 @@
       "cookMinutes": 10,
       "difficulty": "easy",
       "serves": "family",
+      "cuisine": "korean",
       "coreIngredients": [
         "애호박",
         "양파",
@@ -826,6 +837,7 @@
       "cookMinutes": 40,
       "difficulty": "easy",
       "serves": "family",
+      "cuisine": "korean",
       "coreIngredients": [
         "미역",
         "소고기",
@@ -897,6 +909,7 @@
       "cookMinutes": 40,
       "difficulty": "medium",
       "serves": "party",
+      "cuisine": "korean",
       "coreIngredients": [
         "소고기",
         "양파",
@@ -972,6 +985,7 @@
       "cookMinutes": 35,
       "difficulty": "medium",
       "serves": "party",
+      "cuisine": "korean",
       "coreIngredients": [
         "닭",
         "감자",
@@ -1047,6 +1061,7 @@
       "cookMinutes": 15,
       "difficulty": "easy",
       "serves": "family",
+      "cuisine": "korean",
       "coreIngredients": [
         "부추",
         "양파",
@@ -1120,6 +1135,7 @@
       "cookMinutes": 15,
       "difficulty": "easy",
       "serves": "couple",
+      "cuisine": "korean",
       "coreIngredients": [
         "떡볶이떡",
         "양파",
@@ -1195,6 +1211,7 @@
       "cookMinutes": 15,
       "difficulty": "easy",
       "serves": "family",
+      "cuisine": "korean",
       "coreIngredients": [
         "양배추",
         "대파",
@@ -1269,6 +1286,7 @@
       "cookMinutes": 15,
       "difficulty": "easy",
       "serves": "couple",
+      "cuisine": "korean",
       "coreIngredients": [
         "두부",
         "김치",
@@ -1344,6 +1362,7 @@
       "cookMinutes": 25,
       "difficulty": "medium",
       "serves": "family",
+      "cuisine": "korean",
       "coreIngredients": [
         "김치",
         "돼지고기",
@@ -1407,6 +1426,7 @@
       "cookMinutes": 10,
       "difficulty": "easy",
       "serves": "solo",
+      "cuisine": "korean",
       "coreIngredients": [
         "밥",
         "계란",
@@ -1462,6 +1482,7 @@
       "cookMinutes": 5,
       "difficulty": "easy",
       "serves": "solo",
+      "cuisine": "korean",
       "coreIngredients": [
         "밥",
         "스팸",
@@ -1518,6 +1539,7 @@
       "cookMinutes": 10,
       "difficulty": "easy",
       "serves": "solo",
+      "cuisine": "japanese",
       "coreIngredients": [
         "밥",
         "참치캔",
@@ -1574,6 +1596,7 @@
       "cookMinutes": 20,
       "difficulty": "medium",
       "serves": "couple",
+      "cuisine": "western",
       "coreIngredients": [
         "밥",
         "계란",
@@ -1635,6 +1658,7 @@
       "cookMinutes": 20,
       "difficulty": "easy",
       "serves": "couple",
+      "cuisine": "korean",
       "coreIngredients": [
         "순두부",
         "바지락",
@@ -1692,6 +1716,7 @@
       "cookMinutes": 20,
       "difficulty": "easy",
       "serves": "solo",
+      "cuisine": "korean",
       "coreIngredients": [
         "돼지고기",
         "양파",

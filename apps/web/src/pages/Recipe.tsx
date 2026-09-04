@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import {
+  cuisineLabel,
   formatCookTime,
   formatDifficulty,
   formatServes,
@@ -142,6 +143,7 @@ export default function Recipe() {
         {[
           `⏱ ${formatCookTime(recipe.cookMinutes)}`,
           `🔥 ${formatDifficulty(recipe.difficulty)}`,
+          ...(recipe.cuisine ? [cuisineLabel(recipe.cuisine)] : []),
           ...(recipe.serves ? [formatServes(recipe.serves)] : []),
           `🧺 추가 재료 ${recipe.extraIngredients.length}`,
         ].map((t) => (

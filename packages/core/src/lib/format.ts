@@ -1,4 +1,10 @@
-import type { BlogLink, Difficulty, Serves, ShortVideo } from "../data/types";
+import type {
+  BlogLink,
+  Cuisine,
+  Difficulty,
+  Serves,
+  ShortVideo,
+} from "../data/types";
 
 /** 초 → "m:ss" 또는 "h:mm:ss" */
 export function formatTimestamp(totalSeconds: number): string {
@@ -58,9 +64,32 @@ export function formatServes(s: Serves, short = false): string {
   return `${m.emoji} ${short ? m.short : m.label}`;
 }
 
+/** Shop 필터 칩 순서 */
+export const SERVES_ALL: Serves[] = ["solo", "couple", "family", "party"];
+
+export function servesEmoji(s: Serves): string {
+  return SERVES_META[s].emoji;
+}
+
 export function servesLabel(s: Serves, short = false): string {
   return short ? SERVES_META[s].short : SERVES_META[s].label;
 }
+
+const CUISINE_META: Record<Cuisine, { emoji: string; label: string }> = {
+  korean: { emoji: "🍚", label: "한식" },
+  japanese: { emoji: "🍥", label: "일식" },
+  western: { emoji: "🍝", label: "양식" },
+  chinese: { emoji: "🥢", label: "중식" },
+};
+
+/** "🍚 한식". `bare` 면 라벨만. */
+export function cuisineLabel(c: Cuisine, bare = false): string {
+  const m = CUISINE_META[c];
+  return bare ? m.label : `${m.emoji} ${m.label}`;
+}
+
+/** Shop 필터 칩 순서 */
+export const CUISINES: Cuisine[] = ["korean", "japanese", "western", "chinese"];
 
 /** 숏폼이 네이버TV 소스인지 */
 export function isNaverShort(s: ShortVideo): boolean {

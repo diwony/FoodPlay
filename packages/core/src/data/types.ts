@@ -17,6 +17,9 @@ export type Difficulty = "easy" | "medium" | "hard";
  */
 export type Serves = "solo" | "couple" | "family" | "party";
 
+/** 요리 계열. "땡기는 맛"(vibe)과 별개로 한/일/양/중식으로 거를 때 쓴다. */
+export type Cuisine = "korean" | "japanese" | "western" | "chinese";
+
 /**
  * 기분·상황·날씨 키워드. 냉장고 재료와 별개로 사용자가 추가 선택하면
  * 매칭 점수에 가중치를 준다.
@@ -111,6 +114,8 @@ export interface Recipe {
   difficulty: Difficulty;
   /** 몇 인분 / 누구랑 먹는 그림인지 */
   serves?: Serves;
+  /** 한/일/양/중식 계열 */
+  cuisine?: Cuisine;
   /** 유튜브 댓글 반응 요약 (선택) */
   reception?: Reception;
   /** 기분·상황 키워드 */
