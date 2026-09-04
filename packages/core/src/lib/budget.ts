@@ -85,4 +85,12 @@ export function weatherVibes(weather: Weather): Vibe[] {
 }
 
 /** "장보기 추천" 에서 고르는 "땡기는 맛" 칩 (vibe 하위 집합). */
-export const CRAVING_VIBES: Vibe[] = ["spicy", "hearty", "light", "warm"];
+export const CRAVING_VIBES: Vibe[] = [
+  "spicy",
+  "hearty",
+  "warm",
+  "light",
+  "quick",
+  "homey",
+  "guests",
+];
