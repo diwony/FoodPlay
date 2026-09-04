@@ -7,6 +7,7 @@
       "title": "백종원 김치볶음밥",
       "cookMinutes": 15,
       "difficulty": "easy",
+      "serves": "solo",
       "coreIngredients": [
         "밥",
         "김치",
@@ -93,6 +94,7 @@
       "title": "백종원 달걀말이",
       "cookMinutes": 10,
       "difficulty": "easy",
+      "serves": "family",
       "coreIngredients": [
         "계란",
         "대파",
@@ -177,6 +179,7 @@
       "title": "백종원 소고기 된장찌개",
       "cookMinutes": 25,
       "difficulty": "medium",
+      "serves": "family",
       "coreIngredients": [
         "소고기",
         "된장",
@@ -269,6 +272,7 @@
       "title": "백종원 제육볶음",
       "cookMinutes": 20,
       "difficulty": "medium",
+      "serves": "party",
       "coreIngredients": [
         "돼지고기",
         "양파",
@@ -346,6 +350,7 @@
       "title": "백종원 감자채볶음",
       "cookMinutes": 15,
       "difficulty": "easy",
+      "serves": "family",
       "coreIngredients": [
         "감자",
         "양파",
@@ -410,6 +415,7 @@
       "title": "백종원 간장 어묵볶음",
       "cookMinutes": 10,
       "difficulty": "easy",
+      "serves": "family",
       "coreIngredients": [
         "어묵",
         "양파",
@@ -470,6 +476,7 @@
       "title": "백종원 콩나물무침",
       "cookMinutes": 15,
       "difficulty": "easy",
+      "serves": "family",
       "coreIngredients": [
         "콩나물",
         "대파"
@@ -523,6 +530,7 @@
       "title": "백종원 매콤 어묵볶음",
       "cookMinutes": 12,
       "difficulty": "easy",
+      "serves": "family",
       "coreIngredients": [
         "어묵",
         "양파",
@@ -590,6 +598,7 @@
       "title": "간장계란밥 3가지",
       "cookMinutes": 5,
       "difficulty": "easy",
+      "serves": "solo",
       "coreIngredients": [
         "밥",
         "계란",
@@ -657,6 +666,7 @@
       "title": "참치김치찌개 황금레시피",
       "cookMinutes": 15,
       "difficulty": "easy",
+      "serves": "family",
       "coreIngredients": [
         "김치",
         "참치캔",
@@ -745,6 +755,7 @@
       "title": "애호박 새우젓볶음",
       "cookMinutes": 10,
       "difficulty": "easy",
+      "serves": "family",
       "coreIngredients": [
         "애호박",
         "양파",
@@ -814,6 +825,7 @@
       "title": "소고기 미역국",
       "cookMinutes": 40,
       "difficulty": "easy",
+      "serves": "family",
       "coreIngredients": [
         "미역",
         "소고기",
@@ -884,6 +896,7 @@
       "title": "부드러운 소불고기",
       "cookMinutes": 40,
       "difficulty": "medium",
+      "serves": "party",
       "coreIngredients": [
         "소고기",
         "양파",
@@ -958,6 +971,7 @@
       "title": "닭볶음탕 황금 레시피",
       "cookMinutes": 35,
       "difficulty": "medium",
+      "serves": "party",
       "coreIngredients": [
         "닭",
         "감자",
@@ -1032,6 +1046,7 @@
       "title": "바삭한 부추전",
       "cookMinutes": 15,
       "difficulty": "easy",
+      "serves": "family",
       "coreIngredients": [
         "부추",
         "양파",
@@ -1104,6 +1119,7 @@
       "title": "간장떡볶이",
       "cookMinutes": 15,
       "difficulty": "easy",
+      "serves": "couple",
       "coreIngredients": [
         "떡볶이떡",
         "양파",
@@ -1178,6 +1194,7 @@
       "title": "성시경 양배추볶음",
       "cookMinutes": 15,
       "difficulty": "easy",
+      "serves": "family",
       "coreIngredients": [
         "양배추",
         "대파",
@@ -1251,6 +1268,7 @@
       "title": "고기 없는 두부김치",
       "cookMinutes": 15,
       "difficulty": "easy",
+      "serves": "couple",
       "coreIngredients": [
         "두부",
         "김치",
@@ -1325,6 +1343,7 @@
       "title": "영업집 인생 김치찌개",
       "cookMinutes": 25,
       "difficulty": "medium",
+      "serves": "family",
       "coreIngredients": [
         "김치",
         "돼지고기",
@@ -1387,6 +1406,7 @@
       "title": "계란만 잘 익히면 끝, 계란볶음밥",
       "cookMinutes": 10,
       "difficulty": "easy",
+      "serves": "solo",
       "coreIngredients": [
         "밥",
         "계란",
@@ -1441,6 +1461,7 @@
       "title": "5분 완성 스팸계란볶음밥",
       "cookMinutes": 5,
       "difficulty": "easy",
+      "serves": "solo",
       "coreIngredients": [
         "밥",
         "스팸",
@@ -1496,6 +1517,7 @@
       "title": "급이 다른 참치마요덮밥",
       "cookMinutes": 10,
       "difficulty": "easy",
+      "serves": "solo",
       "coreIngredients": [
         "밥",
         "참치캔",
@@ -1551,6 +1573,7 @@
       "title": "부드러운 오므라이스",
       "cookMinutes": 20,
       "difficulty": "medium",
+      "serves": "couple",
       "coreIngredients": [
         "밥",
         "계란",
@@ -1611,6 +1634,7 @@
       "title": "식당보다 맛있는 순두부찌개",
       "cookMinutes": 20,
       "difficulty": "easy",
+      "serves": "couple",
       "coreIngredients": [
         "순두부",
         "바지락",
@@ -1667,6 +1691,7 @@
       "title": "편스토랑 어남선생 제육볶음",
       "cookMinutes": 20,
       "difficulty": "easy",
+      "serves": "solo",
       "coreIngredients": [
         "돼지고기",
         "양파",

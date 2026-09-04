@@ -1,4 +1,4 @@
-import type { BlogLink, Difficulty, ShortVideo } from "../data/types";
+import type { BlogLink, Difficulty, Serves, ShortVideo } from "../data/types";
 
 /** 초 → "m:ss" 또는 "h:mm:ss" */
 export function formatTimestamp(totalSeconds: number): string {
@@ -43,6 +43,23 @@ const DIFFICULTY_LABEL: Record<Difficulty, string> = {
 
 export function formatDifficulty(d: Difficulty): string {
   return DIFFICULTY_LABEL[d];
+}
+
+const SERVES_META: Record<Serves, { emoji: string; label: string; short: string }> = {
+  solo: { emoji: "🧑", label: "혼밥 1인", short: "혼밥" },
+  couple: { emoji: "🧑‍🤝‍🧑", label: "연인·둘이 2인", short: "둘이" },
+  family: { emoji: "👨‍👩‍👧", label: "가족 3~4인", short: "가족" },
+  party: { emoji: "👥", label: "여럿이 4인 이상", short: "여럿이" },
+};
+
+/** "🧑 혼밥 1인" 처럼 이모지+라벨. `short` 면 "혼밥"만. */
+export function formatServes(s: Serves, short = false): string {
+  const m = SERVES_META[s];
+  return `${m.emoji} ${short ? m.short : m.label}`;
+}
+
+export function servesLabel(s: Serves, short = false): string {
+  return short ? SERVES_META[s].short : SERVES_META[s].label;
 }
 
 /** 숏폼이 네이버TV 소스인지 */

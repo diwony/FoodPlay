@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const MODES = [
   {
     to: "/fridge",
-    emoji: "🧊",
+    emoji: "🥬",
     title: "냉장고 재료로 만들기",
     desc: "있는 재료(또는 오늘 기분만)를 고르면 만들 수 있는 요리 영상을 찾아줘요.",
     cta: "재료 고르기",

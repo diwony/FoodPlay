@@ -1,6 +1,9 @@
 import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import YouTubeRail from "../components/YouTubeRail";
 import MukbangRail from "../components/MukbangRail";
+import AddChipInput from "../components/AddChipInput";
+import { useLocalList } from "../lib/useLocalList";
 
 type Level = "full" | "easy";
 
@@ -50,9 +53,19 @@ const TREND: { tag: string; label: string }[] = [
 ];
 
 export default function Dessert() {
-  const [level, setLevel] = useState<Level>("easy");
+  const [params] = useSearchParams();
+  const initialLevel: Level | null =
+    params.get("level") === "easy"
+      ? "easy"
+      : params.get("level") === "full"
+        ? "full"
+        : null;
+  const [level, setLevel] = useState<Level | null>(initialLevel);
   const [picked, setPicked] = useState<Set<string>>(new Set());
   const [trend, setTrend] = useState<string | null>(null);
+  const mine = useLocalList("foodplay.myBakingItems.v1", (s) =>
+    s.trim().replace(/\s+/g, ""),
+  );
 
   const toggleIng = (item: string) =>
     setPicked((cur) => {
@@ -61,14 +74,25 @@ export default function Dessert() {
       return next;
     });
 
-  const levelTag = level === "full" ? "baking-full" : "baking-easy";
+  const addMine = (name: string) => {
+    const clean = name.trim().replace(/\s+/g, "");
+    if (!clean) return;
+    mine.add(clean);
+    toggleIng(clean); // 추가하면서 바로 선택
+  };
+  // 기본 칩에 이미 있는 건 "내 재료"에서 중복 표시하지 않는다
+  const presetItems = new Set(ING_GROUPS.flatMap((g) => g.items));
+
   const ingredients = trend ? [trend] : [...picked];
   // 요즘 뜨는 디저트를 콕 집으면 난이도 필터는 무시(그 디저트 전부 보여줌).
-  const require = trend ? [] : [levelTag];
+  // 난이도를 안 골랐으면(null) 본격·간단 다 보여준다.
+  const require =
+    trend || !level ? [] : [level === "full" ? "baking-full" : "baking-easy"];
 
   const query = useMemo(() => {
     if (trend) return `${TREND.find((t) => t.tag === trend)?.label ?? trend} 만들기`;
-    const base = level === "full" ? "홈베이킹" : "노오븐 디저트";
+    const base =
+      level === "full" ? "홈베이킹" : level === "easy" ? "노오븐 디저트" : "디저트";
     return picked.size > 0 ? `${[...picked].join(" ")} ${base}` : `${base} 레시피`;
   }, [trend, level, picked]);
 
@@ -76,7 +100,9 @@ export default function Dessert() {
     ? `${TREND.find((t) => t.tag === trend)?.label} 영상`
     : level === "full"
       ? "본격 베이킹 영상"
-      : "간단 베이킹 영상";
+      : level === "easy"
+        ? "간단 베이킹 영상"
+        : "디저트 만드는 영상";
 
   return (
     <main className="mx-auto max-w-5xl px-5">
@@ -92,7 +118,12 @@ export default function Dessert() {
 
       <section className="grid gap-6 rounded-[var(--radius-card)] border border-line bg-surface p-5 shadow-[var(--shadow-card)] sm:p-7">
         <div>
-          <p className="text-[13px] font-bold text-muted">어떻게 만들까요?</p>
+          <p className="text-[13px] font-bold text-muted">
+            어떻게 만들까요?{" "}
+            <span className="font-medium text-faint">
+              (선택 안 하면 둘 다 보여줘요)
+            </span>
+          </p>
           <div className="mt-2.5 grid gap-2 sm:grid-cols-2">
             {LEVELS.map((l) => {
               const on = level === l.key;
@@ -100,7 +131,7 @@ export default function Dessert() {
                 <button
                   key={l.key}
                   type="button"
-                  onClick={() => setLevel(l.key)}
+                  onClick={() => setLevel((cur) => (cur === l.key ? null : l.key))}
                   aria-pressed={on}
                   className={
                     "rounded-xl border p-3.5 text-left transition-colors " +
@@ -173,6 +204,61 @@ export default function Dessert() {
                 </div>
               </div>
             ))}
+
+            <div>
+              <p className="text-[12px] font-bold text-faint">
+                <span className="mr-1">✏️</span>내가 넣을 재료
+              </p>
+              <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                {mine.items
+                  .filter((i) => !presetItems.has(i))
+                  .map((item) => {
+                    const on = picked.has(item);
+                    return (
+                      <span
+                        key={item}
+                        className={
+                          "inline-flex items-center gap-1 rounded-full border py-1.5 pl-3 pr-1.5 text-[13px] font-medium transition-colors " +
+                          (on
+                            ? "border-ink bg-ink text-bg"
+                            : "border-line bg-surface text-ink")
+                        }
+                      >
+                        <button
+                          type="button"
+                          onClick={() => toggleIng(item)}
+                          aria-pressed={on}
+                          className="outline-none"
+                        >
+                          {on ? "✓ " : "+ "}
+                          {item}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            mine.remove(item);
+                            if (picked.has(item)) toggleIng(item);
+                          }}
+                          aria-label={`${item} 삭제`}
+                          className={
+                            "grid h-4 w-4 place-items-center rounded-full text-[11px] leading-none transition-colors " +
+                            (on
+                              ? "bg-white/25 hover:bg-white/40"
+                              : "bg-line/70 text-muted hover:bg-line")
+                          }
+                        >
+                          ×
+                        </button>
+                      </span>
+                    );
+                  })}
+                <AddChipInput
+                  onAdd={addMine}
+                  placeholder="예) 연유, 젤라틴"
+                  ariaLabel="베이킹 재료 직접 추가"
+                />
+              </div>
+            </div>
           </div>
         </div>
 

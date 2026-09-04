@@ -49,6 +49,10 @@ export default function MukbangRail({
     };
   }, []);
 
+  const depKey = `${ingredients.join(",")}|${vibes.join(",")}|${kind ?? ""}|${(
+    require ?? []
+  ).join(",")}`;
+
   const hits = useMemo(() => {
     if (!pool) return [];
     const scoped = searchPool(pool, {
@@ -68,12 +72,9 @@ export default function MukbangRail({
       require,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pool, ingredients.join(","), vibes.join(","), kind, (require ?? []).join(",")]);
+  }, [pool, depKey]);
 
-  useEffect(
-    () => setShown(STEP),
-    [ingredients.join(","), vibes.join(","), (require ?? []).join(",")],
-  );
+  useEffect(() => setShown(STEP), [depKey]);
 
   if (pool !== null && hits.length === 0) return null;
 

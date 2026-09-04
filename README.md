@@ -8,14 +8,19 @@
 - 레시피마다 **롱폼(자세히·타임스탬프) / 숏폼(빠르게)** 을 토글로 선택.
   롱폼은 유튜브 고정(타임스탬프 seek), 숏폼은 유튜브 쇼츠 기본 + **네이버TV** 도 섞음
 - 영상과 별개로 **블로그 레시피**(만개의레시피·우리의식탁·브런치 등) 추천
-- 각 레시피의 **추가 재료 · 조리 시간 · 난이도**, **유튜브 댓글 반응 요약**,
-  **추천 영상 캐러셀** 표시
-- 시작을 **3가지 모드**로 나눔 — ① 냉장고 재료로 만들기(재료 없이 **오늘 기분·
-  상황만 골라도** 추천) ② 밀키트 푸짐하게 보충(곁들일 반찬 + 더 넣을 재료)
-  ③ 장보기 추천(예산·날씨·땡기는 맛 → 오늘 저녁 + 장 볼 목록)
-- 기분·상황은 칩 선택 + 자유 입력("비 와서 으슬으슬해" → 키워드 자동 인식)
-- 결과 아래 **"유튜브에서 더 찾기"** 칸이 미리 수집한 1,000+ 관련 영상(274개
-  채널)을 조회수 순으로 보여줌 — 런타임에 외부 API 를 안 부른다
+- 각 레시피의 **추가 재료 · 조리 시간 · 난이도 · 인분**(혼밥 / 둘이 / 가족 /
+  여럿이), **유튜브 댓글 반응 요약**, **추천 영상 캐러셀** 표시
+- 시작을 **4가지 모드**로 나눔 — ① 냉장고 재료로 만들기(재료 없이 **오늘 기분·
+  상황만 골라도** 추천) ② 밀키트 뭐 곁들여요(곁들일 반찬 + 더 넣을 재료)
+  ③ 장보기 추천(예산·날씨·땡기는 맛 → 오늘 저녁 + 장 볼 목록) ④ 디저트·베이킹
+  (**본격 / 간단 베이킹** + 베이킹 재료 · 요즘 뜨는 디저트)
+- 재료·밀키트 종류·베이킹 재료는 칩 선택뿐 아니라 **직접 입력**해 추가할 수
+  있음(기기별 저장) — "가진 재료로 만든다"가 핵심이라 목록에 없는 것도 넣는다
+- 재료·기분·밀키트 종류를 고르면 **결과 레시피와 유튜브 영상이 실제로 좁혀짐**.
+  기분·상황은 칩 선택 + 자유 입력("비 와서 으슬으슬해" → 키워드 자동 인식)
+- 결과 아래 **"유튜브에서 더 찾기"** + **"같이 보는 먹방"** 칸이 미리 수집한
+  3,600+ 관련 영상을 조회수 순으로 보여줌 — 런타임에 외부 API 를 안 부른다.
+  요즘 뜨는 재료(분모자·두부면·곤약 등)·디저트도 계속 수집해 넓힘
 - **웹**은 별도 React(Vite) 앱, **모바일 앱**은 Expo(React Native). 매칭·데이터
   로직은 `@foodplay/core` 패키지로 100% 공유
 
@@ -35,17 +40,18 @@
 | 웹 | **Vite + React 19 + React Router + Tailwind v4** (`apps/web`) |
 | 모바일 앱 | **Expo + React Native 0.86 + Expo Router** (루트) |
 | 영상 | 웹: YouTube IFrame Player API + 네이버TV `tv.naver.com/embed` iframe / 앱: `react-native-youtube-iframe` (동일한 `seekTo`·`pause` 계약) |
-| 데이터 | 빌드 타임 큐레이션 (`packages/core/src/data/recipes.json`) + 유튜브 관련영상 풀 (`apps/web/public/youtube-pool.json`) |
+| 데이터 | 빌드 타임 큐레이션 (`packages/core/src/data/recipes.json`) + 유튜브 관련영상·먹방·디저트 풀 (`apps/web/public/youtube-pool.json`, 3,600+ 영상) |
+| 사용자 입력 저장 | 직접 추가한 재료·밀키트는 `localStorage` (기기별, 계정 없음) |
 
 ## 구조
 
 ```
 packages/core/     웹·앱 공유 순수 로직 — 재료 파싱 · 매칭/랭킹 · vibe · 예산 · 포맷 · recipes.json
 apps/web/          Vite React 웹 (주력)
-  src/pages/       Landing(3모드) · Fridge · MealKit · Shop · Recipe · Watch(/yt/:id)
-  src/components/  RecipeCard · ResultList · IngredientField · VibeField · YouTubeRail · …
-  src/lib/         useYouTube(IFrame) · useMiniPlayer(PiP) · youtubePool · curated
-  public/          youtube-pool.json (관련 영상 풀)
+  src/pages/       Landing(4모드) · Fridge · MealKit · Shop · Dessert · Recipe · Watch(/yt/:id)
+  src/components/  RecipeCard · ResultList · IngredientField · VibeField · YouTubeRail · MukbangRail · AddChipInput · …
+  src/lib/         useYouTube(IFrame) · useMiniPlayer(PiP) · youtubePool · useLocalList · curated
+  public/          youtube-pool.json (관련 영상·먹방·디저트 풀)
 app/  src/  (루트)  Expo Router 모바일 앱 (+ RN-web 프리뷰)
 pipeline/          영상 큐레이션 · 댓글 · 유튜브 풀 수집 스크립트
 ```

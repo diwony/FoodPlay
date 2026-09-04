@@ -79,9 +79,17 @@ export function searchPool(all: PoolVideo[], q: PoolQuery): PoolVideo[] {
     });
 
   let pool: typeof scored;
-  if (ing.size > 0) pool = scored.filter((s) => s.ingHit > 0);
-  else if (vibes.size > 0) pool = scored.filter((s) => s.vibeHit > 0);
-  else pool = scored;
+  if (ing.size > 0) {
+    pool = scored.filter((s) => s.ingHit > 0);
+    // 고른 재료가 풀에 없으면(직접 입력한 재료 등) 빈 화면 대신:
+    // 기분 태그 → 그마저 없으면 같은 종류의 인기 영상으로 채운다.
+    if (pool.length === 0 && vibes.size > 0)
+      pool = scored.filter((s) => s.vibeHit > 0);
+    if (pool.length === 0) pool = scored;
+  } else if (vibes.size > 0) {
+    pool = scored.filter((s) => s.vibeHit > 0);
+    if (pool.length === 0) pool = scored;
+  } else pool = scored;
 
   pool.sort(
     (a, b) =>

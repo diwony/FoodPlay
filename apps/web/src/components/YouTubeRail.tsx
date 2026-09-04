@@ -54,6 +54,9 @@ export default function YouTubeRail({
   }, []);
 
   const excludeSet = useMemo(() => new Set(exclude), [exclude]);
+  const depKey = `${ingredients.join(",")}|${vibes.join(",")}|${kind ?? ""}|${(
+    require ?? []
+  ).join(",")}`;
   const hits = useMemo(() => {
     if (!pool) return [];
     return searchPool(pool, {
@@ -65,9 +68,9 @@ export default function YouTubeRail({
       require,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pool, ingredients.join(","), vibes.join(","), excludeSet, kind, (require ?? []).join(",")]);
+  }, [pool, depKey, excludeSet]);
 
-  useEffect(() => setShown(STEP), [ingredients.join(","), vibes.join(",")]);
+  useEffect(() => setShown(STEP), [depKey]);
 
   const ytSearch = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
   const visible = hits.slice(0, shown);

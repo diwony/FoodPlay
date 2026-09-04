@@ -3,6 +3,7 @@ import { Link, useParams, useSearchParams } from "react-router-dom";
 import {
   formatCookTime,
   formatDifficulty,
+  formatServes,
   formatTimestamp,
   getRecipe,
   relatedRecipes,
@@ -141,6 +142,7 @@ export default function Recipe() {
         {[
           `⏱ ${formatCookTime(recipe.cookMinutes)}`,
           `🔥 ${formatDifficulty(recipe.difficulty)}`,
+          ...(recipe.serves ? [formatServes(recipe.serves)] : []),
           `🧺 추가 재료 ${recipe.extraIngredients.length}`,
         ].map((t) => (
           <span
@@ -207,6 +209,22 @@ export default function Recipe() {
       {recipe.blogs && recipe.blogs.length > 0 && <BlogRail blogs={recipe.blogs} />}
 
       <RelatedRail recipes={related} format={fmt} />
+
+      <Link
+        to="/dessert?level=easy"
+        className="mt-10 flex items-center gap-3 rounded-xl border border-line bg-surface p-4 transition-colors hover:border-good/40"
+      >
+        <span className="text-[26px] leading-none">🧁</span>
+        <span className="flex-1">
+          <span className="block text-[14px] font-bold tracking-tight">
+            밥 다 먹었으면, 디저트?
+          </span>
+          <span className="mt-0.5 block text-[12px] text-muted">
+            오븐 없이 만드는 간단 디저트부터 골라볼 수 있어요.
+          </span>
+        </span>
+        <span className="text-[13px] font-semibold text-good">→</span>
+      </Link>
 
       <a
         href={watchUrl}

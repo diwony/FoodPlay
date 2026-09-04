@@ -9,6 +9,15 @@
 export type Difficulty = "easy" | "medium" | "hard";
 
 /**
+ * 몇 인분인지 / 누구랑 먹는 그림인지. 카드·상세에 표시한다.
+ * - solo: 혼밥 (1인)
+ * - couple: 연인·둘이 (2인)
+ * - family: 가족 (3~4인)
+ * - party: 여럿이·손님상 (4인 이상)
+ */
+export type Serves = "solo" | "couple" | "family" | "party";
+
+/**
  * 기분·상황·날씨 키워드. 냉장고 재료와 별개로 사용자가 추가 선택하면
  * 매칭 점수에 가중치를 준다.
  */
@@ -100,6 +109,8 @@ export interface Recipe {
   /** 총 조리 시간(분) */
   cookMinutes: number;
   difficulty: Difficulty;
+  /** 몇 인분 / 누구랑 먹는 그림인지 */
+  serves?: Serves;
   /** 유튜브 댓글 반응 요약 (선택) */
   reception?: Reception;
   /** 기분·상황 키워드 */

@@ -6,6 +6,7 @@ import {
   estimateBudget,
   formatCookTime,
   formatDifficulty,
+  servesLabel,
   shoppingItems,
   vibeLabel,
   type RecipeMatch,
@@ -61,6 +62,7 @@ function RecipeCardBase({ match, rank, browse = false, shopping = false }: Props
         <p className="mt-0.5 text-[12px] text-faint">
           {recipe.long.channel} · {formatCookTime(recipe.cookMinutes)} ·{" "}
           {formatDifficulty(recipe.difficulty)}
+          {recipe.serves && <> · {servesLabel(recipe.serves, true)}</>}
           {recipe.long.views != null && (
             <> · ▶ {compactViews(recipe.long.views)}</>
           )}
