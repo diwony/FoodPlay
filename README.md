@@ -60,7 +60,7 @@
 | --- | --- |
 | 공유 로직 | `@foodplay/core` — 재료 정규화 · 매칭/랭킹 · vibe · 페르소나 · 절약 추정 · 계절/트렌드 추천 · `recipes.json` (순수 TS, 의존성 0) |
 | 웹 | **Vite + React 19 + React Router + Tailwind v4** (`apps/web`) |
-| 설치형 | **PWA** (`vite-plugin-pwa` — 매니페스트 + 서비스워커, iOS·Android·PC 설치) · 그 PWA를 감싼 **Android APK**(PWABuilder TWA, [`docs/ANDROID-APK.md`](docs/ANDROID-APK.md)) |
+| 설치형 | **PWA** (`vite-plugin-pwa` — 매니페스트 + 서비스워커, iOS·Android·PC 설치) · 그 PWA를 감싼 **Android APK**(PWABuilder TWA) · APK 전체화면(주소창 제거)용 Digital Asset Links 는 별도 저장소 `diwony/diwony.github.io` 가 `/.well-known/assetlinks.json` 로 서빙. 절차는 [`docs/ANDROID-APK.md`](docs/ANDROID-APK.md) |
 | 모바일 앱 | **Expo + React Native 0.86 + Expo Router** (루트, 네이티브 빌드용) |
 | 영상 | 웹: YouTube IFrame Player API + 네이버TV iframe / 앱: `react-native-youtube-iframe` (동일한 `seekTo`·`pause` 계약) |
 | 데이터 (1층) | 빌드 타임 큐레이션(`recipes.json`) + 유튜브 영상 풀(11,000+, `pipeline/collect-youtube.mjs`가 공식 Data API v3로 수집) |
@@ -80,7 +80,12 @@ apps/web/          Vite React 웹 (주력)
 app/  src/  (루트)  Expo Router 모바일 앱 (+ RN-web 프리뷰)
 pipeline/          영상 큐레이션 · 댓글 · 유튜브 풀 수집 스크립트
 workers/           Cloudflare Workers — 실시간 검색·영상 상세·자막 프록시
+scripts/           gen-icons(로고→아이콘) · gen-qr(README QR) · deploy-web(gh-pages)
 ```
+
+> 배포처: 웹은 이 저장소의 `gh-pages` 브랜치(`diwony.github.io/FoodPlay/`),
+> Android APK 는 이 저장소의 GitHub Releases, APK↔사이트 인증 파일(`assetlinks.json`)은
+> 도메인 루트가 필요해 별도 저장소 [`diwony/diwony.github.io`](https://github.com/diwony/diwony.github.io) 에 둔다.
 
 ## 실행
 
