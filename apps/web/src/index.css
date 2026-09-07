@@ -78,18 +78,18 @@
     height 0.2s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.2s ease;
 }
-/* 스크롤하면 유튜브·유튜브 프리미엄과 같은 방식: 영상이 16:9 비율 그대로
-   (자막·진행바 다 보이게) 화면 우하단에 고정된다. 본문은 가운데 좁은 컬럼
-   (max-w-2xl)이라 우하단에 두면 타임라인·재료·설명을 하나도 가리지 않는다.
-   너무 작지 않게 26rem(≈416px, 높이 234px) — 썸네일이 아니라 '작은 영상'. */
+/* 스크롤해도 영상은 "원래 있던 자리"를 벗어나지 않는다: 본문 컬럼
+   (max-w-2xl) 왼쪽 위 모서리에 그대로 고정하고 크기만 줄인다. 위치는
+   헤더(h-14=56px) 바로 밑, 가로 시작점은 컬럼 왼쪽 끝(px-5 안쪽)과 일치.
+   16:9 그대로라 자막·진행바 다 보인다. 26rem(≈416px, 높이 234px). */
 .player.is-mini {
   position: fixed;
   inset: auto;
-  right: 1rem;
-  bottom: 1rem;
+  top: 3.5rem;
+  left: max(1.25rem, calc(50% - 19.75rem));
   z-index: 40;
-  width: min(calc(100vw - 2rem), 26rem);
-  height: calc(min(calc(100vw - 2rem), 26rem) * 9 / 16);
+  width: min(calc(100vw - 2.5rem), 26rem);
+  height: calc(min(calc(100vw - 2.5rem), 26rem) * 9 / 16);
   border-radius: 12px;
   box-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.28);
 }
