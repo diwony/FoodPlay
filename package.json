@@ -39,6 +39,8 @@
     "web:dev": "npm run dev --prefix apps/web",
     "web:build": "npm run build --prefix apps/web",
     "web:typecheck": "npm run typecheck --prefix apps/web",
+    "gen:icons": "node scripts/gen-icons.mjs",
+    "gen:qr": "node scripts/gen-qr.mjs",
     "app:start": "expo start",
     "app:tunnel": "expo start --tunnel",
     "app:update": "eas update --branch preview --message \"preview update\"",

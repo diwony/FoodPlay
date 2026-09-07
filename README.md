@@ -8,7 +8,19 @@
 **웹 데모: https://diwony.github.io/FoodPlay/**
 &nbsp;·&nbsp; 프로젝트 소개서: [`docs/CASE-STUDY.md`](docs/CASE-STUDY.md) · [PDF](docs/FoodPlay-소개서.pdf)
 
-<img src="docs/qr.png" alt="FoodPlay 웹 데모 QR" width="150" />
+### 설치 / 실행
+
+| | <img src="docs/qr.png" alt="웹·PWA QR" width="150" /> | <img src="docs/qr-apk.png" alt="Android APK QR" width="150" /> |
+| --- | :---: | :---: |
+| **무엇** | 웹 & PWA (설치형 웹앱) | Android APK 직접 설치 |
+| **주소** | <https://diwony.github.io/FoodPlay/> | <https://github.com/diwony/FoodPlay/releases/latest> |
+| **iOS** | ✅ Safari → 공유 → **홈 화면에 추가** | ❌ (Apple 정책상 APK 설치 불가) |
+| **Android** | ✅ Chrome → **앱 설치** 배너 | ✅ APK 내려받아 설치 (출처를 알 수 없는 앱 허용) |
+| **PC** | ✅ 브라우저에서 바로 | — |
+
+> **왼쪽 QR = 브라우저로 여는 주소**(모든 기기, 설치도 가능) ·
+> **오른쪽 QR = Android 전용 APK 다운로드 페이지**.
+> APK 빌드·배포 방법은 [`docs/ANDROID-APK.md`](docs/ANDROID-APK.md).
 
 ---
 
@@ -48,7 +60,8 @@
 | --- | --- |
 | 공유 로직 | `@foodplay/core` — 재료 정규화 · 매칭/랭킹 · vibe · 페르소나 · 절약 추정 · 계절/트렌드 추천 · `recipes.json` (순수 TS, 의존성 0) |
 | 웹 | **Vite + React 19 + React Router + Tailwind v4** (`apps/web`) |
-| 모바일 앱 | **Expo + React Native 0.86 + Expo Router** (루트) |
+| 설치형 | **PWA** (`vite-plugin-pwa` — 매니페스트 + 서비스워커, iOS·Android·PC 설치) · 그 PWA를 감싼 **Android APK**(PWABuilder TWA, [`docs/ANDROID-APK.md`](docs/ANDROID-APK.md)) |
+| 모바일 앱 | **Expo + React Native 0.86 + Expo Router** (루트, 네이티브 빌드용) |
 | 영상 | 웹: YouTube IFrame Player API + 네이버TV iframe / 앱: `react-native-youtube-iframe` (동일한 `seekTo`·`pause` 계약) |
 | 데이터 (1층) | 빌드 타임 큐레이션(`recipes.json`) + 유튜브 영상 풀(11,000+, `pipeline/collect-youtube.mjs`가 공식 Data API v3로 수집) |
 | 실시간 (2층) | `workers/youtube-search/` — Cloudflare Workers 프록시. `/search` · `/video` · `/transcript`(자막) |

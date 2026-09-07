@@ -147,6 +147,16 @@ render(tile(48), 48, "assets/favicon.png");
 render(tile(180), 180, "apps/web/public/apple-touch-icon.png");
 render(tile(48), 48, "apps/web/public/favicon.png");
 
+// --- PWA / Android APK(TWA) 아이콘 (apps/web/public) ---
+// "any" 아이콘: 둥근 타일. "maskable": OS 가 잘라내므로 안전영역(80%) 안에 마크를 둔다.
+render(tile(192), 192, "apps/web/public/pwa-192.png");
+render(tile(512), 512, "apps/web/public/pwa-512.png");
+render(
+  svgDoc(1024, `<rect width="1024" height="1024" fill="${INK}"/>` + mark({ scale: 0.62 })),
+  512,
+  "apps/web/public/pwa-maskable-512.png",
+);
+
 // --- Vector sources ---
 writeSvg(tile(64), "apps/web/public/favicon.svg");
 writeSvg(
