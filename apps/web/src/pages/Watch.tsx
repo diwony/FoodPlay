@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useYouTube } from "../lib/useYouTube";
 import { useMiniPlayer } from "../lib/useMiniPlayer";
+import { useMiniDrag } from "../lib/useMiniDrag";
 import {
   liveTranscript,
   liveVideoMeta,
@@ -51,8 +52,10 @@ export default function Watch() {
   const { state } = useLocation() as { state: NavState | null };
   const hostRef = useRef<HTMLDivElement>(null);
   const { seekTo, pause } = useYouTube(hostRef, id);
-  // 큐레이션 레시피(/recipe/:id)와 똑같이: 스크롤하면 우상단 미니 플레이어로.
+  // 큐레이션 레시피(/recipe/:id)와 똑같이: 스크롤하면 미니 플레이어로.
   const { slotRef, mini, expand } = useMiniPlayer();
+  // 미니 상태에선 손가락/마우스로 위치를 옮길 수 있다.
+  const { boxRef, boxStyle, wasDragged, dragHandlers } = useMiniDrag(mini);
 
   const valid = /^[\w-]{11}$/.test(id);
 
@@ -177,18 +180,26 @@ export default function Watch() {
   return (
     <main className="mx-auto max-w-2xl px-5 pb-20">
       <div ref={slotRef} className="player-slot mt-5">
-        <div className={"player" + (mini ? " is-mini" : "")}>
+        <div
+          ref={boxRef}
+          className={"player" + (mini ? " is-mini" : "")}
+          style={mini ? boxStyle : undefined}
+        >
           <div className="yt-frame">
             <div ref={hostRef} />
           </div>
           {mini && (
             <>
               <button
-                onClick={expand}
-                aria-label="영상 펼치기"
-                className="absolute inset-0"
+                {...dragHandlers}
+                onClick={() => {
+                  if (!wasDragged()) expand();
+                }}
+                aria-label="영상 펼치기 · 끌어서 위치 이동"
+                className="absolute inset-0 cursor-grab touch-none active:cursor-grabbing"
               />
               <button
+                data-mini-close
                 onClick={pause}
                 aria-label="미니 영상 닫기"
                 className="absolute right-1 top-1 z-10 grid h-6 w-6 place-items-center rounded-full bg-black/60 text-[11px] font-bold text-white"

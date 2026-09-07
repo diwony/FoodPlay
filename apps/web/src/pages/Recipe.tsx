@@ -15,6 +15,7 @@ import {
   type VideoFormat,
 } from "@foodplay/core";
 import { useMiniPlayer } from "../lib/useMiniPlayer";
+import { useMiniDrag } from "../lib/useMiniDrag";
 import { useYouTube } from "../lib/useYouTube";
 import RelatedRail from "../components/RelatedRail";
 import ReceptionBlock from "../components/ReceptionBlock";
@@ -41,6 +42,7 @@ export default function Recipe() {
 
   // 쇼츠(세로 영상)·네이버 임베드일 땐 미니 플레이어 비활성
   const { slotRef, mini, expand } = useMiniPlayer(!useShort);
+  const { boxRef, boxStyle, wasDragged, dragHandlers } = useMiniDrag(mini);
   const player = useYouTube(hostRef, ytVideoId);
 
   if (!recipe) {
@@ -79,7 +81,11 @@ export default function Recipe() {
         ref={slotRef}
         className={"player-slot mt-5" + (useShort ? " is-portrait" : "")}
       >
-        <div className={"player" + (mini ? " is-mini" : "")}>
+        <div
+          ref={boxRef}
+          className={"player" + (mini ? " is-mini" : "")}
+          style={mini ? boxStyle : undefined}
+        >
           <div className="yt-frame">
             {naverEmbed ? (
               <iframe
@@ -95,11 +101,15 @@ export default function Recipe() {
           {mini && (
             <>
               <button
-                onClick={expand}
-                aria-label="영상 펼치기"
-                className="absolute inset-0"
+                {...dragHandlers}
+                onClick={() => {
+                  if (!wasDragged()) expand();
+                }}
+                aria-label="영상 펼치기 · 끌어서 위치 이동"
+                className="absolute inset-0 cursor-grab touch-none active:cursor-grabbing"
               />
               <button
+                data-mini-close
                 onClick={player.pause}
                 aria-label="미니 영상 닫기"
                 className="absolute right-1 top-1 z-10 grid h-6 w-6 place-items-center rounded-full bg-black/60 text-[11px] font-bold text-white"
