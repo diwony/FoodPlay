@@ -30,15 +30,17 @@ APK를 Play Store 밖에서 설치하면 기본적으로 상단에 **Chrome 주�
 없애려면 도메인 루트에 `assetlinks.json` 을 올려 앱과 사이트를 서로 인증해야 한다.
 
 GitHub Pages **프로젝트 사이트**(`diwony.github.io/FoodPlay/`)는 `/.well-known/` 을
-프로젝트 저장소에서 못 내보낸다. 도메인 루트(`diwony.github.io`)에서 서빙해야 하므로:
+프로젝트 저장소에서 못 내보낸다. 도메인 루트(`diwony.github.io`)에서 서빙해야 한다.
 
-1. `diwony/diwony.github.io` 저장소를 새로 만든다 (User Pages, 무료)
-2. 그 저장소에 `.well-known/assetlinks.json` 커밋 (PWABuilder가 준 파일 그대로)
-3. `https://diwony.github.io/.well-known/assetlinks.json` 이 열리는지 확인
-4. 앱을 다시 설치하면 주소창이 사라진다
+**이미 설정 완료됨** — `diwony/diwony.github.io` 저장소가 `.well-known/assetlinks.json`
+(+ `.nojekyll`) 을 서빙한다. Google 검증 API 결과 `"linked": true`.
 
-> 포트폴리오 데모 수준이면 이 단계를 건너뛰어도 앱은 정상 동작한다. 주소창만 보인다.
-> 깔끔하게 하려면 위 3분짜리 작업이거나, 커스텀 도메인(유료)을 붙인다.
+- 파일: <https://diwony.github.io/.well-known/assetlinks.json>
+- 새 서명 키로 APK를 다시 만들면 이 파일의 `sha256_cert_fingerprints` 를 갱신해야 한다.
+- 검증: `https://digitalassetlinks.googleapis.com/v1/assetlinks:check?source.web.site=https://diwony.github.io&relation=delegate_permission/common.handle_all_urls&target.android_app.package_name=io.github.diwony.foodplay&target.android_app.certificate.sha256_fingerprint=<지문>`
+
+> 폰에서 주소창이 계속 보이면 앱을 **삭제 후 재설치**(또는 설정 → 앱 → FoodPlay → 저장공간 →
+> 데이터 삭제). TWA는 첫 실행 때 assetlinks 를 확인하는데, 그 시점에 파일이 없었으면 캐시된다.
 
 ## 3. 배포 — GitHub Releases
 
