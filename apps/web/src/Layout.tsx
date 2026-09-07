@@ -13,9 +13,23 @@ export default function Layout() {
       <header className="sticky top-0 z-30 border-b border-line/80 bg-bg/85 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-5">
           <Link to="/" className="group flex items-center gap-2">
-            <span className="grid h-6 w-6 place-items-center rounded-md bg-ink text-[13px] leading-none">
-              🍳
-            </span>
+            <svg
+              viewBox="0 0 128 128"
+              className="h-7 w-7 text-ink"
+              role="img"
+              aria-label="FoodPlay"
+            >
+              <path d="M46 45 L46 87 L81 66 Z" fill="#e8590c" />
+              <rect x="90" y="57" width="34" height="16" rx="8" fill="currentColor" />
+              <circle
+                cx="56"
+                cy="66"
+                r="36"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="8"
+              />
+            </svg>
             <span className="text-[15px] font-semibold tracking-tight">
               FoodPlay
             </span>

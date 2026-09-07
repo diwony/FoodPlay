@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 128" role="img" aria-label="FoodPlay">
+  <title>FoodPlay</title>
+  <path d="M46 45 L46 87 L81 66 Z" fill="#e8590c"/>
+  <rect x="90" y="57" width="34" height="16" rx="8" fill="#17140f"/>
+  <circle cx="56" cy="66" r="36" fill="none" stroke="#17140f" stroke-width="8"/>
+  <text x="150" y="88" font-family="Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="64" font-weight="800" letter-spacing="-2.2">
+    <tspan fill="#17140f">Food</tspan><tspan fill="#e8590c">Play</tspan>
+  </text>
+</svg>
