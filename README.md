@@ -1,4 +1,6 @@
-# 🍳 <img src="assets/foodplay-ci.png" alt="FoodPlay" height="44" />
+<img src="assets/foodplay-ci.png" alt="FoodPlay" height="88" />
+
+# 🍳 FoodPlay
 
 냉장고에 있는 재료를 넣으면 만들 수 있는 **유튜브 요리 영상**을 찾아주고,
 조리 스텝의 **타임스탬프를 누르면 영상의 그 장면으로 바로 이동**하는 앱.
