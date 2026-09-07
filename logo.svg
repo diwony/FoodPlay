@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 128" role="img" aria-label="FoodPlay">
+  <title>FoodPlay</title>
+  <path d="M82 80 L102 100" stroke="#8a8a8e" stroke-width="13" stroke-linecap="round"/>
+  <circle cx="58" cy="60" r="30" fill="none" stroke="#8a8a8e" stroke-width="11"/>
+  <circle cx="56" cy="58" r="19" fill="#fbfbfb" stroke="#cfcfcf" stroke-width="2"/>
+  <circle cx="56" cy="57" r="6.5" fill="#f2a70c"/>
+  <text x="150" y="88" font-family="Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="64" font-weight="800" letter-spacing="-2.2">
+    <tspan fill="#17140f">Food</tspan><tspan fill="#e8590c">Play</tspan>
+  </text>
+</svg>
