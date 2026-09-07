@@ -15,30 +15,33 @@ export default function Layout() {
           <Link to="/" className="group flex items-center gap-2">
             <svg
               viewBox="0 0 128 128"
-              className="h-7 w-7 text-ink"
+              className="h-7 w-7"
               role="img"
               aria-label="FoodPlay"
             >
-              <rect x="90" y="57" width="34" height="16" rx="8" fill="currentColor" />
+              <path
+                d="M82 80 L102 100"
+                stroke="#8a8a8e"
+                strokeWidth="13"
+                strokeLinecap="round"
+              />
+              <circle
+                cx="58"
+                cy="60"
+                r="30"
+                fill="none"
+                stroke="#8a8a8e"
+                strokeWidth="11"
+              />
               <circle
                 cx="56"
-                cy="66"
-                r="36"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="8"
+                cy="58"
+                r="19"
+                fill="#fbfbfb"
+                stroke="#cfcfcf"
+                strokeWidth="2"
               />
-              <g transform="translate(56 66) scale(1.12) translate(-56 -66)">
-                <path
-                  d="M56 41C64 41 69 44 74 49 79 54 82 61 83 67 84 74 79 81 73 85 67 89 61 88 55 89 46 90 40 88 36 84 31 79 29 71 30 65 31 57 34 52 39 48 44 44 49 41 56 41Z"
-                  fill="#fbfaf7"
-                  stroke="currentColor"
-                  strokeWidth="3.6"
-                  strokeLinejoin="round"
-                />
-                <circle cx="52" cy="68" r="13" fill="#f6a609" />
-                <circle cx="46" cy="62" r="4.5" fill="#ffd43b" />
-              </g>
+              <circle cx="56" cy="57" r="6.5" fill="#f2a70c" />
             </svg>
             <span className="text-[15px] font-semibold tracking-tight">
               FoodPlay
