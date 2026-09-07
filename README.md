@@ -22,6 +22,32 @@
 > **오른쪽 QR = Android 전용 APK 다운로드 페이지**.
 > APK 빌드·배포 방법은 [`docs/ANDROID-APK.md`](docs/ANDROID-APK.md).
 
+#### 📱 iOS — 홈 화면에 앱으로 설치 (App Store 불필요)
+
+iOS는 APK 설치가 막혀 있지만, PWA를 **Safari 기본 기능**으로 홈 화면에 설치하면
+아이콘·전체화면 실행·앱 전환기 등록까지 네이티브 앱과 거의 동일하게 동작한다.
+
+1. **Safari**로 <https://diwony.github.io/FoodPlay/> 접속
+   (Chrome·인앱 브라우저 아님 — iOS는 Safari에서만 홈 화면 설치가 된다)
+2. 하단 가운데 **공유 버튼**(□↑) 탭
+3. 메뉴를 내려 **"홈 화면에 추가"** 탭
+4. 이름이 `FoodPlay`인지 확인하고 오른쪽 위 **"추가"** 탭
+5. 홈 화면에 생긴 **FoodPlay 아이콘**으로 실행 → 주소창 없는 전체화면으로 열린다
+
+- 재료·페르소나 등 입력값은 기기의 `localStorage`에 저장된다(계정 없음).
+- 업데이트는 자동 — 웹이 새로 배포되면 앱을 다시 열 때 최신본으로 갱신된다.
+- iPad도 동일(Safari → 공유 → 홈 화면에 추가).
+
+#### 🤖 Android — APK 또는 PWA
+
+- **APK**: 오른쪽 QR / [Releases](https://github.com/diwony/FoodPlay/releases/latest)에서
+  `FoodPlay-x.y.z.apk` 다운로드 → 열기 → "출처를 알 수 없는 앱 허용" → 설치.
+- **PWA**: Chrome으로 접속하면 뜨는 **"앱 설치"** 배너 탭(또는 메뉴 → 앱 설치).
+
+#### 💻 PC
+
+Chrome·Edge로 접속 → 주소창 오른쪽 **설치 아이콘**(⊕) 클릭 → 창 형태의 앱으로 실행.
+
 ---
 
 ## 기능
