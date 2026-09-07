@@ -1,7 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="FoodPlay">
   <title>FoodPlay</title>
   <rect width="64" height="64" rx="14" fill="#17140f"/>
-  <path d="M24 22 L24 42 L40 32 Z" fill="#e8590c"/>
-  <rect x="46" y="27.5" width="15" height="9" rx="4.5" fill="#fbfaf7"/>
-  <circle cx="30" cy="32" r="18" fill="none" stroke="#fbfaf7" stroke-width="6"/>
+  <g transform="translate(4.31 7.04) scale(0.39)">
+    <rect x="90" y="57" width="34" height="16" rx="8" fill="#fbfaf7"/>
+    <circle cx="56" cy="66" r="36" fill="none" stroke="#fbfaf7" stroke-width="8"/>
+    <g transform="translate(56 66) scale(1.12) translate(-56 -66)">
+      <path d="M56 41C64 41 69 44 74 49 79 54 82 61 83 67 84 74 79 81 73 85 67 89 61 88 55 89 46 90 40 88 36 84 31 79 29 71 30 65 31 57 34 52 39 48 44 44 49 41 56 41Z" fill="#fbfaf7" stroke="#fbfaf7" stroke-width="3.6" stroke-linejoin="round"/>
+      <circle cx="52" cy="68" r="13" fill="#f6a609"/>
+      <circle cx="46" cy="62" r="4.5" fill="#ffd43b"/>
+    </g>
+  </g>
 </svg>

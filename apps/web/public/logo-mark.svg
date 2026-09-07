@@ -1,6 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="FoodPlay">
   <title>FoodPlay</title>
-  <path d="M46 45 L46 87 L81 66 Z" fill="#e8590c"/>
   <rect x="90" y="57" width="34" height="16" rx="8" fill="#17140f"/>
   <circle cx="56" cy="66" r="36" fill="none" stroke="#17140f" stroke-width="8"/>
+  <g transform="translate(56 66) scale(1.12) translate(-56 -66)">
+    <path d="M56 41C64 41 69 44 74 49 79 54 82 61 83 67 84 74 79 81 73 85 67 89 61 88 55 89 46 90 40 88 36 84 31 79 29 71 30 65 31 57 34 52 39 48 44 44 49 41 56 41Z" fill="#fbfaf7" stroke="#17140f" stroke-width="3.6" stroke-linejoin="round"/>
+    <circle cx="52" cy="68" r="13" fill="#f6a609"/>
+    <circle cx="46" cy="62" r="4.5" fill="#ffd43b"/>
+  </g>
 </svg>

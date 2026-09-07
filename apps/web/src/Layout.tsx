@@ -19,7 +19,6 @@ export default function Layout() {
               role="img"
               aria-label="FoodPlay"
             >
-              <path d="M46 45 L46 87 L81 66 Z" fill="#e8590c" />
               <rect x="90" y="57" width="34" height="16" rx="8" fill="currentColor" />
               <circle
                 cx="56"
@@ -29,6 +28,17 @@ export default function Layout() {
                 stroke="currentColor"
                 strokeWidth="8"
               />
+              <g transform="translate(56 66) scale(1.12) translate(-56 -66)">
+                <path
+                  d="M56 41C64 41 69 44 74 49 79 54 82 61 83 67 84 74 79 81 73 85 67 89 61 88 55 89 46 90 40 88 36 84 31 79 29 71 30 65 31 57 34 52 39 48 44 44 49 41 56 41Z"
+                  fill="#fbfaf7"
+                  stroke="currentColor"
+                  strokeWidth="3.6"
+                  strokeLinejoin="round"
+                />
+                <circle cx="52" cy="68" r="13" fill="#f6a609" />
+                <circle cx="46" cy="62" r="4.5" fill="#ffd43b" />
+              </g>
             </svg>
             <span className="text-[15px] font-semibold tracking-tight">
               FoodPlay

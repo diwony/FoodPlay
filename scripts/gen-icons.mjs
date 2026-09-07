@@ -12,14 +12,32 @@ const INK = "#17140f";
 const ACCENT = "#e8590c";
 const PAPER = "#fbfaf7";
 const ACCENT_SOFT = "#fff1e8";
+const YOLK = "#f6a609";
+const SPARK = "#ffd43b";
 
-// The logo mark (pan seen from above + play triangle), drawn in a 128x128 box.
-// `s` scales it, `x`/`y` translate it, colors are configurable.
-function mark({ ring = INK, tri = ACCENT, handle = INK, s = 1, x = 0, y = 0 }) {
+// The logo mark (a fried egg in a pan seen from above, the pan doubling as a
+// magnifying glass with a handle), drawn in a 128x128 box.
+// `s` scales it, `x`/`y` translate it, colors are configurable. The egg white
+// is stroked in `ring` so it stays legible on light backgrounds; pass
+// egg/yolk/spark all equal to `ring` for a solid monochrome silhouette.
+function mark({
+  ring = INK,
+  handle = INK,
+  egg = PAPER,
+  yolk = YOLK,
+  spark = SPARK,
+  s = 1,
+  x = 0,
+  y = 0,
+}) {
   return `<g transform="translate(${x} ${y}) scale(${s})">
-    <path d="M46 45 L46 87 L81 66 Z" fill="${tri}"/>
     <rect x="90" y="57" width="34" height="16" rx="8" fill="${handle}"/>
     <circle cx="56" cy="66" r="36" fill="none" stroke="${ring}" stroke-width="8"/>
+    <g transform="translate(56 66) scale(1.12) translate(-56 -66)">
+      <path d="M56 41C64 41 69 44 74 49 79 54 82 61 83 67 84 74 79 81 73 85 67 89 61 88 55 89 46 90 40 88 36 84 31 79 29 71 30 65 31 57 34 52 39 48 44 44 49 41 56 41Z" fill="${egg}" stroke="${ring}" stroke-width="3.6" stroke-linejoin="round"/>
+      <circle cx="52" cy="68" r="13" fill="${yolk}"/>
+      <circle cx="46" cy="62" r="4.5" fill="${spark}"/>
+    </g>
   </g>`;
 }
 
@@ -52,7 +70,7 @@ function tile(size) {
   return svgDoc(
     size,
     `<rect width="${size}" height="${size}" rx="${r}" fill="${INK}"/>` +
-      centeredMark(size, 0.62, { ring: PAPER, tri: ACCENT, handle: PAPER }),
+      centeredMark(size, 0.78, { ring: PAPER, handle: PAPER }),
   );
 }
 
@@ -61,13 +79,13 @@ render(
   svgDoc(
     1024,
     `<rect width="1024" height="1024" fill="${INK}"/>` +
-      centeredMark(1024, 0.6, { ring: PAPER, tri: ACCENT, handle: PAPER }),
+      centeredMark(1024, 0.74, { ring: PAPER, handle: PAPER }),
   ),
   1024,
   "assets/icon.png",
 );
 render(
-  svgDoc(1024, centeredMark(1024, 0.34, { ring: INK, tri: ACCENT, handle: INK })),
+  svgDoc(1024, centeredMark(1024, 0.4, { ring: INK, handle: INK })),
   1024,
   "assets/splash-icon.png",
 );
@@ -77,12 +95,21 @@ render(
   "assets/android-icon-background.png",
 );
 render(
-  svgDoc(512, centeredMark(512, 0.52, { ring: INK, tri: ACCENT, handle: INK })),
+  svgDoc(512, centeredMark(512, 0.56, { ring: INK, handle: INK })),
   512,
   "assets/android-icon-foreground.png",
 );
 render(
-  svgDoc(432, centeredMark(432, 0.52, { ring: INK, tri: INK, handle: INK })),
+  svgDoc(
+    432,
+    centeredMark(432, 0.56, {
+      ring: INK,
+      handle: INK,
+      egg: INK,
+      yolk: INK,
+      spark: INK,
+    }),
+  ),
   432,
   "assets/android-icon-monochrome.png",
 );
