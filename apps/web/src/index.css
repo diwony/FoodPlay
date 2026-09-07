@@ -78,10 +78,9 @@
     height 0.2s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.2s ease;
 }
-/* 스크롤하면 유튜브 프리미엄처럼: 옆으로 치우쳐 썸네일만큼 작아지는 게
-   아니라, 재생하던 크기 "그대로(아주 살짝만 작게)" 화면 상단(헤더 밑)에
-   내려와 고정된다. 본문 컬럼(max-w-2xl − px-5)이 최대 39.5rem 이므로
-   미니는 그보다 1.5rem 작은 38rem 을 상한으로 둔다 — 절대 더 커지지 않게. */
+/* 스크롤하면 유튜브 프리미엄처럼 화면 상단(헤더 밑) 중앙에 내려와 고정된다.
+   옆으로 치우쳐 썸네일만큼 작아지지는 않되, 타임라인·설명을 너무 가리지
+   않도록 세로(=가로)를 적당히 줄인다. 30rem(480px) 상한 → 높이 약 270px. */
 .player.is-mini {
   position: fixed;
   inset: auto;
@@ -89,8 +88,8 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 40;
-  width: min(calc(100vw - 2.5rem), 38rem);
-  height: calc(min(calc(100vw - 2.5rem), 38rem) * 9 / 16);
+  width: min(calc(100vw - 2.5rem), 30rem);
+  height: calc(min(calc(100vw - 2.5rem), 30rem) * 9 / 16);
   border-radius: 12px;
   box-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.28);
 }
