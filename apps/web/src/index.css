@@ -78,18 +78,19 @@
     height 0.2s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.2s ease;
 }
-/* 스크롤해도 영상은 "원래 있던 자리"를 벗어나지 않는다: 본문 컬럼
-   (max-w-2xl) 왼쪽 위 모서리에 그대로 고정하고 크기만 줄인다. 위치는
-   헤더(h-14=56px) 바로 밑, 가로 시작점은 컬럼 왼쪽 끝(px-5 안쪽)과 일치.
-   16:9 그대로라 자막·진행바 다 보인다. 26rem(≈416px, 높이 234px). */
+/* 스크롤해도 영상은 재생되던 그 자리 그대로: 본문 컬럼 한가운데, 헤더
+   (h-14=56px) 바로 밑에 고정하고 크기만 줄인다. 위치를 옮기지 않는다
+   (중앙 유지 — 우하단·좌상단 배치는 사용자가 거부). 16:9 그대로라
+   자막·진행바 다 보인다. 30rem(≈480px, 높이 270px). */
 .player.is-mini {
   position: fixed;
   inset: auto;
   top: 3.5rem;
-  left: max(1.25rem, calc(50% - 19.75rem));
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 40;
-  width: min(calc(100vw - 2.5rem), 26rem);
-  height: calc(min(calc(100vw - 2.5rem), 26rem) * 9 / 16);
+  width: min(calc(100vw - 2.5rem), 30rem);
+  height: calc(min(calc(100vw - 2.5rem), 30rem) * 9 / 16);
   border-radius: 12px;
   box-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.28);
 }
