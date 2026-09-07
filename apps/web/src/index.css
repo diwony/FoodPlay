@@ -79,9 +79,9 @@
     box-shadow 0.2s ease;
 }
 /* 스크롤하면 유튜브 프리미엄처럼 화면 상단(헤더 밑) 중앙에 내려와 고정된다.
-   옆으로 치우쳐 썸네일만큼 작아지지는 않되, 타임라인·설명을 너무 가리지
-   않도록 세로(=가로)를 줄인다. 27.5rem(440px) 상한 → 높이 약 248px
-   (도킹 높이 356px 대비 ≈30% 감소). */
+   가로는 27.5rem(440px) 유지. 세로는 타임라인·설명을 가리지 않도록 150px 로
+   확 줄이고, 영상은 16:9 비율 그대로 세로 중앙만 보이도록 위아래를 잘라낸다
+   (letterbox crop). YouTube 하단 진행바는 가려지지만 사용자가 원한 형태다. */
 .player.is-mini {
   position: fixed;
   inset: auto;
@@ -90,9 +90,17 @@
   transform: translateX(-50%);
   z-index: 40;
   width: min(calc(100vw - 2.5rem), 27.5rem);
-  height: calc(min(calc(100vw - 2.5rem), 27.5rem) * 9 / 16);
+  height: 150px;
   border-radius: 12px;
   box-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.28);
+}
+.player.is-mini .yt-frame {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: calc(min(calc(100vw - 2.5rem), 27.5rem) * 9 / 16);
+  transform: translateY(-50%);
 }
 .yt-frame,
 .yt-frame iframe {
