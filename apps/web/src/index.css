@@ -84,14 +84,14 @@
   top: 64px;
   right: 14px;
   z-index: 40;
-  width: min(84vw, 384px);
-  height: calc(min(84vw, 384px) * 9 / 16);
+  width: min(92vw, 560px);
+  height: calc(min(92vw, 560px) * 9 / 16);
   box-shadow: var(--shadow-float);
 }
 @media (min-width: 640px) {
   .player.is-mini {
-    width: 384px;
-    height: 216px;
+    width: 560px;
+    height: 315px;
   }
 }
 .yt-frame,
