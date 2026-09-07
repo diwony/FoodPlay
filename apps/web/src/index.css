@@ -81,16 +81,22 @@
 /* 스크롤해도 영상은 재생되던 그 자리 그대로: 본문 컬럼 한가운데, 헤더
    (h-14=56px) 바로 밑에 고정하고 크기만 줄인다. 위치를 옮기지 않는다
    (중앙 유지 — 우하단·좌상단 배치는 사용자가 거부). 16:9 그대로라
-   자막·진행바 다 보인다. 30rem(≈480px, 높이 270px). */
+   자막·진행바 다 보인다.
+
+   폭은 "재생 중 영상 폭(= 컬럼 폭 100vw − px-5×2)의 80%"로 잡고 30rem(480px)
+   상한. 이렇게 해야 데스크톱·모바일 모두 재생 영상보다 같은 비율로 작아진다.
+   (예전엔 `100vw − 2.5rem` 이라 모바일에서 컬럼을 꽉 채워 재생 영상과 같은
+   크기 → "모바일만 더 커 보인다"는 지적.) */
 .player.is-mini {
+  --mini-w: min(calc((100vw - 2.5rem) * 0.8), 30rem);
   position: fixed;
   inset: auto;
   top: 3.5rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 40;
-  width: min(calc(100vw - 2.5rem), 30rem);
-  height: calc(min(calc(100vw - 2.5rem), 30rem) * 9 / 16);
+  width: var(--mini-w);
+  height: calc(var(--mini-w) * 9 / 16);
   border-radius: 12px;
   box-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.28);
 }
