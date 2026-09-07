@@ -78,21 +78,20 @@
     height 0.26s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.26s ease;
 }
+/* 스크롤하면 유튜브 프리미엄처럼: 옆으로 치우쳐 작아지는 게 아니라,
+   재생 크기보다 살짝만 작게 화면 상단(헤더 밑)에 내려와 고정된다.
+   가로 위치는 그대로(본문 컬럼과 같은 중앙 정렬). */
 .player.is-mini {
   position: fixed;
   inset: auto;
-  top: 64px;
-  right: 14px;
+  top: 3.5rem;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 40;
-  width: min(92vw, 560px);
-  height: calc(min(92vw, 560px) * 9 / 16);
+  width: min(92vw, 600px);
+  height: calc(min(92vw, 600px) * 9 / 16);
+  border-radius: 12px;
   box-shadow: var(--shadow-float);
-}
-@media (min-width: 640px) {
-  .player.is-mini {
-    width: 560px;
-    height: 315px;
-  }
 }
 .yt-frame,
 .yt-frame iframe {
